@@ -1,3 +1,1 @@
 Shoomal
-
-ridom
