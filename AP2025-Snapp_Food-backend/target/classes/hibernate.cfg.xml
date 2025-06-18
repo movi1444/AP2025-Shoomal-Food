@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/SnappFood</property>
+        <property name="hibernate.connection.username">root</property>
+        <property name="hibernate.connection.password">Shoomal_Project</property>
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQL8Dialect</property>
+        <property name="hibernate.hbm2ddl.auto">update</property>
+        <property name="hibernate.show_sql">false</property>  <property name="hibernate.format_sql">false</property>
+        <mapping class="com.aut.shoomal.Erfan.User"/>
+        <mapping class="com.aut.shoomal.Erfan.Courier"/>
+        <mapping class="com.aut.shoomal.Erfan.Seller"/>
+        <mapping class="com.aut.shoomal.Erfan.Buyer"/>
+        <mapping class="com.aut.shoomal.Erfan.Admin"/>
+        <mapping class="com.aut.shoomal.Erfan.access.Role"/>
+        <mapping class="com.aut.shoomal.Erfan.access.Permission"/>
+        <mapping class="com.aut.shoomal.Erfan.BankInfo"/>
+        <mapping class="com.aut.shoomal.auth.BlacklistedToken"/>
+        <mapping class="com.aut.shoomal.payment.Order"/>
+        <mapping class="com.aut.shoomal.payment.OrderItem"/>
+        <mapping class="com.aut.shoomal.rating.Rating"/>
+        <mapping class="com.aut.shoomal.payment.coupon.Coupon"/>
+        <mapping class="com.aut.shoomal.Mamad.restaurant.Restaurant"/>
+        <mapping class="com.aut.shoomal.Mamad.food.Food"/>
+        <mapping class="com.aut.shoomal.Mamad.menu.Menu"/>
+        <mapping class="com.aut.shoomal.Mamad.cart.Cart"/>
+        <mapping class="com.aut.shoomal.Mamad.cart.CartItem"/>
+    </session-factory>
+</hibernate-configuration>
