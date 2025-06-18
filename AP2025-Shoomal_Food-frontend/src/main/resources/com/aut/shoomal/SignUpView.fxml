@@ -6,34 +6,70 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox alignment="CENTER" spacing="20.0" styleClass="root" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.aut.shoomal.controllers.SignUpController">
+<ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="Infinity" maxWidth="Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="509.0" prefWidth="649.0" styleClass="root" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
     <stylesheets>
         <String fx:value="/com/aut/shoomal/styles/Styles.css" />
     </stylesheets>
-
-    <BorderPane maxHeight="Infinity" maxWidth="Infinity">
-        <top>
-            <Label alignment="TOP_CENTER" prefHeight="45.0" prefWidth="295.0" styleClass="my-headlabel" text="ثبت نام در شومال فود" BorderPane.alignment="TOP_CENTER">
-                <font>
-                    <Font name="Franklin Gothic Book" size="24.0" />
-                </font>
-                <BorderPane.margin>
-                    <Insets top="10.0" />
-                </BorderPane.margin>
-            </Label>
-        </top>
-      <center>
-         <GridPane BorderPane.alignment="CENTER">
-           <columnConstraints>
-             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-           </columnConstraints>
-           <rowConstraints>
-             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-           </rowConstraints>
-         </GridPane>
-      </center>
-    </BorderPane>
-</VBox>
+    <content>
+        <BorderPane prefHeight="507.0" prefWidth="1397.0" styleClass="root">
+            <center>
+                <GridPane prefHeight="462.0" prefWidth="539.0" BorderPane.alignment="CENTER">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                    <children>
+                        <Label prefHeight="18.0" prefWidth="85.0" styleClass="my-label" stylesheets="@styles/Styles.css" text=" نام کامل" GridPane.columnIndex="1" GridPane.halignment="RIGHT">
+                            <GridPane.margin>
+                                <Insets bottom="100.0" right="40.0" />
+                            </GridPane.margin>
+                        </Label>
+                        <TextField styleClass="my-text-field" stylesheets="@styles/Styles.css" GridPane.columnIndex="1">
+                            <GridPane.margin>
+                                <Insets left="50.0" right="50.0" />
+                            </GridPane.margin>
+                        </TextField>
+                        <Label text="*" textFill="#bc0101" GridPane.columnIndex="1" GridPane.halignment="RIGHT">
+                            <GridPane.margin>
+                                <Insets bottom="100.0" right="130.0" />
+                            </GridPane.margin>
+                            <font>
+                                <Font size="24.0" />
+                            </font>
+                        </Label>
+                  <Label prefHeight="18.0" prefWidth="118.0" styleClass="my-label" stylesheets="@styles/Styles.css" text="شماره همراه" GridPane.halignment="RIGHT">
+                     <GridPane.margin>
+                        <Insets bottom="100.0" right="40.0" />
+                     </GridPane.margin>
+                  </Label>
+                  <TextField styleClass="my-text-field" stylesheets="@styles/Styles.css">
+                     <GridPane.margin>
+                        <Insets left="50.0" right="50.0" />
+                     </GridPane.margin>
+                  </TextField>
+                  <Label text="*" textFill="#bc0101" GridPane.halignment="RIGHT">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                     <GridPane.margin>
+                        <Insets bottom="100.0" right="160.0" />
+                     </GridPane.margin>
+                  </Label>
+                    </children>
+                </GridPane>
+            </center>
+            <top>
+                <Label styleClass="my-headlabel" stylesheets="@styles/Styles.css" text="ثبت نام در شومال فود" BorderPane.alignment="CENTER">
+                    <BorderPane.margin>
+                        <Insets top="30.0" />
+                    </BorderPane.margin>
+                </Label>
+            </top>
+        </BorderPane>
+    </content>
+</ScrollPane>
