@@ -1,0 +1,73 @@
+@font-face {
+    font-family: 'Vazirmatn';
+    src: url("/com/aut/shoomal/fonts/Vazirmatn-Regular.ttf");
+}
+
+@font-face {
+    font-family: 'VazirmatnB';
+    src: url("/com/aut/shoomal/fonts/Vazirmatn-Bold.ttf");
+}
+
+.root {
+    -fx-background-image: url("/com/aut/shoomal/backgrounds/nigger.png");
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-color: rgba(255, 255, 255, 0.7);
+    -fx-background-blend-mode: screen;
+}
+
+.my-button {
+    -fx-background-color: #5bbb15;
+    -fx-text-fill: white;
+    -fx-font-family: "Vazirmatn";
+    -fx-font-size: 16px;
+    -fx-padding: 10px 25px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 0);
+}
+
+.my-button:hover {
+    -fx-background-color: #429a05;
+}
+
+.my-button:pressed {
+    -fx-background-color: #286e02;
+    -fx-translate-y: 1px;
+}
+
+.my-text-field {
+    -fx-background-color: white;
+    -fx-border-color: #ced4da;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-font-family: "Vazirmatn";
+    -fx-font-size: 14px;
+    -fx-padding: 8px 10px;
+    -fx-prompt-text-fill: #6c757d;
+}
+
+.my-text-field:focused {
+    -fx-border-color: #007bff;
+    -fx-border-width: 2px;
+    -fx-background-insets: 0;
+}
+
+.my-label {
+    -fx-font-family: "Vazirmatn";
+    -fx-font-size: 24px;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 5px;
+}
+
+.my-headlabel {
+    -fx-font-family: "VazirmatnB";
+    -fx-font-size: 30px;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 5px;
+}

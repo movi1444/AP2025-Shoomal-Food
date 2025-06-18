@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<?import java.lang.String?>
+<VBox alignment="CENTER" spacing="20.0" styleClass="root" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.aut.shoomal.controllers.SignInController">
+   <stylesheets>
+      <String fx:value="/com/aut/shoomal/styles/Styles.css" />
+   </stylesheets>
+
+   <BorderPane maxHeight="Infinity" maxWidth="Infinity">
+      <top>
+         <Label prefHeight="86.0" prefWidth="350.0" styleClass="my-headlabel" text="به شومال فود خوش آمدید !" BorderPane.alignment="TOP_CENTER">
+            <font>
+               <Font name="Franklin Gothic Book" size="24.0" />
+            </font>
+            <textFill>
+               <LinearGradient endX="0.18939395384355023" endY="1.0" startX="1.0">
+                  <stops>
+                     <Stop>
+                        <color>
+                           <Color red="0.07999999821186066" green="0.08590864390134811" blue="0.800000011920929" />
+                        </color>
+                     </Stop>
+                     <Stop offset="1.0">
+                        <color>
+                           <Color red="0.8421052694320679" green="0.06549707800149918" blue="0.06549707800149918" />
+                        </color>
+                     </Stop>
+                  </stops>
+               </LinearGradient>
+            </textFill>
+            <BorderPane.margin>
+               <Insets bottom="50.0" />
+            </BorderPane.margin>
+         </Label>
+      </top>
+      <center>
+         <GridPane hgap="60.0" prefHeight="134.0" prefWidth="574.0" scaleY="0.95" translateY="30.0" vgap="50.0" BorderPane.alignment="CENTER">
+            <columnConstraints>
+               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="286.40001220703125" />
+               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="287.99998779296874" />
+            </columnConstraints>
+            <rowConstraints>
+               <RowConstraints maxHeight="55.505236053466795" minHeight="10.0" prefHeight="40.34734573364258" vgrow="SOMETIMES" />
+               <RowConstraints maxHeight="50.45265426635742" minHeight="10.0" prefHeight="50.45265426635742" vgrow="SOMETIMES" />
+               <RowConstraints maxHeight="50.45265426635742" minHeight="10.0" prefHeight="50.45265426635742" vgrow="SOMETIMES" />
+            </rowConstraints>
+            <children>
+               <Label contentDisplay="RIGHT" prefHeight="58.0" prefWidth="180.0" styleClass="my-label" text="شماره همراه" GridPane.halignment="RIGHT">
+                  <font>
+                     <Font name="Franklin Gothic Medium Cond" size="18.0" />
+                  </font>
+                  <textFill>
+                     <RadialGradient centerX="0.5" centerY="1.0" radius="0.7752293140516369">
+                        <stops>
+                           <Stop>
+                              <color>
+                                 <Color red="0.800000011920929" green="0.07999999821186066" blue="0.07999999821186066" />
+                              </color>
+                           </Stop>
+                           <Stop offset="1.0">
+                              <color>
+                                 <Color red="0.2941233515739441" green="0.06639999896287918" blue="0.8299999833106995" />
+                              </color>
+                           </Stop>
+                        </stops>
+                     </RadialGradient>
+                  </textFill>
+                  <GridPane.margin>
+                     <Insets />
+                  </GridPane.margin>
+               </Label>
+               <TextField fx:id="phoneNumberField" prefHeight="26.0" prefWidth="246.0" styleClass="my-text-field" GridPane.columnIndex="1">
+                  <GridPane.margin>
+                     <Insets right="135.0" />
+                  </GridPane.margin>
+               </TextField>
+               <Label contentDisplay="TOP" graphicTextGap="8.0" prefHeight="58.0" prefWidth="165.0" styleClass="my-label" text="رمز عبور" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
+                  <font>
+                     <Font name="Franklin Gothic Medium Cond" size="18.0" />
+                  </font>
+                  <textFill>
+                     <RadialGradient centerX="0.5" centerY="0.17803033915433017" radius="0.7477064045197372">
+                        <stops>
+                           <Stop>
+                              <color>
+                                 <Color red="0.1192893385887146" green="0.07999999821186066" blue="0.800000011920929" />
+                              </color>
+                           </Stop>
+                           <Stop offset="0.006729475100942127">
+                              <color>
+                                 <Color red="0.1192893385887146" green="0.07999999821186066" blue="0.800000011920929" />
+                              </color>
+                           </Stop>
+                           <Stop offset="1.0">
+                              <color>
+                                 <Color red="0.8299999833106995" green="0.06639999896287918" blue="0.06639999896287918" />
+                              </color>
+                           </Stop>
+                        </stops>
+                     </RadialGradient>
+                  </textFill>
+                  <GridPane.margin>
+                     <Insets />
+                  </GridPane.margin>
+               </Label>
+               <TextField fx:id="passwordField" prefHeight="26.0" prefWidth="234.0" styleClass="my-text-field" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                  <GridPane.margin>
+                     <Insets right="135.0" />
+                  </GridPane.margin>
+               </TextField>
+               <Label stylesheets="@styles/Styles.css" text="حساب کاربری نداری؟" textFill="#f50000" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                  <font>
+                     <Font name="Vazirmatn Regular" size="18.0" />
+                  </font>
+                  <GridPane.margin>
+                     <Insets top="20.0" />
+                  </GridPane.margin>
+               </Label>
+               <Hyperlink fx:id="signUpLink" onAction="#handleSignUpLink" text="یکی بساز" underline="true" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
+                  <font>
+                     <Font name="Vazirmatn Regular" size="18.0" />
+                  </font>
+                  <GridPane.margin>
+                     <Insets right="-55.0" top="20.0" />
+                  </GridPane.margin>
+               </Hyperlink>
+            </children>
+         </GridPane>
+      </center>
+      <bottom>
+         <Button fx:id="enterButton" mnemonicParsing="false" onAction="#handleEnterButton" prefHeight="0.0" prefWidth="132.0" styleClass="my-button" text="ورود" BorderPane.alignment="CENTER">
+            <font>
+               <Font name="Dubai Regular" size="14.0" />
+            </font>
+            <BorderPane.margin>
+               <Insets bottom="40.0" top="100.0" />
+            </BorderPane.margin>
+         </Button>
+      </bottom>
+   </BorderPane>
+</VBox>
