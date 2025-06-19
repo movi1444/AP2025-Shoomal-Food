@@ -1,11 +1,16 @@
 @font-face {
     font-family: 'Vazirmatn';
-    src: url("/com/aut/shoomal/fonts/Vazirmatn-Regular.ttf");
+    src: url("/com/aut/shoomal/fonts/Vazirmatn-Black.ttf");
 }
 
 @font-face {
     font-family: 'VazirmatnB';
     src: url("/com/aut/shoomal/fonts/Vazirmatn-Bold.ttf");
+}
+
+@font-face {
+    font-family: 'Beach';
+    src: url("/com/aut/shoomal/fonts/Sahel.ttf");
 }
 
 .root {
@@ -39,12 +44,12 @@
 }
 
 .my-text-field {
-    -fx-background-color: white;
+    -fx-background-color: #fbdede;
     -fx-border-color: #ced4da;
     -fx-border-width: 1px;
     -fx-border-radius: 5px;
     -fx-background-radius: 5px;
-    -fx-font-family: "Vazirmatn";
+    -fx-font-family: "Beach";
     -fx-font-size: 14px;
     -fx-padding: 8px 10px;
     -fx-prompt-text-fill: #6c757d;
@@ -70,4 +75,96 @@
     -fx-text-fill: white;
     -fx-font-weight: bold;
     -fx-padding: 5px;
+}
+
+.my-choice-box {
+    -fx-background-color: #fbdede;
+    -fx-border-color: #ced4da;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-font-family: "Beach";
+    -fx-font-size: 14px;
+    -fx-padding: 8px 10px;
+    -fx-cursor: hand;
+}
+
+.my-choice-box:hover {
+    -fx-border-color: #0074ff;
+}
+
+.my-choice-box:focused {
+    -fx-border-color: #005ab5;
+    -fx-border-width: 2px;
+    -fx-background-insets: 0;
+}
+
+.my-choice-box .label {
+    -fx-text-fill: black;
+    -fx-font-family: "Beach";
+    -fx-font-size: 14px;
+}
+
+.my-choice-box .arrow-button {
+    -fx-background-color: transparent;
+}
+
+.my-choice-box .arrow-button .arrow {
+    -fx-background-color: #6c757d;
+}
+
+.my-choice-box .context-menu {
+    -fx-background-color: white;
+    -fx-border-color: #ced4da;
+    -fx-border-width: 1px;
+    -fx-background-radius: 5px;
+    -fx-padding: 0;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 0);
+}
+
+.my-choice-box .menu-item {
+    -fx-font-family: "Beach";
+    -fx-font-size: 14px;
+    -fx-text-fill: black;
+    -fx-padding: 8px 10px;
+}
+
+.my-choice-box .menu-item:hover {
+    -fx-background-color: #e9ecef;
+    -fx-text-fill: black;
+}
+
+.my-choice-box .menu-item:focused {
+    -fx-background-color: #007bff;
+    -fx-text-fill: white;
+}
+
+.my-text-area {
+    -fx-background-color: #fbdede;
+    -fx-border-color: #ced4da;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-font-family: "Beach";
+    -fx-font-size: 14px;
+    -fx-padding: 8px 10px;
+    -fx-prompt-text-fill: #6c757d;
+}
+
+.my-text-area:focused {
+    -fx-border-color: #007bff;
+    -fx-border-width: 2px;
+    -fx-background-insets: 0;
+}
+
+.my-text-area .scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.my-text-area .scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.my-text-area .scroll-pane .content {
+    -fx-background-color: transparent;
 }
