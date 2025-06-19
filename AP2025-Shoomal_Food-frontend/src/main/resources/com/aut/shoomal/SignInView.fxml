@@ -9,7 +9,7 @@
 <?import java.lang.String?>
 <VBox alignment="CENTER" spacing="20.0" styleClass="root" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.aut.shoomal.controllers.SignInController">
    <stylesheets>
-      <String fx:value="/com/aut/shoomal/styles/Styles.css" />
+      <String fx:value="/com/aut/shoomal/styles/SignInUpStyles.css" />
    </stylesheets>
 
    <BorderPane maxHeight="Infinity" maxWidth="Infinity">
@@ -114,7 +114,7 @@
                      <Insets right="135.0" />
                   </GridPane.margin>
                </TextField>
-               <Label stylesheets="@styles/Styles.css" text="حساب کاربری نداری؟" textFill="#f50000" GridPane.columnIndex="1" GridPane.rowIndex="2">
+               <Label stylesheets="@styles/SignInUpStyles.css" text="حساب کاربری نداری؟" textFill="#f50000" GridPane.columnIndex="1" GridPane.rowIndex="2">
                   <font>
                      <Font name="Vazirmatn Regular" size="18.0" />
                   </font>
