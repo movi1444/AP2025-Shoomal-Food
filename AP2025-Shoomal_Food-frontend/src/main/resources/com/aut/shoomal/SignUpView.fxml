@@ -1,20 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.collections.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
 
-<ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="Infinity" maxWidth="Infinity" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane styleClass="root" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.aut.shoomal.controllers.SignUpController">
     <stylesheets>
         <String fx:value="/com/aut/shoomal/styles/Styles.css" />
     </stylesheets>
-    <content>
-        <BorderPane styleClass="root">
-            <center>
-                <GridPane maxHeight="Infinity" maxWidth="Infinity" BorderPane.alignment="CENTER">
+    <top>
+        <Label styleClass="my-headlabel" stylesheets="@styles/Styles.css" text="ثبت نام در شومال فود" BorderPane.alignment="CENTER">
+            <BorderPane.margin>
+                <Insets bottom="30.0" top="30.0" />
+            </BorderPane.margin>
+        </Label>
+    </top>
+    <center>
+        <StackPane alignment="TOP_CENTER" maxHeight="Infinity" maxWidth="Infinity">
+            <children>
+                <GridPane fx:id="requiredFieldsSection" maxHeight="Infinity" maxWidth="Infinity" prefHeight="516.0" prefWidth="690.0">
                     <columnConstraints>
                         <ColumnConstraints hgrow="ALWAYS" />
                         <ColumnConstraints hgrow="ALWAYS" />
@@ -23,6 +39,7 @@
                         <RowConstraints vgrow="SOMETIMES" />
                         <RowConstraints vgrow="SOMETIMES" />
                         <RowConstraints vgrow="ALWAYS" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
                     </rowConstraints>
                     <children>
                         <Label prefHeight="18.0" prefWidth="85.0" styleClass="my-label" stylesheets="@styles/Styles.css" text=" نام کامل" GridPane.columnIndex="1" GridPane.halignment="RIGHT">
@@ -30,7 +47,7 @@
                                 <Insets bottom="100.0" right="40.0" />
                             </GridPane.margin>
                         </Label>
-                        <TextField maxWidth="Infinity" styleClass="my-text-field" stylesheets="@styles/Styles.css" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS">
+                        <TextField maxWidth="Infinity" prefHeight="26.0" prefWidth="66.0" styleClass="my-text-field" stylesheets="@styles/Styles.css" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS">
                             <GridPane.margin>
                                 <Insets left="50.0" right="50.0" />
                             </GridPane.margin>
@@ -43,7 +60,6 @@
                                 <Font size="24.0" />
                             </font>
                         </Label>
-
                         <Label prefHeight="18.0" prefWidth="118.0" styleClass="my-label" stylesheets="@styles/Styles.css" text="شماره همراه" GridPane.halignment="RIGHT">
                             <GridPane.margin>
                                 <Insets bottom="100.0" right="40.0" />
@@ -62,7 +78,6 @@
                                 <Insets bottom="100.0" right="160.0" />
                             </GridPane.margin>
                         </Label>
-
                         <TextField maxWidth="Infinity" styleClass="my-text-field" stylesheets="@styles/Styles.css" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
                             <GridPane.margin>
                                 <Insets left="50.0" right="50.0" />
@@ -81,7 +96,6 @@
                                 <Insets bottom="100.0" right="130.0" />
                             </GridPane.margin>
                         </Label>
-
                         <Label prefHeight="18.0" prefWidth="72.0" styleClass="my-label" stylesheets="@styles/Styles.css" text="نقش" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
                             <GridPane.margin>
                                 <Insets bottom="100.0" right="40.0" />
@@ -95,7 +109,6 @@
                                 <Insets bottom="100.0" right="115.0" />
                             </GridPane.margin>
                         </Label>
-
                         <ChoiceBox maxWidth="Infinity" styleClass="my-choice-box" stylesheets="@styles/Styles.css" GridPane.halignment="RIGHT" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
                             <items>
                                 <FXCollections fx:factory="observableArrayList">
@@ -104,11 +117,10 @@
                                     <String fx:value="پیک" />
                                 </FXCollections>
                             </items>
-                     <GridPane.margin>
-                        <Insets left="125.0" right="50.0" />
-                     </GridPane.margin>
+                            <GridPane.margin>
+                                <Insets left="100.0" right="50.0" />
+                            </GridPane.margin>
                         </ChoiceBox>
-
                         <TextArea maxHeight="Infinity" maxWidth="Infinity" prefHeight="84.0" prefWidth="674.0" styleClass="my-text-area" stylesheets="@styles/Styles.css" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.vgrow="ALWAYS">
                             <GridPane.margin>
                                 <Insets bottom="50.0" left="50.0" right="50.0" top="10.0" />
@@ -127,16 +139,62 @@
                                 <Insets right="110.0" top="170.0" />
                             </GridPane.margin>
                         </Label>
+                      <Button fx:id="nextButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="26.0" prefWidth="156.0" styleClass="my-button" stylesheets="@styles/Styles.css" text="اطلاعات تکمیلی" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="3">
+                          <GridPane.margin>
+                              <Insets bottom="50.0" />
+                          </GridPane.margin>
+                      </Button>
+                      <Button fx:id="submitButton" mnemonicParsing="false" prefHeight="26.0" prefWidth="100.0" styleClass="my-button" text="ثبت نام" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
+                          <GridPane.margin>
+                              <Insets bottom="50.0" right="20.0" />
+                          </GridPane.margin>
+                      </Button>
                     </children>
                 </GridPane>
-            </center>
-            <top>
-                <Label styleClass="my-headlabel" stylesheets="@styles/Styles.css" text="ثبت نام در شومال فود" BorderPane.alignment="CENTER">
-                    <BorderPane.margin>
-                        <Insets top="30.0" />
-                    </BorderPane.margin>
-                </Label>
-            </top>
-        </BorderPane>
-    </content>
-</ScrollPane>
+
+                <GridPane fx:id="optionalFieldsSection" alignment="CENTER" hgap="10" managed="false" maxWidth="700" vgap="10" visible="false">
+                    <padding><Insets bottom="20" left="50" right="50" top="20" /></padding>
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" prefWidth="150" />
+                        <ColumnConstraints hgrow="SOMETIMES" prefWidth="250" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints prefHeight="70.0" vgrow="SOMETIMES" />
+                        <RowConstraints prefHeight="70.0" vgrow="SOMETIMES" />
+                        <RowConstraints prefHeight="70.0" vgrow="SOMETIMES" />
+                        <RowConstraints prefHeight="70.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                    <children>
+                        <HBox alignment="CENTER_RIGHT" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                            <children>
+                                <Label styleClass="my-label" text=" ایمیل"><HBox.margin><Insets right="5.0" /></HBox.margin></Label>
+                            </children>
+                        </HBox>
+                        <TextField fx:id="emailField" styleClass="my-text-field" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                        <HBox alignment="CENTER_RIGHT" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                            <children>
+                                <Label styleClass="my-label" text=" نام بانک"><HBox.margin><Insets right="5.0" /></HBox.margin></Label>
+                            </children>
+                        </HBox>
+                        <TextField fx:id="bankNameField" styleClass="my-text-field" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                        <HBox alignment="CENTER_RIGHT" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                            <children>
+                                <Label styleClass="my-label" text=" شماره حساب"><HBox.margin><Insets right="5.0" /></HBox.margin></Label>
+                            </children>
+                        </HBox>
+                        <TextField fx:id="accountNumberField" styleClass="my-text-field" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+                        <HBox alignment="CENTER_RIGHT" GridPane.columnIndex="0" GridPane.rowIndex="3">
+                            <children>
+                                <Label styleClass="my-label" text=" تصویر پروفایل"><HBox.margin><Insets right="5.0" /></HBox.margin></Label>
+                            </children>
+                        </HBox>
+                        <Button fx:id="uploadImageButton" styleClass="my-button" text="آپلود تصویر" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                    </children>
+                </GridPane>
+            </children>
+        </StackPane>
+    </center>
+</BorderPane>
