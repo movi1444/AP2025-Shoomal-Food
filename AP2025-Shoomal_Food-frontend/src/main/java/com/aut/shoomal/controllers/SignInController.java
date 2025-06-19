@@ -3,7 +3,6 @@ package com.aut.shoomal.controllers;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -18,7 +17,7 @@ import java.net.URL;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
-public class SignInController implements Initializable {
+public class SignInController extends AbstractBaseController {
 
     @FXML
     private TextField phoneNumberField;
@@ -34,6 +33,10 @@ public class SignInController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        super.initialize(url, resourceBundle);
+
+        if (phoneNumberField != null) addTextDirectionListener(phoneNumberField);
+        if (passwordField != null) addTextDirectionListener(passwordField);
     }
 
     @FXML
@@ -67,7 +70,7 @@ public class SignInController implements Initializable {
             signUpRoot.setTranslateX(stage.getWidth());
 
             Scene newScene = new Scene(transitionContainer, stage.getWidth(), stage.getHeight());
-            newScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/styles/Styles.css")).toExternalForm());
+            newScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/styles/SignInUpStyles.css")).toExternalForm());
             stage.setScene(newScene);
 
             TranslateTransition slideIn = new TranslateTransition(Duration.millis(600), signUpRoot);

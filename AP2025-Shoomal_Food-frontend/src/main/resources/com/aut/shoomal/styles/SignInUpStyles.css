@@ -43,6 +43,27 @@
     -fx-translate-y: 1px;
 }
 
+.my-button2 {
+    -fx-background-color: #9a9a9a;
+    -fx-text-fill: #020101;
+    -fx-font-family: "Beach";
+    -fx-font-size: 16px;
+    -fx-padding: 10px 25px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 0);
+}
+
+.my-button2:hover {
+    -fx-background-color: #888787;
+}
+
+.my-button2:pressed {
+    -fx-background-color: #737373;
+    -fx-translate-y: 1px;
+}
+
 .my-text-field {
     -fx-background-color: #fbdede;
     -fx-border-color: #ced4da;
@@ -68,6 +89,15 @@
     -fx-font-weight: bold;
     -fx-padding: 5px;
 }
+
+.my-label2 {
+    -fx-font-family: "Vazirmatn";
+    -fx-font-size: 25px;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 5px;
+}
+
 
 .my-headlabel {
     -fx-font-family: "VazirmatnB";

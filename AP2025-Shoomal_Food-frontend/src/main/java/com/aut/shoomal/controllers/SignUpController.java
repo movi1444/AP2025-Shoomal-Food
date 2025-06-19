@@ -2,42 +2,50 @@ package com.aut.shoomal.controllers;
 
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.layout.GridPane;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.NodeOrientation;
-import javafx.geometry.Pos;
+import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.scene.layout.StackPane;
 
+import java.io.IOException;
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
-public class SignUpController implements Initializable {
+public class SignUpController extends AbstractBaseController {
 
     @FXML private GridPane requiredFieldsSection;
     @FXML private TextField fullNameField;
     @FXML private TextField phoneNumberField;
-    @FXML private PasswordField passwordField;
+    @FXML private TextField passwordField;
     @FXML private ChoiceBox<String> roleChoiceBox;
     @FXML private TextArea addressArea;
     @FXML private Button nextButton;
+    @FXML private Button submitButton;
+    @FXML private Hyperlink backToLoginLink;
 
     @FXML private GridPane optionalFieldsSection;
     @FXML private TextField emailField;
     @FXML private TextField bankNameField;
     @FXML private TextField accountNumberField;
     @FXML private Button uploadImageButton;
-
     @FXML private Button backButton;
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        super.initialize(url, resourceBundle);
+
         if (roleChoiceBox != null) {
             ObservableList<String> roles = FXCollections.observableArrayList(
                     "خریدار",
@@ -45,7 +53,6 @@ public class SignUpController implements Initializable {
                     "پیک"
             );
             roleChoiceBox.setItems(roles);
-            roleChoiceBox.getSelectionModel().selectFirst();
         }
 
         if (requiredFieldsSection != null && optionalFieldsSection != null) {
@@ -60,8 +67,14 @@ public class SignUpController implements Initializable {
         if (nextButton != null) {
             nextButton.setOnAction(event -> handleNextSection());
         }
+        if (submitButton != null) {
+            submitButton.setOnAction(event -> handleSubmitSignUp());
+        }
         if (backButton != null) {
             backButton.setOnAction(event -> handlePreviousSection());
+        }
+        if (backToLoginLink != null) {
+            backToLoginLink.setOnAction(event -> handleBackToLogin());
         }
 
         if (fullNameField != null) addTextDirectionListener(fullNameField);
@@ -143,58 +156,41 @@ public class SignUpController implements Initializable {
         }
     }
 
-    private boolean isPersianCharacter(char c) {
-        return (c >= '\u0600' && c <= '\u06FF') ||
-                (c >= '\u0750' && c <= '\u077F') ||
-                (c >= '\uFB50' && c <= '\uFDFF') ||
-                (c >= '\uFE70' && c <= '\uFEFF');
+    @FXML
+    private void handleBackToLogin() {
+        System.out.println("Back to Login link clicked!");
+        Stage stage = (Stage) backToLoginLink.getScene().getWindow();
+        Parent currentRoot = backToLoginLink.getScene().getRoot();
+
+        try {
+            Parent signInRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/SignInView.fxml")));
+
+            StackPane transitionContainer = new StackPane();
+            transitionContainer.getChildren().addAll(currentRoot, signInRoot);
+
+            signInRoot.setTranslateX(-stage.getWidth());
+
+            Scene newScene = new Scene(transitionContainer, stage.getWidth(), stage.getHeight());
+            newScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/styles/SignInUpStyles.css")).toExternalForm());
+            stage.setScene(newScene);
+
+            TranslateTransition slideIn = new TranslateTransition(Duration.millis(600), signInRoot);
+            slideIn.setFromX(-stage.getWidth());
+            slideIn.setToX(0);
+
+            slideIn.setOnFinished(event -> {
+                transitionContainer.getChildren().remove(currentRoot);
+            });
+
+            slideIn.play();
+
+        } catch (IOException e) {
+            System.err.println("Failed to load SignInView.fxml: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
-    private void addTextDirectionListener(TextField control) {
-        if (control == null) return;
-        control.textProperty().addListener((obs, oldValue, newValue) -> {
-            if (newValue != null && !newValue.isEmpty()) {
-                if (isPersianCharacter(newValue.charAt(0))) {
-                    control.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-                    control.setAlignment(Pos.CENTER_RIGHT);
-                } else {
-                    control.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
-                    control.setAlignment(Pos.CENTER_LEFT);
-                }
-            } else {
-                control.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
-                control.setAlignment(Pos.CENTER_LEFT);
-            }
-        });
-    }
-
-    private void addTextAreaDirectionListener(TextArea control) {
-        if (control == null) return;
-        control.textProperty().addListener((obs, oldValue, newValue) -> {
-            if (newValue != null && !newValue.isEmpty()) {
-                if (isPersianCharacter(newValue.charAt(0))) {
-                    control.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-                } else {
-                    control.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
-                }
-            } else {
-                control.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
-            }
-        });
-    }
-
-    private void addChoiceBoxDirectionListener(ChoiceBox<String> choiceBox) {
-        if (choiceBox == null) return;
-        choiceBox.valueProperty().addListener((obs, oldValue, newValue) -> {
-            if (newValue != null && !newValue.isEmpty()) {
-                if (isPersianCharacter(newValue.charAt(0))) {
-                    choiceBox.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-                } else {
-                    choiceBox.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
-                }
-            } else {
-                choiceBox.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
-            }
-        });
+    private void handleSubmitSignUp() {
+        System.out.println("Submit button clicked! Final registration logic here.");
     }
 }

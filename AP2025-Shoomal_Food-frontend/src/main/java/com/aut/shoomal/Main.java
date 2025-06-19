@@ -18,7 +18,7 @@ public class Main extends Application {
         primaryStage.setMinWidth(500);
         primaryStage.setMinHeight(500);
         Scene scene = new Scene(root, 800, 600);
-        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/styles/Styles.css")).toExternalForm());
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/styles/SignInUpStyles.css")).toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.show();
     }
