@@ -1,6 +1,6 @@
-package com.aut.shoomal.Erfan;
-import com.aut.shoomal.Erfan.access.Role;
-import com.aut.shoomal.Mamad.restaurant.Restaurant;
+package com.aut.shoomal.entity.user;
+import com.aut.shoomal.entity.user.access.Role;
+import com.aut.shoomal.entity.restaurant.Restaurant;
 import com.aut.shoomal.auth.SignupManager;
 import com.aut.shoomal.payment.Order;
 import com.aut.shoomal.rating.Rating;

@@ -1,6 +1,6 @@
-package com.aut.shoomal.Mamad.cart;
+package com.aut.shoomal.entity.cart;
 
-import com.aut.shoomal.Mamad.food.Food;
+import com.aut.shoomal.entity.food.Food;
 import jakarta.persistence.*;
 
 @Entity

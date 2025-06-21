@@ -1,7 +1,7 @@
 package com.aut.shoomal.dto.handler;
 
-import com.aut.shoomal.Erfan.User;
-import com.aut.shoomal.Erfan.UserManager;
+import com.aut.shoomal.entity.user.User;
+import com.aut.shoomal.entity.user.UserManager;
 import com.aut.shoomal.enums.CourierDeliveryStatus;
 import com.aut.shoomal.dao.BlacklistedTokenDao;
 import com.aut.shoomal.dto.request.UpdateDeliveryStatusRequest;

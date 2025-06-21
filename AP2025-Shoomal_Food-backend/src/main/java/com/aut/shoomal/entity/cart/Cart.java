@@ -1,6 +1,6 @@
-package com.aut.shoomal.Mamad.cart;
+package com.aut.shoomal.entity.cart;
 
-import com.aut.shoomal.Erfan.User;
+import com.aut.shoomal.entity.user.User;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;

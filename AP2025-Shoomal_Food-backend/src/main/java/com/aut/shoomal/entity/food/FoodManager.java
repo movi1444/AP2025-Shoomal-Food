@@ -1,9 +1,9 @@
-package com.aut.shoomal.Mamad.food;
+package com.aut.shoomal.entity.food;
 
-import com.aut.shoomal.Mamad.menu.Menu;
-import com.aut.shoomal.Mamad.menu.MenuManager;
-import com.aut.shoomal.Mamad.restaurant.Restaurant;
-import com.aut.shoomal.Mamad.restaurant.RestaurantManager;
+import com.aut.shoomal.entity.menu.Menu;
+import com.aut.shoomal.entity.menu.MenuManager;
+import com.aut.shoomal.entity.restaurant.Restaurant;
+import com.aut.shoomal.entity.restaurant.RestaurantManager;
 import com.aut.shoomal.dao.FoodDao;
 import com.aut.shoomal.dao.MenuDao;
 import com.aut.shoomal.dao.RestaurantDao;
@@ -15,7 +15,6 @@ import com.aut.shoomal.exceptions.NotFoundException;
 import org.hibernate.Session;
 
 import java.util.List;
-import java.util.Optional;
 
 public class FoodManager {
 

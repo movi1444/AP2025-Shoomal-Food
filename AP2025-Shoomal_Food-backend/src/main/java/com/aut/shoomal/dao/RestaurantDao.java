@@ -1,7 +1,7 @@
 package com.aut.shoomal.dao;
 
-import com.aut.shoomal.Mamad.restaurant.Restaurant;
-import com.aut.shoomal.Erfan.Seller;
+import com.aut.shoomal.entity.restaurant.Restaurant;
+import com.aut.shoomal.entity.user.Seller;
 
 import java.util.List;
 

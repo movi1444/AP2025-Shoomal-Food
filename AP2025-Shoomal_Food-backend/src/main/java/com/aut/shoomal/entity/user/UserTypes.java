@@ -1,4 +1,4 @@
-package com.aut.shoomal.Erfan;
+package com.aut.shoomal.entity.user;
 
 public enum UserTypes
 {

@@ -1,7 +1,7 @@
-package com.aut.shoomal.Mamad.menu;
+package com.aut.shoomal.entity.menu;
 
-import com.aut.shoomal.Mamad.food.Food;
-import com.aut.shoomal.Mamad.restaurant.Restaurant;
+import com.aut.shoomal.entity.food.Food;
+import com.aut.shoomal.entity.restaurant.Restaurant;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;

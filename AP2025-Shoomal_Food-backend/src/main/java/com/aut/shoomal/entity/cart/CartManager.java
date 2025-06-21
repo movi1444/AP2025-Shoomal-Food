@@ -1,7 +1,7 @@
-package com.aut.shoomal.Mamad.cart;
+package com.aut.shoomal.entity.cart;
 
-import com.aut.shoomal.Mamad.food.Food;
-import com.aut.shoomal.Erfan.User;
+import com.aut.shoomal.entity.food.Food;
+import com.aut.shoomal.entity.user.User;
 import com.aut.shoomal.dao.CartDao;
 import com.aut.shoomal.dao.FoodDao;
 import com.aut.shoomal.dao.UserDao;

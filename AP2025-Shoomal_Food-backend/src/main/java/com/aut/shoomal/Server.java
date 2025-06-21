@@ -1,10 +1,10 @@
 package com.aut.shoomal;
 
-import com.aut.shoomal.Erfan.UserManager;
-import com.aut.shoomal.Erfan.access.RoleManager;
-import com.aut.shoomal.Mamad.food.FoodManager;
-import com.aut.shoomal.Mamad.menu.MenuManager;
-import com.aut.shoomal.Mamad.restaurant.RestaurantManager;
+import com.aut.shoomal.entity.user.UserManager;
+import com.aut.shoomal.entity.user.access.RoleManager;
+import com.aut.shoomal.entity.food.FoodManager;
+import com.aut.shoomal.entity.menu.MenuManager;
+import com.aut.shoomal.entity.restaurant.RestaurantManager;
 import com.aut.shoomal.auth.*;
 import com.aut.shoomal.dao.*;
 import com.aut.shoomal.dao.impl.*;

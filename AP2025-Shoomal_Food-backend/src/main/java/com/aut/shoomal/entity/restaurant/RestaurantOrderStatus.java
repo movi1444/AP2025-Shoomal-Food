@@ -1,4 +1,4 @@
-package com.aut.shoomal.Mamad.restaurant;
+package com.aut.shoomal.entity.restaurant;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;

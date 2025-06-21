@@ -1,7 +1,7 @@
 package com.aut.shoomal.auth;
-import com.aut.shoomal.Erfan.*;
-import com.aut.shoomal.Erfan.access.Role;
-import com.aut.shoomal.Erfan.access.RoleManager;
+import com.aut.shoomal.entity.user.*;
+import com.aut.shoomal.entity.user.access.Role;
+import com.aut.shoomal.entity.user.access.RoleManager;
 import com.aut.shoomal.exceptions.*;
 
 import java.nio.charset.StandardCharsets;

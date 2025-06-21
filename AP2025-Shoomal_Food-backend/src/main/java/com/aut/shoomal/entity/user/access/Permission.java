@@ -1,4 +1,4 @@
-package com.aut.shoomal.Erfan.access;
+package com.aut.shoomal.entity.user.access;
 import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;

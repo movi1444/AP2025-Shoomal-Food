@@ -1,7 +1,7 @@
 package com.aut.shoomal.payment;
 
-import com.aut.shoomal.Erfan.User;
-import com.aut.shoomal.Mamad.restaurant.Restaurant;
+import com.aut.shoomal.entity.user.User;
+import com.aut.shoomal.entity.restaurant.Restaurant;
 import com.aut.shoomal.payment.coupon.Coupon;
 import com.aut.shoomal.rating.Rating;
 import jakarta.persistence.*;

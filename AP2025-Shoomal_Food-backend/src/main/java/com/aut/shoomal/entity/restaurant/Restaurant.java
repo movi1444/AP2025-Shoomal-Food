@@ -1,9 +1,9 @@
-package com.aut.shoomal.Mamad.restaurant;
+package com.aut.shoomal.entity.restaurant;
 
-import com.aut.shoomal.Erfan.Seller;
-import com.aut.shoomal.Erfan.User;
-import com.aut.shoomal.Mamad.food.Food;
-import com.aut.shoomal.Mamad.menu.Menu;
+import com.aut.shoomal.entity.user.Seller;
+import com.aut.shoomal.entity.user.User;
+import com.aut.shoomal.entity.food.Food;
+import com.aut.shoomal.entity.menu.Menu;
 import com.aut.shoomal.payment.Order;
 import jakarta.persistence.*;
 import java.util.ArrayList;

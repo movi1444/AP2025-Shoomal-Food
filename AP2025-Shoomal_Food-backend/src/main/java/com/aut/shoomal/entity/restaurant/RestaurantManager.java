@@ -1,4 +1,4 @@
-package com.aut.shoomal.Mamad.restaurant;
+package com.aut.shoomal.entity.restaurant;
 
 import com.aut.shoomal.dao.RestaurantDao;
 import com.aut.shoomal.dao.FoodDao;
@@ -13,10 +13,10 @@ import com.aut.shoomal.exceptions.ConflictException;
 import com.aut.shoomal.exceptions.ForbiddenException;
 import com.aut.shoomal.exceptions.InvalidInputException;
 import com.aut.shoomal.exceptions.NotFoundException;
-import com.aut.shoomal.Erfan.Seller;
-import com.aut.shoomal.Erfan.User;
-import com.aut.shoomal.Mamad.food.Food;
-import com.aut.shoomal.Mamad.menu.Menu;
+import com.aut.shoomal.entity.user.Seller;
+import com.aut.shoomal.entity.user.User;
+import com.aut.shoomal.entity.food.Food;
+import com.aut.shoomal.entity.menu.Menu;
 
 import java.util.List;
 import java.util.Optional;

@@ -1,4 +1,4 @@
-package com.aut.shoomal.Erfan.access;
+package com.aut.shoomal.entity.user.access;
 import com.aut.shoomal.dao.RoleDao;
 
 public class RoleManager
