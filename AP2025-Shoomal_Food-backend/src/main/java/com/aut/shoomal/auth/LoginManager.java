@@ -1,6 +1,6 @@
 package com.aut.shoomal.auth;
-import com.aut.shoomal.Erfan.User;
-import com.aut.shoomal.Erfan.UserManager;
+import com.aut.shoomal.entity.user.User;
+import com.aut.shoomal.entity.user.UserManager;
 import com.aut.shoomal.exceptions.InvalidInputException;
 import com.aut.shoomal.exceptions.NotFoundException;
 import com.aut.shoomal.exceptions.ServiceUnavailableException;

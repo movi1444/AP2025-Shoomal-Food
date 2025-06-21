@@ -1,7 +1,7 @@
 package com.aut.shoomal.util;
 
-import com.aut.shoomal.Erfan.User;
-import com.aut.shoomal.Erfan.UserManager;
+import com.aut.shoomal.entity.user.User;
+import com.aut.shoomal.entity.user.UserManager;
 import com.aut.shoomal.exceptions.UnauthorizedException;
 import com.aut.shoomal.exceptions.NotFoundException;
 import io.jsonwebtoken.*;

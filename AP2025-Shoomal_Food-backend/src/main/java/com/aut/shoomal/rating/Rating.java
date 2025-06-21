@@ -1,11 +1,10 @@
 package com.aut.shoomal.rating;
 
-import com.aut.shoomal.Erfan.User;
+import com.aut.shoomal.entity.user.User;
 import com.aut.shoomal.payment.Order;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Table(name = "ratings")

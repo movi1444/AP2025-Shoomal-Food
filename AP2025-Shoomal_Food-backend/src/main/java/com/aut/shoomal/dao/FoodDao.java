@@ -1,6 +1,6 @@
 package com.aut.shoomal.dao;
 
-import com.aut.shoomal.Mamad.food.Food;
+import com.aut.shoomal.entity.food.Food;
 
 import java.util.List;
 

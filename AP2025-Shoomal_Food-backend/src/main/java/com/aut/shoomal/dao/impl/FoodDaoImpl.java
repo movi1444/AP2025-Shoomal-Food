@@ -1,6 +1,6 @@
 package com.aut.shoomal.dao.impl;
 
-import com.aut.shoomal.Mamad.food.Food;
+import com.aut.shoomal.entity.food.Food;
 import com.aut.shoomal.dao.FoodDao;
 import com.aut.shoomal.util.HibernateUtil;
 import org.hibernate.Session;

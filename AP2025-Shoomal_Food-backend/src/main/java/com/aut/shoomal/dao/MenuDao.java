@@ -1,6 +1,6 @@
 package com.aut.shoomal.dao;
 
-import com.aut.shoomal.Mamad.menu.Menu;
+import com.aut.shoomal.entity.menu.Menu;
 
 import java.util.List;
 import java.util.Optional;

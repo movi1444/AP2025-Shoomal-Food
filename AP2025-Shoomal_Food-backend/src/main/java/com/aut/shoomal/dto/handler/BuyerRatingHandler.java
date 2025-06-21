@@ -1,7 +1,7 @@
 package com.aut.shoomal.dto.handler;
 
-import com.aut.shoomal.Erfan.User;
-import com.aut.shoomal.Erfan.UserManager;
+import com.aut.shoomal.entity.user.User;
+import com.aut.shoomal.entity.user.UserManager;
 import com.aut.shoomal.dao.BlacklistedTokenDao;
 import com.aut.shoomal.dto.request.SubmitRatingRequest;
 import com.aut.shoomal.dto.response.ApiResponse;
@@ -9,9 +9,7 @@ import com.aut.shoomal.exceptions.InvalidInputException;
 import com.aut.shoomal.exceptions.NotFoundException;
 import com.aut.shoomal.rating.Rating;
 import com.aut.shoomal.rating.RatingManager;
-import com.aut.shoomal.util.HibernateUtil;
 import com.sun.net.httpserver.HttpExchange;
-import org.hibernate.Session;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;

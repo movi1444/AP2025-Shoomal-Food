@@ -1,5 +1,5 @@
 package com.aut.shoomal.dao;
-import com.aut.shoomal.Erfan.User;
+import com.aut.shoomal.entity.user.User;
 import com.aut.shoomal.exceptions.NotFoundException;
 
 public interface UserDao extends GenericDao<User>

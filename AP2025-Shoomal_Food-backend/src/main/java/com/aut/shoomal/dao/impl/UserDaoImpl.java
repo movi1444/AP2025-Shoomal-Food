@@ -1,7 +1,6 @@
 package com.aut.shoomal.dao.impl;
-import com.aut.shoomal.Erfan.Courier;
-import com.aut.shoomal.Erfan.Seller;
-import com.aut.shoomal.Erfan.User;
+import com.aut.shoomal.entity.user.Courier;
+import com.aut.shoomal.entity.user.User;
 import com.aut.shoomal.dao.UserDao;
 import com.aut.shoomal.exceptions.NotFoundException;
 import com.aut.shoomal.util.HibernateUtil;

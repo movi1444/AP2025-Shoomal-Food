@@ -1,8 +1,9 @@
 package com.aut.shoomal.dto.handler;
 
-import com.aut.shoomal.Erfan.User;
-import com.aut.shoomal.Erfan.UserManager;
-import com.aut.shoomal.Mamad.restaurant.RestaurantManager;
+import com.aut.shoomal.entity.restaurant.Restaurant;
+import com.aut.shoomal.entity.user.User;
+import com.aut.shoomal.entity.user.UserManager;
+import com.aut.shoomal.entity.restaurant.RestaurantManager;
 import com.aut.shoomal.dao.BlacklistedTokenDao;
 import com.aut.shoomal.dto.request.UpdateApprovalRequest;
 import com.aut.shoomal.dto.response.ApiResponse;
@@ -179,7 +180,7 @@ public class AdminHandler extends AbstractHttpHandler {
         );
     }
 
-    private RestaurantResponse convertToRestaurantResponse(com.aut.shoomal.Mamad.restaurant.Restaurant restaurant) {
+    private RestaurantResponse convertToRestaurantResponse(Restaurant restaurant) {
         if (restaurant == null) return null;
         return new RestaurantResponse(
                 restaurant.getId(),
