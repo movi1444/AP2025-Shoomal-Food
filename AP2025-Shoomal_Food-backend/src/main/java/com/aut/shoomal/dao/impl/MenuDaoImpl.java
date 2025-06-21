@@ -1,6 +1,6 @@
 package com.aut.shoomal.dao.impl;
 
-import com.aut.shoomal.Mamad.menu.Menu;
+import com.aut.shoomal.entity.menu.Menu;
 import com.aut.shoomal.dao.MenuDao;
 import com.aut.shoomal.util.HibernateUtil;
 import org.hibernate.Session;
