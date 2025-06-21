@@ -2,7 +2,9 @@ package com.aut.shoomal.entity.user;
 import com.aut.shoomal.entity.user.access.Role;
 import com.aut.shoomal.entity.restaurant.Restaurant;
 import com.aut.shoomal.auth.SignupManager;
-import com.aut.shoomal.payment.Order;
+import com.aut.shoomal.payment.order.Order;
+import com.aut.shoomal.payment.transaction.PaymentTransaction;
+import com.aut.shoomal.payment.wallet.Wallet;
 import com.aut.shoomal.rating.Rating;
 import jakarta.persistence.*;
 
@@ -49,6 +51,13 @@ public abstract class User
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Rating> ratings = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<PaymentTransaction> transactions = new ArrayList<>();
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "wallet_id", unique = true)
+    private Wallet wallet;
 
     @ManyToMany
     @JoinTable(
@@ -256,6 +265,26 @@ public abstract class User
     {
         this.ratings.remove(rating);
         rating.setUser(null);
+    }
+
+    public List<PaymentTransaction> getTransactions()
+    {
+        return transactions;
+    }
+
+    public void setTransactions(List<PaymentTransaction> transactions)
+    {
+        this.transactions = transactions;
+    }
+
+    public Wallet getWallet()
+    {
+        return wallet;
+    }
+
+    public void setWallet(Wallet wallet)
+    {
+        this.wallet = wallet;
     }
 
     @Override

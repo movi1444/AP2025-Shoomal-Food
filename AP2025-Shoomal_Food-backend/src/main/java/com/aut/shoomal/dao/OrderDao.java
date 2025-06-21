@@ -1,7 +1,7 @@
 package com.aut.shoomal.dao;
 
-import com.aut.shoomal.payment.Order;
-import com.aut.shoomal.payment.OrderStatus;
+import com.aut.shoomal.payment.order.Order;
+import com.aut.shoomal.payment.order.OrderStatus;
 import org.hibernate.Session;
 
 import java.util.List;

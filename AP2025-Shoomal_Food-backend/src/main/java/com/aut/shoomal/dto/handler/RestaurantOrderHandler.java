@@ -10,9 +10,9 @@ import com.aut.shoomal.dto.response.OrderResponse;
 import com.aut.shoomal.exceptions.ForbiddenException;
 import com.aut.shoomal.exceptions.InvalidInputException;
 import com.aut.shoomal.exceptions.NotFoundException;
-import com.aut.shoomal.payment.Order;
-import com.aut.shoomal.payment.OrderManager;
-import com.aut.shoomal.payment.OrderStatus;
+import com.aut.shoomal.payment.order.Order;
+import com.aut.shoomal.payment.order.OrderManager;
+import com.aut.shoomal.payment.order.OrderStatus;
 import com.sun.net.httpserver.HttpExchange;
 
 import java.io.IOException;

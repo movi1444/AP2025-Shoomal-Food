@@ -1,8 +1,8 @@
 package com.aut.shoomal.dao.impl;
 
 import com.aut.shoomal.dao.OrderDao;
-import com.aut.shoomal.payment.Order;
-import com.aut.shoomal.payment.OrderStatus;
+import com.aut.shoomal.payment.order.Order;
+import com.aut.shoomal.payment.order.OrderStatus;
 import com.aut.shoomal.util.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
