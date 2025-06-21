@@ -13,10 +13,12 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.layout.GridPane;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.scene.layout.StackPane;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
@@ -40,6 +42,7 @@ public class SignUpController extends AbstractBaseController {
     @FXML private TextField accountNumberField;
     @FXML private Button uploadImageButton;
     @FXML private Button backButton;
+    private String profileImageBase64String;
 
 
     @Override
@@ -174,7 +177,7 @@ public class SignUpController extends AbstractBaseController {
             newScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/styles/SignInUpStyles.css")).toExternalForm());
             stage.setScene(newScene);
 
-            TranslateTransition slideIn = new TranslateTransition(Duration.millis(600), signInRoot);
+            TranslateTransition slideIn = new TranslateTransition(Duration.millis(500), signInRoot);
             slideIn.setFromX(-stage.getWidth());
             slideIn.setToX(0);
 
@@ -187,6 +190,26 @@ public class SignUpController extends AbstractBaseController {
         } catch (IOException e) {
             System.err.println("Failed to load SignInView.fxml: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleUploadImageButton() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Select Profile Image");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif")
+        );
+        File selectedFile = fileChooser.showOpenDialog(uploadImageButton.getScene().getWindow());
+
+        if (selectedFile != null) {
+            try {
+                profileImageBase64String = com.aut.shoomal.utils.ImageToBase64Converter.convertImageFileToBase64(selectedFile.getAbsolutePath());
+                System.out.println("Image uploaded and converted to Base64. Size: " + profileImageBase64String.length() + " characters.");
+            } catch (IOException e) {
+                System.err.println("Failed to convert image to Base64: " + e.getMessage());
+                e.printStackTrace();
+            }
         }
     }
 

@@ -73,7 +73,7 @@ public class SignInController extends AbstractBaseController {
             newScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/styles/SignInUpStyles.css")).toExternalForm());
             stage.setScene(newScene);
 
-            TranslateTransition slideIn = new TranslateTransition(Duration.millis(600), signUpRoot);
+            TranslateTransition slideIn = new TranslateTransition(Duration.millis(500), signUpRoot);
             slideIn.setFromX(stage.getWidth());
             slideIn.setToX(0);
 
