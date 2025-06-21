@@ -1,7 +1,7 @@
 package com.aut.shoomal.dto.handler;
 
-import com.aut.shoomal.Erfan.User;
-import com.aut.shoomal.Erfan.UserTypes;
+import com.aut.shoomal.entity.user.User;
+import com.aut.shoomal.entity.user.UserTypes;
 import com.aut.shoomal.dto.request.UserRegisterRequest;
 import com.aut.shoomal.dto.response.ApiResponse;
 import com.aut.shoomal.dto.response.UserRegisterResponse;

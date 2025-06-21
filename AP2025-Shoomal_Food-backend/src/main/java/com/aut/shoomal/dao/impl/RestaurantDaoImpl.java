@@ -1,8 +1,8 @@
 package com.aut.shoomal.dao.impl;
 
-import com.aut.shoomal.Mamad.menu.Menu;
-import com.aut.shoomal.Mamad.restaurant.Restaurant;
-import com.aut.shoomal.Erfan.Seller;
+import com.aut.shoomal.entity.menu.Menu;
+import com.aut.shoomal.entity.restaurant.Restaurant;
+import com.aut.shoomal.entity.user.Seller;
 import com.aut.shoomal.dao.RestaurantDao;
 import com.aut.shoomal.util.HibernateUtil;
 import org.hibernate.Session;

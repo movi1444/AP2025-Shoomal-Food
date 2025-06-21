@@ -1,5 +1,5 @@
 package com.aut.shoomal.dao.impl;
-import com.aut.shoomal.Erfan.access.Permission;
+import com.aut.shoomal.entity.user.access.Permission;
 import com.aut.shoomal.dao.PermissionDao;
 import com.aut.shoomal.util.HibernateUtil;
 import org.hibernate.Session;

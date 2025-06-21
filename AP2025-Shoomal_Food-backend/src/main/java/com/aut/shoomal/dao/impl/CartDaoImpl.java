@@ -1,7 +1,7 @@
 package com.aut.shoomal.dao.impl;
 
-import com.aut.shoomal.Mamad.cart.Cart;
-import com.aut.shoomal.Erfan.User;
+import com.aut.shoomal.entity.cart.Cart;
+import com.aut.shoomal.entity.user.User;
 import com.aut.shoomal.dao.CartDao;
 import com.aut.shoomal.util.HibernateUtil;
 import org.hibernate.Session;

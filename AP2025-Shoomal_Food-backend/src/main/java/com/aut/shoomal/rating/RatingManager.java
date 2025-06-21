@@ -1,7 +1,7 @@
 package com.aut.shoomal.rating;
 
-import com.aut.shoomal.Erfan.User;
-import com.aut.shoomal.Erfan.UserManager;
+import com.aut.shoomal.entity.user.User;
+import com.aut.shoomal.entity.user.UserManager;
 import com.aut.shoomal.dao.RatingDao;
 import com.aut.shoomal.exceptions.InvalidInputException;
 import com.aut.shoomal.exceptions.NotFoundException;

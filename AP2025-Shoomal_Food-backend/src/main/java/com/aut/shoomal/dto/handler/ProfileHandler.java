@@ -1,8 +1,8 @@
 package com.aut.shoomal.dto.handler;
 
-import com.aut.shoomal.Erfan.BankInfo;
-import com.aut.shoomal.Erfan.User;
-import com.aut.shoomal.Erfan.UserManager;
+import com.aut.shoomal.entity.user.BankInfo;
+import com.aut.shoomal.entity.user.User;
+import com.aut.shoomal.entity.user.UserManager;
 import com.aut.shoomal.auth.SignupManager;
 import com.aut.shoomal.dao.BlacklistedTokenDao;
 import com.aut.shoomal.dto.request.UpdateProfileRequest;
