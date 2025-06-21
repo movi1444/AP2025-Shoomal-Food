@@ -7,7 +7,7 @@ import com.aut.shoomal.entity.menu.MenuManager;
 import com.aut.shoomal.entity.restaurant.RestaurantManager;
 import com.aut.shoomal.dao.BlacklistedTokenDao;
 import com.aut.shoomal.dto.response.ApiResponse;
-import com.aut.shoomal.payment.OrderManager;
+import com.aut.shoomal.payment.order.OrderManager;
 import com.sun.net.httpserver.HttpExchange;
 
 import java.io.IOException;

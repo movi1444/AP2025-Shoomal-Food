@@ -1,7 +1,7 @@
 package com.aut.shoomal.rating;
 
 import com.aut.shoomal.entity.user.User;
-import com.aut.shoomal.payment.Order;
+import com.aut.shoomal.payment.order.Order;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;

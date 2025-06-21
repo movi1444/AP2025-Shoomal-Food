@@ -5,8 +5,8 @@ import com.aut.shoomal.entity.user.UserManager;
 import com.aut.shoomal.dao.RatingDao;
 import com.aut.shoomal.exceptions.InvalidInputException;
 import com.aut.shoomal.exceptions.NotFoundException;
-import com.aut.shoomal.payment.Order;
-import com.aut.shoomal.payment.OrderManager;
+import com.aut.shoomal.payment.order.Order;
+import com.aut.shoomal.payment.order.OrderManager;
 import org.hibernate.Session;
 
 public class RatingManager

@@ -4,7 +4,7 @@ import com.aut.shoomal.entity.user.Seller;
 import com.aut.shoomal.entity.user.User;
 import com.aut.shoomal.entity.food.Food;
 import com.aut.shoomal.entity.menu.Menu;
-import com.aut.shoomal.payment.Order;
+import com.aut.shoomal.payment.order.Order;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;

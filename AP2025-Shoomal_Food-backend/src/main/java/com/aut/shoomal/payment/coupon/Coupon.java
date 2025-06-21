@@ -1,6 +1,6 @@
 package com.aut.shoomal.payment.coupon;
 
-import com.aut.shoomal.payment.Order;
+import com.aut.shoomal.payment.order.Order;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
