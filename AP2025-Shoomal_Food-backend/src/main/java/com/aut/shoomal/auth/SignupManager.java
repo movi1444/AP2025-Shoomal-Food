@@ -3,6 +3,7 @@ import com.aut.shoomal.entity.user.*;
 import com.aut.shoomal.entity.user.access.Role;
 import com.aut.shoomal.entity.user.access.RoleManager;
 import com.aut.shoomal.exceptions.*;
+import com.aut.shoomal.payment.wallet.Wallet;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -94,6 +95,9 @@ public class SignupManager
         user.setSalt(salt);
         user.setAddress(address);
         user.setProfileImageBase64(profileImageBase64);
+
+        Wallet wallet = new Wallet(user);
+        user.setWallet(wallet);
 
         try {
             userManager.addUser(user);

@@ -9,9 +9,10 @@ import com.aut.shoomal.auth.*;
 import com.aut.shoomal.dao.*;
 import com.aut.shoomal.dao.impl.*;
 import com.aut.shoomal.dto.handler.*;
-import com.aut.shoomal.payment.OrderManager;
+import com.aut.shoomal.payment.order.OrderManager;
 
 import com.aut.shoomal.payment.coupon.CouponManager;
+import com.aut.shoomal.rating.RatingManager;
 import com.aut.shoomal.util.HibernateUtil;
 import com.sun.net.httpserver.HttpServer;
 
@@ -38,23 +39,24 @@ public class Server
         MenuDao menuDao = new MenuDaoImpl();
         OrderDao orderDao = new OrderDaoImpl();
         CouponDao couponDao = new CouponDaoImpl();
+        RatingDao ratingDao = new RatingDaoImpl();
 
         UserManager userManager = new UserManager(userDao);
         RoleManager roleManager = new RoleManager(roleDao);
         SignupManager signupManager = new SignupManager(userManager, roleManager);
         LoginManager loginManager = new LoginManager(userManager);
         LogoutManager logoutManager = new LogoutManager(blacklistedTokenDao);
-
         RestaurantManager restaurantManager = new RestaurantManager(restaurantDao, foodDao, menuDao, userDao);
         MenuManager menuManager = new MenuManager(menuDao, restaurantManager, restaurantDao, foodDao);
         FoodManager foodManager = new FoodManager(foodDao, restaurantManager, restaurantDao, menuDao, menuManager);
         CouponManager couponManager = new CouponManager(couponDao);
         OrderManager orderManager = new OrderManager(orderDao, userManager, couponManager, restaurantManager, foodManager);
-
+        RatingManager ratingManager = new RatingManager(ratingDao, orderManager, userManager);
 
         BuyerBrowseHandler buyerBrowseHandler = new BuyerBrowseHandler(userManager, restaurantManager,couponManager, foodManager, blacklistedTokenDao);
         BuyerOrderHandler buyerOrderHandler = new BuyerOrderHandler(userManager, orderManager, blacklistedTokenDao);
         BuyerFavoriteHandler buyerFavoriteHandler = new BuyerFavoriteHandler(userManager, blacklistedTokenDao);
+        BuyerRatingHandler buyerRatingHandler = new BuyerRatingHandler(userManager, ratingManager, blacklistedTokenDao);
         AdminHandler adminHandler = new AdminHandler(userManager, restaurantManager, blacklistedTokenDao, orderManager);
         AdminCouponHandler adminCouponHandler = new AdminCouponHandler(userManager, blacklistedTokenDao, couponManager);
         CourierHandler courierHandler = new CourierHandler(userManager,orderManager,blacklistedTokenDao);
@@ -79,6 +81,7 @@ public class Server
             finalServer.createContext("/vendors", buyerBrowseHandler);
             finalServer.createContext("/items", buyerBrowseHandler);
             finalServer.createContext("/coupons", buyerBrowseHandler);
+            finalServer.createContext("/ratings", buyerRatingHandler);
 
             finalServer.createContext("/orders", buyerOrderHandler);
             finalServer.createContext("/orders/history", buyerOrderHandler);
@@ -93,7 +96,6 @@ public class Server
             finalServer.createContext("/admin/users", adminHandler);
             finalServer.createContext("/admin/orders", adminHandler);
             finalServer.createContext("/admin/discounts", adminCouponHandler);
-
 
             finalServer.setExecutor(Executors.newFixedThreadPool(numberOfThreads));
             finalServer.start();
