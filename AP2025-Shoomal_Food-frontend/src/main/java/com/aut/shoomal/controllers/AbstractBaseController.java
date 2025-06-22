@@ -7,6 +7,8 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.geometry.NodeOrientation;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -49,5 +51,13 @@ public abstract class AbstractBaseController implements Initializable {
 
     protected void addChoiceBoxDirectionListener(ChoiceBox<String> choiceBox) {
         addDirectionListenerForObservableString(choiceBox.valueProperty(), choiceBox);
+    }
+
+    protected void showAlert(String title, String message) {
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

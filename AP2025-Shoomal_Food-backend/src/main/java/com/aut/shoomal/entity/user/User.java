@@ -30,7 +30,7 @@ public abstract class User
     private String email;
     @Column(nullable = false)
     private String address;
-    @Column(name = "profile")
+    @Column(name = "profile", columnDefinition = "LONGTEXT")
     private String profileImageBase64;
     @Column(nullable = false)
     private String salt;

@@ -17,6 +17,8 @@ import com.aut.shoomal.exceptions.NotFoundException;
 import com.aut.shoomal.exceptions.ServiceUnavailableException;
 import com.aut.shoomal.payment.order.Order;
 import com.aut.shoomal.payment.order.OrderManager;
+import com.aut.shoomal.payment.transaction.PaymentTransaction;
+import com.aut.shoomal.payment.transaction.PaymentTransactionManager;
 import com.sun.net.httpserver.HttpExchange;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -32,16 +34,18 @@ public class AdminHandler extends AbstractHttpHandler {
     private final BlacklistedTokenDao blacklistedTokenDao;
     private final OrderManager orderManager;
     private final RestaurantManager restaurantManager;
+    private final PaymentTransactionManager transactionManager;
 
     private static final Pattern USER_STATUS_PATH = Pattern.compile("^/admin/users/(\\d+)/status$");
 
     public AdminHandler(UserManager userManager, RestaurantManager restaurantManager,
-                        BlacklistedTokenDao blacklistedTokenDao, OrderManager orderManager) {
+                        BlacklistedTokenDao blacklistedTokenDao, OrderManager orderManager,
+                        PaymentTransactionManager transactionManager) {
         this.userManager = userManager;
         this.restaurantManager = restaurantManager;
         this.blacklistedTokenDao = blacklistedTokenDao;
         this.orderManager = orderManager;
-
+        this.transactionManager = transactionManager;
     }
 
     @Override
@@ -67,6 +71,9 @@ public class AdminHandler extends AbstractHttpHandler {
             }
             else if (path.equals("/admin/orders") && method.equalsIgnoreCase("GET")) {
                 handleListAllOrders(exchange);
+            }
+            else if (path.equals("/admin/transactions") && method.equalsIgnoreCase("GET")) {
+                handleListAllTransactions(exchange);
             }
             else {
                 sendResponse(exchange, HttpURLConnection.HTTP_NOT_FOUND,
@@ -164,6 +171,18 @@ public class AdminHandler extends AbstractHttpHandler {
             sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid input: Invalid 'status' value."));
         }
     }
+
+    private void handleListAllTransactions(HttpExchange exchange) throws IOException {
+        try {
+            List<PaymentTransaction> transactions = transactionManager.getAllTransactions();
+            sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, transactions);
+        } catch (Exception e) {
+            System.err.println("An unexpected error occurred during GET /admin/transactions: " + e.getMessage());
+            e.printStackTrace();
+            sendResponse(exchange, HttpURLConnection.HTTP_INTERNAL_ERROR, new ApiResponse(false, "500 Internal Server Error: An unexpected error occurred."));
+        }
+    }
+
 
     private UserResponse convertToUserResponse(User user) {
         if (user == null) return null;
