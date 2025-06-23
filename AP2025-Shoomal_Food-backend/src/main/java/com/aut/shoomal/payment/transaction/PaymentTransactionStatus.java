@@ -1,6 +1,6 @@
 package com.aut.shoomal.payment.transaction;
 
-public enum TransactionStatus
+public enum PaymentTransactionStatus
 {
     PENDING("Pending"),
     COMPLETED("Completed"),
@@ -8,7 +8,7 @@ public enum TransactionStatus
     REFUNDED("Refunded");
 
     private final String status;
-    TransactionStatus(String status)
+    PaymentTransactionStatus(String status)
     {
         this.status = status;
     }
@@ -18,9 +18,9 @@ public enum TransactionStatus
         return status;
     }
 
-    public TransactionStatus fromStatus(String status)
+    public PaymentTransactionStatus fromStatus(String status)
     {
-        for (TransactionStatus t : TransactionStatus.values())
+        for (PaymentTransactionStatus t : PaymentTransactionStatus.values())
             if (t.getStatus().equalsIgnoreCase(status))
                 return t;
         throw new IllegalArgumentException("Not a valid transaction status: " + status);

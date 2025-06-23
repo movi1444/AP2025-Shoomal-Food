@@ -25,7 +25,7 @@ public class PaymentTransaction
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private TransactionStatus status;
+    private PaymentTransactionStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
@@ -37,7 +37,7 @@ public class PaymentTransaction
 
     public PaymentTransaction()
     {
-        this.status = TransactionStatus.PENDING;
+        this.status = PaymentTransactionStatus.PENDING;
         this.transactionTime = LocalDateTime.now();
     }
 
@@ -100,12 +100,12 @@ public class PaymentTransaction
         this.method = method;
     }
 
-    public TransactionStatus getStatus()
+    public PaymentTransactionStatus getStatus()
     {
         return status;
     }
 
-    public void setStatus(TransactionStatus status)
+    public void setStatus(PaymentTransactionStatus status)
     {
         this.status = status;
     }
