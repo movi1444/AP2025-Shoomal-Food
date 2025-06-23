@@ -12,6 +12,7 @@ import com.aut.shoomal.dto.handler.*;
 import com.aut.shoomal.payment.order.OrderManager;
 
 import com.aut.shoomal.payment.coupon.CouponManager;
+import com.aut.shoomal.payment.transaction.PaymentTransactionManager;
 import com.aut.shoomal.rating.RatingManager;
 import com.aut.shoomal.util.HibernateUtil;
 import com.sun.net.httpserver.HttpServer;
@@ -40,6 +41,7 @@ public class Server
         OrderDao orderDao = new OrderDaoImpl();
         CouponDao couponDao = new CouponDaoImpl();
         RatingDao ratingDao = new RatingDaoImpl();
+        TransactionDao transactionDao = new TransactionDaoImpl();
 
         UserManager userManager = new UserManager(userDao);
         RoleManager roleManager = new RoleManager(roleDao);
@@ -52,18 +54,18 @@ public class Server
         CouponManager couponManager = new CouponManager(couponDao);
         OrderManager orderManager = new OrderManager(orderDao, userManager, couponManager, restaurantManager, foodManager);
         RatingManager ratingManager = new RatingManager(ratingDao, orderManager, userManager);
+        PaymentTransactionManager paymentTransactionManager = new PaymentTransactionManager(transactionDao);
 
         BuyerBrowseHandler buyerBrowseHandler = new BuyerBrowseHandler(userManager, restaurantManager,couponManager, foodManager, blacklistedTokenDao);
         BuyerOrderHandler buyerOrderHandler = new BuyerOrderHandler(userManager, orderManager, blacklistedTokenDao);
         BuyerFavoriteHandler buyerFavoriteHandler = new BuyerFavoriteHandler(userManager, blacklistedTokenDao);
         BuyerRatingHandler buyerRatingHandler = new BuyerRatingHandler(userManager, ratingManager, blacklistedTokenDao);
-        AdminHandler adminHandler = new AdminHandler(userManager, restaurantManager, blacklistedTokenDao, orderManager);
+        AdminHandler adminHandler = new AdminHandler(userManager, restaurantManager, blacklistedTokenDao, orderManager, paymentTransactionManager);
         AdminCouponHandler adminCouponHandler = new AdminCouponHandler(userManager, blacklistedTokenDao, couponManager);
         CourierHandler courierHandler = new CourierHandler(userManager,orderManager,blacklistedTokenDao);
 
         try {
             //signupManager.ensureAdminUserExists();
-
             final HttpServer finalServer = HttpServer.create(new InetSocketAddress(port), 0);
             server = finalServer;
 
@@ -95,7 +97,9 @@ public class Server
 
             finalServer.createContext("/admin/users", adminHandler);
             finalServer.createContext("/admin/orders", adminHandler);
+            finalServer.createContext("/admin/transactions", adminHandler);
             finalServer.createContext("/admin/discounts", adminCouponHandler);
+            finalServer.createContext("/admin/reports", adminHandler);
 
             finalServer.setExecutor(Executors.newFixedThreadPool(numberOfThreads));
             finalServer.start();

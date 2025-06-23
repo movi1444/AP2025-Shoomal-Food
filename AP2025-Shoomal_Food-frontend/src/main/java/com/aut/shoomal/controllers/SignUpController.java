@@ -20,9 +20,21 @@ import javafx.scene.layout.StackPane;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.aut.shoomal.dto.request.UserRegisterRequest;
+import com.aut.shoomal.dto.response.UserRegisterResponse;
+import com.aut.shoomal.dto.response.BankInfoResponse;
+import com.aut.shoomal.utils.ImageToBase64Converter;
 
 public class SignUpController extends AbstractBaseController {
 
@@ -44,10 +56,16 @@ public class SignUpController extends AbstractBaseController {
     @FXML private Button backButton;
     private String profileImageBase64String;
 
+    private final Map<String, String> roleMapping = new HashMap<>();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         super.initialize(url, resourceBundle);
+
+        roleMapping.put("خریدار", "buyer");
+        roleMapping.put("فروشنده", "seller");
+        roleMapping.put("پیک", "courier");
+
 
         if (roleChoiceBox != null) {
             ObservableList<String> roles = FXCollections.observableArrayList(
@@ -204,16 +222,116 @@ public class SignUpController extends AbstractBaseController {
 
         if (selectedFile != null) {
             try {
-                profileImageBase64String = com.aut.shoomal.utils.ImageToBase64Converter.convertImageFileToBase64(selectedFile.getAbsolutePath());
+                profileImageBase64String = ImageToBase64Converter.convertImageFileToBase64(selectedFile.getAbsolutePath());
                 System.out.println("Image uploaded and converted to Base64. Size: " + profileImageBase64String.length() + " characters.");
             } catch (IOException e) {
                 System.err.println("Failed to convert image to Base64: " + e.getMessage());
                 e.printStackTrace();
+                showAlert("Image Error", "Failed to process image. Please try again.");
             }
         }
     }
 
     private void handleSubmitSignUp() {
-        System.out.println("Submit button clicked! Final registration logic here.");
+        System.out.println("Submit button clicked! Sending registration data to backend.");
+
+        String fullName = fullNameField.getText();
+        String phoneNumber = phoneNumberField.getText();
+        String password = passwordField.getText();
+        String selectedRoleInPersian = roleChoiceBox.getValue();
+        String address = addressArea.getText();
+        String email = emailField.getText();
+        String bankName = bankNameField.getText();
+        String accountNumber = accountNumberField.getText();
+
+        if (fullName.isEmpty() || phoneNumber.isEmpty() || password.isEmpty() || selectedRoleInPersian == null || address.isEmpty()) {
+            showAlert("Validation Error", "لطفاً تمام فیلدهای الزامی (نام کامل، شماره تلفن، رمز عبور، نقش، آدرس) را پر کنید.");
+            return;
+        }
+
+        String role = roleMapping.get(selectedRoleInPersian);
+        if (role == null) {
+            showAlert("Validation Error", "نقش انتخاب شده نامعتبر است. لطفاً یک نقش معتبر انتخاب کنید.");
+            return;
+        }
+
+        UserRegisterRequest registerRequest = new UserRegisterRequest();
+        registerRequest.setFullName(fullName);
+        registerRequest.setPhone(phoneNumber);
+        registerRequest.setPassword(password);
+        registerRequest.setRole(role);
+        registerRequest.setAddress(address);
+
+        if (!email.isEmpty()) {
+            registerRequest.setEmail(email);
+        }
+        if (profileImageBase64String != null && !profileImageBase64String.isEmpty()) {
+            registerRequest.setProfileImageBase64(profileImageBase64String);
+        }
+        if (!bankName.isEmpty() && !accountNumber.isEmpty()) {
+            BankInfoResponse bankInfo = new BankInfoResponse();
+            bankInfo.setBankName(bankName);
+            bankInfo.setAccountNumber(accountNumber);
+            registerRequest.setBankInfo(bankInfo);
+        }
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String requestBodyJson;
+        try {
+            requestBodyJson = objectMapper.writeValueAsString(registerRequest);
+            System.out.println("Request JSON: " + requestBodyJson);
+        } catch (IOException e) {
+            System.err.println("Error serializing registration request: " + e.getMessage());
+            e.printStackTrace();
+            showAlert("System Error", "Could not prepare registration data. Please try again.");
+            return;
+        }
+
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/auth/register"))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(requestBodyJson))
+                .build();
+
+        new Thread(() -> {
+            try {
+                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+                javafx.application.Platform.runLater(() -> {
+                    System.out.println("Response Status Code: " + response.statusCode());
+                    System.out.println("Response Body: " + response.body());
+
+                    if (response.statusCode() == 200) {
+                        try {
+                            UserRegisterResponse registerResponse = objectMapper.readValue(response.body(), UserRegisterResponse.class);
+                            showAlert("Success", "ثبت نام با موفقیت انجام شد! شناسه کاربری: " + registerResponse.getUserId() + "\nتوکن: " + registerResponse.getToken());
+                            handleBackToLogin();
+                        } catch (IOException e) {
+                            System.err.println("Error deserializing success response: " + e.getMessage());
+                            e.printStackTrace();
+                            showAlert("Registration Error", "ثبت نام با موفقیت انجام شد، اما پاسخ قابل پردازش نبود.");
+                        }
+                    } else {
+                        try {
+                            @SuppressWarnings("unchecked")
+                            java.util.Map<String, String> errorResponse = objectMapper.readValue(response.body(), java.util.Map.class);
+                            String errorMessage = errorResponse.getOrDefault("error", "خطای ناشناخته در هنگام ثبت نام رخ داد.");
+                            showAlert("Registration Failed", errorMessage);
+                        } catch (IOException e) {
+                            System.err.println("Error parsing error response: " + e.getMessage());
+                            e.printStackTrace();
+                            showAlert("Registration Failed", "خطای غیرمنتظره‌ای رخ داد. کد وضعیت: " + response.statusCode());
+                        }
+                    }
+                });
+            } catch (IOException | InterruptedException e) {
+                System.err.println("Network/API call error: " + e.getMessage());
+                e.printStackTrace();
+                javafx.application.Platform.runLater(() -> {
+                    showAlert("Network Error", "اتصال به سرور برقرار نشد. لطفاً اتصال اینترنت خود را بررسی کرده یا بعداً امتحان کنید.");
+                });
+            }
+        }).start();
     }
 }
