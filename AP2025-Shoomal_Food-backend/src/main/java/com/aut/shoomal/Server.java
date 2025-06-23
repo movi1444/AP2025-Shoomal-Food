@@ -13,6 +13,7 @@ import com.aut.shoomal.payment.order.OrderManager;
 
 import com.aut.shoomal.payment.coupon.CouponManager;
 import com.aut.shoomal.payment.transaction.PaymentTransactionManager;
+import com.aut.shoomal.payment.wallet.WalletManager;
 import com.aut.shoomal.rating.RatingManager;
 import com.aut.shoomal.util.HibernateUtil;
 import com.sun.net.httpserver.HttpServer;
@@ -42,6 +43,7 @@ public class Server
         CouponDao couponDao = new CouponDaoImpl();
         RatingDao ratingDao = new RatingDaoImpl();
         TransactionDao transactionDao = new TransactionDaoImpl();
+        WalletDao walletDao = new WalletDaoImpl();
 
         UserManager userManager = new UserManager(userDao);
         RoleManager roleManager = new RoleManager(roleDao);
@@ -55,6 +57,7 @@ public class Server
         OrderManager orderManager = new OrderManager(orderDao, userManager, couponManager, restaurantManager, foodManager);
         RatingManager ratingManager = new RatingManager(ratingDao, orderManager, userManager);
         PaymentTransactionManager paymentTransactionManager = new PaymentTransactionManager(transactionDao);
+        WalletManager walletManager = new WalletManager(walletDao, paymentTransactionManager);
 
         BuyerBrowseHandler buyerBrowseHandler = new BuyerBrowseHandler(userManager, restaurantManager,couponManager, foodManager, blacklistedTokenDao);
         BuyerOrderHandler buyerOrderHandler = new BuyerOrderHandler(userManager, orderManager, blacklistedTokenDao);
