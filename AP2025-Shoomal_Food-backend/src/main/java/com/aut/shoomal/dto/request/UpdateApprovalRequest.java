@@ -1,6 +1,6 @@
 package com.aut.shoomal.dto.request;
 
-import com.aut.shoomal.enums.UserStatus;
+import com.aut.shoomal.entity.user.UserStatus;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class UpdateApprovalRequest {

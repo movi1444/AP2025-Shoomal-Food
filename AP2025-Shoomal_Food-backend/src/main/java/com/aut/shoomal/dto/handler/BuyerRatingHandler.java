@@ -25,8 +25,7 @@ public class BuyerRatingHandler extends AbstractHttpHandler
     private final UserManager userManager;
     private final RatingManager ratingManager;
     private final BlacklistedTokenDao blacklistedTokenDao;
-    public BuyerRatingHandler(UserManager userManager, RatingManager ratingManager,
-                              BlacklistedTokenDao tokenDao)
+    public BuyerRatingHandler(UserManager userManager, RatingManager ratingManager, BlacklistedTokenDao tokenDao)
     {
         this.userManager = userManager;
         this.ratingManager = ratingManager;

@@ -1,6 +1,5 @@
 package com.aut.shoomal.entity.user;
 import com.aut.shoomal.dao.UserDao;
-import com.aut.shoomal.enums.UserStatus;
 
 import java.util.List;
 

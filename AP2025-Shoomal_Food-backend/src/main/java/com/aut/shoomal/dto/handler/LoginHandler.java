@@ -35,11 +35,7 @@ public class LoginHandler extends AbstractHttpHandler
             requestBody = parseRequestBody(exchange, UserLoginRequest.class);
             if (requestBody == null)
             {
-                sendResponse(
-                        exchange,
-                        HttpURLConnection.HTTP_BAD_REQUEST,
-                        new ApiResponse(false, "400 Invalid request: Request body is empty.")
-                );
+                sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid request: Request body is empty."));
                 return;
             }
         } catch (IOException e) {
@@ -48,14 +44,9 @@ public class LoginHandler extends AbstractHttpHandler
             sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid input: Malformed JSON in request body."));
             return;
         }
-
         try {
-            User user = loginManager.handleLogin(
-                    requestBody.getPassword(),
-                    requestBody.getPhone()
-            );
+            User user = loginManager.handleLogin(requestBody.getPassword(), requestBody.getPhone());
             System.out.println("User logged in successfully.");
-
             String token = JwtUtil.generateToken(user);
             UserLoginResponse loginResponse = getLoginResponse(user, token);
             sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, loginResponse);
@@ -67,18 +58,13 @@ public class LoginHandler extends AbstractHttpHandler
             e.printStackTrace();
             sendResponse(exchange, HttpURLConnection.HTTP_INTERNAL_ERROR, new ApiResponse(false, "500 Internal Server Error: An unexpected error occurred."));
         }
-
-        //TODO: catch 404 and 429 errors.
     }
 
     private static UserLoginResponse getLoginResponse(User user, String token)
     {
         BankInfoResponse bankInfo = null;
         if (user.getBank() != null)
-            bankInfo = new BankInfoResponse(
-                user.getBank().getName(),
-                user.getBank().getAccountNumber()
-            );
+            bankInfo = new BankInfoResponse(user.getBank().getName(), user.getBank().getAccountNumber());
         UserResponse userResponse = new UserResponse(
                 user.getId(),
                 user.getName(),
@@ -89,10 +75,6 @@ public class LoginHandler extends AbstractHttpHandler
                 user.getProfileImageBase64(),
                 bankInfo
         );
-        return new UserLoginResponse(
-                "200 User logged in successfully",
-                token,
-                userResponse
-        );
+        return new UserLoginResponse("200 User logged in successfully", token, userResponse);
     }
 }
