@@ -1,4 +1,4 @@
-package com.aut.shoomal.enums;
+package com.aut.shoomal.entity.user;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
