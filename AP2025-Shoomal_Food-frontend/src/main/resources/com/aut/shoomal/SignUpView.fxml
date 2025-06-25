@@ -4,7 +4,9 @@
 <?import javafx.collections.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
 <BorderPane styleClass="root" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.aut.shoomal.controllers.SignUpController">
@@ -14,7 +16,7 @@
     <top>
         <Label styleClass="my-headlabel" stylesheets="@styles/SignInUpStyles.css" text="ثبت نام در شومال فود" BorderPane.alignment="CENTER">
             <BorderPane.margin>
-                <Insets bottom="30.0" left="40.0" top="30.0" />
+                <Insets bottom="30.0" left="30.0" top="30.0" />
             </BorderPane.margin>
         </Label>
     </top>
@@ -22,7 +24,7 @@
         <StackPane alignment="TOP_CENTER" maxHeight="Infinity" maxWidth="Infinity">
             <children>
 
-                <GridPane fx:id="optionalFieldsSection" alignment="CENTER" maxWidth="700" prefHeight="486.0" prefWidth="513.0" vgap="10" visible="false">
+                <GridPane fx:id="optionalFieldsSection" alignment="CENTER" maxWidth="1.7976931348623157E308" vgap="10">
                     <padding><Insets top="20.0" /></padding>
                     <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="245.39998474121094" minWidth="155.19998779296876" prefWidth="245.39998474121094" />
@@ -36,9 +38,9 @@
                         <RowConstraints maxHeight="109.60002441406249" minHeight="26.80000000000001" prefHeight="55.19999999999999" vgrow="SOMETIMES" />
                         <RowConstraints maxHeight="163.19998779296873" minHeight="60.80000000000001" prefHeight="60.80000000000001" vgrow="SOMETIMES" /> </rowConstraints>
                     <children>
-                        <Button fx:id="uploadImageButton" onAction="#handleUploadImageButton" prefHeight="26.0" prefWidth="145.0" styleClass="my-button2" stylesheets="@styles/SignInUpStyles.css" text="آپلود تصویر" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="4">
+                        <Button fx:id="uploadImageButton" onAction="#handleUploadImageButton" prefHeight="26.0" prefWidth="140.0" styleClass="my-button2" stylesheets="@styles/SignInUpStyles.css" text="آپلود تصویر" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="3">
                             <GridPane.margin>
-                                <Insets />
+                                <Insets right="100.0" top="50.0" />
                             </GridPane.margin></Button>
                         <Label prefHeight="28.0" prefWidth="150.0" styleClass="my-label2" stylesheets="@styles/SignInUpStyles.css" text="اطلاعات بانکی" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="1">
                             <GridPane.margin>
@@ -52,7 +54,7 @@
                                 <Insets bottom="60.0" right="-70.0" />
                             </GridPane.margin>
                         </Label>
-                        <TextField fx:id="accountNumberField" styleClass="my-text-field" stylesheets="@styles/SignInUpStyles.css" GridPane.rowIndex="2">
+                        <TextField fx:id="accountNumberField" styleClass="my-text-field" stylesheets="@styles/SignInUpStyles.css" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
                             <GridPane.margin>
                                 <Insets left="-40.0" right="10.0" top="30.0" />
                             </GridPane.margin>
@@ -66,7 +68,7 @@
                                 <Insets bottom="60.0" right="-10.0" />
                             </GridPane.margin>
                         </Label>
-                        <TextField fx:id="bankNameField" prefHeight="26.0" prefWidth="223.0" styleClass="my-text-field" stylesheets="@styles/SignInUpStyles.css" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                        <TextField fx:id="bankNameField" prefHeight="26.0" prefWidth="223.0" styleClass="my-text-field" stylesheets="@styles/SignInUpStyles.css" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="2">
                             <GridPane.margin>
                                 <Insets left="10.0" right="-40.0" top="30.0" />
                             </GridPane.margin></TextField>
@@ -75,17 +77,28 @@
                                 <Insets bottom="60.0" left="30.0" />
                             </GridPane.margin>
                         </Label>
-                        <Label layoutX="216.0" layoutY="116.0" prefHeight="21.0" prefWidth="235.0" styleClass="my-label2" stylesheets="@styles/SignInUpStyles.css" text="آپلود عکس پروفایل" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="3">
+                        <Label layoutX="216.0" layoutY="116.0" prefHeight="22.0" prefWidth="215.0" styleClass="my-label2" stylesheets="@styles/SignInUpStyles.css" text="آپلود عکس پروفایل" GridPane.columnSpan="2" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
                             <GridPane.margin>
-                                <Insets left="30.0" top="50.0" />
+                                <Insets top="50.0" />
                             </GridPane.margin></Label>
                         <Button fx:id="backButton" mnemonicParsing="false" prefHeight="26.0" prefWidth="130.0" styleClass="my-button" stylesheets="@styles/SignInUpStyles.css" text="برگشت" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="5">
                             <GridPane.margin>
                                 <Insets top="10.0" />
                             </GridPane.margin></Button>
+                        <ImageView fx:id="profileImageView" fitHeight="120.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="4">
+                            <clip>
+                                <Circle centerX="60" centerY="60" radius="60.0" />
+                            </clip>
+                     <viewport>
+                        <Rectangle2D height="600.0" minX="200.0" minY="100.0" width="600.0" />
+                     </viewport>
+                     <GridPane.margin>
+                        <Insets top="55.0" />
+                     </GridPane.margin>
+                        </ImageView>
                     </children>
                 </GridPane>
-                <GridPane fx:id="requiredFieldsSection" maxHeight="Infinity" maxWidth="Infinity" prefHeight="550.0" prefWidth="775.0">
+                <GridPane fx:id="requiredFieldsSection" maxHeight="Infinity" maxWidth="Infinity" prefHeight="550.0" prefWidth="775.0" visible="false">
                     <columnConstraints>
                         <ColumnConstraints hgrow="ALWAYS" />
                         <ColumnConstraints hgrow="ALWAYS" />

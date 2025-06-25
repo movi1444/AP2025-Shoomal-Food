@@ -10,6 +10,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Hyperlink;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,6 +20,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.scene.layout.StackPane;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -25,10 +28,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.aut.shoomal.dto.request.UserRegisterRequest;
@@ -55,6 +55,9 @@ public class SignUpController extends AbstractBaseController {
     @FXML private Button uploadImageButton;
     @FXML private Button backButton;
     private String profileImageBase64String;
+
+    @FXML
+    private ImageView profileImageView;
 
     private final Map<String, String> roleMapping = new HashMap<>();
 
@@ -211,6 +214,14 @@ public class SignUpController extends AbstractBaseController {
         }
     }
 
+    public void displayProfileImage() {
+        if (profileImageBase64String != null && !profileImageBase64String.isEmpty()) {
+            byte[] imageBytes = Base64.getDecoder().decode(profileImageBase64String);
+            Image image = new Image(new ByteArrayInputStream(imageBytes));
+            profileImageView.setImage(image);
+        }
+    }
+
     @FXML
     private void handleUploadImageButton() {
         FileChooser fileChooser = new FileChooser();
@@ -224,6 +235,7 @@ public class SignUpController extends AbstractBaseController {
             try {
                 profileImageBase64String = ImageToBase64Converter.convertImageFileToBase64(selectedFile.getAbsolutePath());
                 System.out.println("Image uploaded and converted to Base64. Size: " + profileImageBase64String.length() + " characters.");
+                displayProfileImage();
             } catch (IOException e) {
                 System.err.println("Failed to convert image to Base64: " + e.getMessage());
                 e.printStackTrace();
