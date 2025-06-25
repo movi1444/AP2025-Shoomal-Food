@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class Main extends Application {
-
     @Override
     public void start(Stage primaryStage) throws IOException {
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/SignInView.fxml")));
