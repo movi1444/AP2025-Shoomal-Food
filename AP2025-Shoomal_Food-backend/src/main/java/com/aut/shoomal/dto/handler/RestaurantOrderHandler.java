@@ -148,20 +148,11 @@ public class RestaurantOrderHandler extends AbstractHttpHandler {
                 throw new ForbiddenException("403 Forbidden: You are not authorized to change the status of this order.");
             }
 
-            OrderStatus internalOrderStatus;
-            switch (requestBody.getStatus()) {
-                case ACCEPTED:
-                    internalOrderStatus = OrderStatus.WAITING_VENDOR;
-                    break;
-                case REJECTED:
-                    internalOrderStatus = OrderStatus.CANCELLED;
-                    break;
-                case SERVED:
-                    internalOrderStatus = OrderStatus.FINDING_COURIER;
-                    break;
-                default:
-                    throw new InvalidInputException("Unexpected restaurant action status provided.");
-            }
+            OrderStatus internalOrderStatus = switch (requestBody.getStatus()) {
+                case ACCEPTED -> OrderStatus.WAITING_VENDOR;
+                case REJECTED -> OrderStatus.CANCELLED;
+                case SERVED -> OrderStatus.FINDING_COURIER;
+            };
 
             order.setOrderStatus(internalOrderStatus);
             orderManager.updateOrder(order);

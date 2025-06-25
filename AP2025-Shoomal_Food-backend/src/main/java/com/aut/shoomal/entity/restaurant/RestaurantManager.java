@@ -8,7 +8,7 @@ import com.aut.shoomal.dto.request.CreateRestaurantRequest;
 import com.aut.shoomal.dto.request.UpdateRestaurantRequest;
 import com.aut.shoomal.dto.request.AddFoodItemRequest;
 import com.aut.shoomal.dto.request.UpdateFoodItemRequest;
-import com.aut.shoomal.enums.UserStatus;
+import com.aut.shoomal.entity.user.UserStatus;
 import com.aut.shoomal.exceptions.ConflictException;
 import com.aut.shoomal.exceptions.ForbiddenException;
 import com.aut.shoomal.exceptions.InvalidInputException;

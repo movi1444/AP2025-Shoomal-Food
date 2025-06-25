@@ -76,14 +76,14 @@ public class Wallet
     {
         if (this.balance.compareTo(amount) < 0)
             throw new InvalidInputException("Insufficient balance.");
-        if (amount.compareTo(BigDecimal.ZERO) < 0 || amount.equals(BigDecimal.ZERO))
+        if (amount.compareTo(BigDecimal.ZERO) <= 0)
             throw new InvalidInputException("Withdrawal amount cannot be negative.");
         this.balance = this.balance.subtract(amount);
     }
 
     public void deposit(BigDecimal amount)
     {
-        if (amount.compareTo(BigDecimal.ZERO) < 0 || amount.equals(BigDecimal.ZERO))
+        if (amount.compareTo(BigDecimal.ZERO) <= 0)
             throw new InvalidInputException("The deposit amount cannot be negative.");
         this.balance = this.balance.add(amount);
     }
