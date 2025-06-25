@@ -56,11 +56,11 @@ public class Server
         CouponManager couponManager = new CouponManager(couponDao);
         OrderManager orderManager = new OrderManager(orderDao, userManager, couponManager, restaurantManager, foodManager);
         RatingManager ratingManager = new RatingManager(ratingDao, orderManager, userManager);
-        PaymentTransactionManager paymentTransactionManager = new PaymentTransactionManager(transactionDao, orderManager);
+        PaymentTransactionManager paymentTransactionManager = new PaymentTransactionManager(transactionDao);
         WalletManager walletManager = new WalletManager(walletDao, paymentTransactionManager, orderManager);
 
         BuyerBrowseHandler buyerBrowseHandler = new BuyerBrowseHandler(userManager, restaurantManager,couponManager, foodManager, blacklistedTokenDao);
-        BuyerOrderHandler buyerOrderHandler = new BuyerOrderHandler(userManager, orderManager, walletManager, paymentTransactionManager, blacklistedTokenDao);
+        BuyerOrderHandler buyerOrderHandler = new BuyerOrderHandler(userManager, orderManager, blacklistedTokenDao);
         BuyerFavoriteHandler buyerFavoriteHandler = new BuyerFavoriteHandler(userManager, blacklistedTokenDao);
         BuyerRatingHandler buyerRatingHandler = new BuyerRatingHandler(userManager, ratingManager, blacklistedTokenDao);
         AdminHandler adminHandler = new AdminHandler(userManager, restaurantManager, blacklistedTokenDao, orderManager, paymentTransactionManager);
@@ -102,7 +102,7 @@ public class Server
             finalServer.createContext("/admin/orders", adminHandler);
             finalServer.createContext("/admin/transactions", adminHandler);
             finalServer.createContext("/admin/discounts", adminCouponHandler);
-            finalServer.createContext("/admin/reports", adminHandler);
+            //finalServer.createContext("/admin/reports", adminHandler);
 
             finalServer.setExecutor(Executors.newFixedThreadPool(numberOfThreads));
             finalServer.start();
