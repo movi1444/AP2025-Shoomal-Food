@@ -56,11 +56,11 @@ public class Server
         CouponManager couponManager = new CouponManager(couponDao);
         OrderManager orderManager = new OrderManager(orderDao, userManager, couponManager, restaurantManager, foodManager);
         RatingManager ratingManager = new RatingManager(ratingDao, orderManager, userManager);
-        PaymentTransactionManager paymentTransactionManager = new PaymentTransactionManager(transactionDao);
+        PaymentTransactionManager paymentTransactionManager = new PaymentTransactionManager(transactionDao, orderManager);
         WalletManager walletManager = new WalletManager(walletDao, paymentTransactionManager, orderManager);
 
         BuyerBrowseHandler buyerBrowseHandler = new BuyerBrowseHandler(userManager, restaurantManager,couponManager, foodManager, blacklistedTokenDao);
-        BuyerOrderHandler buyerOrderHandler = new BuyerOrderHandler(userManager, orderManager, blacklistedTokenDao);
+        BuyerOrderHandler buyerOrderHandler = new BuyerOrderHandler(userManager, orderManager, walletManager, paymentTransactionManager, blacklistedTokenDao);
         BuyerFavoriteHandler buyerFavoriteHandler = new BuyerFavoriteHandler(userManager, blacklistedTokenDao);
         BuyerRatingHandler buyerRatingHandler = new BuyerRatingHandler(userManager, ratingManager, blacklistedTokenDao);
         AdminHandler adminHandler = new AdminHandler(userManager, restaurantManager, blacklistedTokenDao, orderManager, paymentTransactionManager);
