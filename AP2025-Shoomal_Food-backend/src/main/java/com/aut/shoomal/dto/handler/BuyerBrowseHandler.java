@@ -193,7 +193,7 @@ public class BuyerBrowseHandler extends AbstractHttpHandler
 
             if (hasPrice)
                 foods = foods.stream()
-                        .filter(food -> String.valueOf(food.getPrice()).equals(price))
+                        .filter(food -> String.valueOf((int)food.getPrice()).equals(price))
                         .toList();
 
             List<ListItemResponse> responses = foods.stream()

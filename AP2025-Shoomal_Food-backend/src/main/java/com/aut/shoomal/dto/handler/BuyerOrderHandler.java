@@ -108,6 +108,14 @@ public class BuyerOrderHandler extends AbstractHttpHandler
                 sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid input: Request body is empty."));
                 return;
             }
+            if (requestBody.getDeliveryAddress() == null || requestBody.getDeliveryAddress().trim().isEmpty())
+                throw new InvalidInputException("Delivery address required.");
+            if (requestBody.getVendorId() == null)
+                throw new InvalidInputException("Vendor id required.");
+            if (requestBody.getItems() == null)
+                throw new InvalidInputException("Items required.");
+            else if (requestBody.getItems().getFirst() == null || requestBody.getItems().getLast() == null)
+                throw new InvalidInputException("Items required.");
 
             Order order = orderManager.submitOrder(
                     customerId,
@@ -139,7 +147,7 @@ public class BuyerOrderHandler extends AbstractHttpHandler
             e.printStackTrace();
             sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid input: Malformed JSON in request body."));
         } catch (InvalidInputException e) {
-            System.err.println("400 Invalid input:" + e.getMessage());
+            System.err.println("400 Invalid input: " + e.getMessage());
             sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid input: " + e.getMessage()));
         } catch (NotFoundException e) {
             System.err.println("404 Resource not found: " + e.getMessage());
