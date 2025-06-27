@@ -177,6 +177,11 @@ public class OrderManager
                 transaction.rollback();
             System.out.println("Order submission failed dou to invalid coupon: " + e.getMessage());
             throw new InvalidInputException("Invalid coupon: " + e.getMessage());
+        } catch (NotFoundException e) {
+            if (transaction != null)
+                transaction.rollback();
+            System.err.println("Order submission failed. Resource not found: " + e.getMessage());
+            throw e;
         } catch (Exception e) {
             if (transaction != null)
                 transaction.rollback();
