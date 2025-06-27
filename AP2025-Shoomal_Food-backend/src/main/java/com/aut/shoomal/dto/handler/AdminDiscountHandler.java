@@ -1,9 +1,9 @@
 package com.aut.shoomal.dto.handler;
 
+import com.aut.shoomal.dto.request.CreateDiscountRequest;
 import com.aut.shoomal.entity.user.User;
 import com.aut.shoomal.entity.user.UserManager;
 import com.aut.shoomal.dao.BlacklistedTokenDao;
-import com.aut.shoomal.dto.request.CreateCouponRequest;
 import com.aut.shoomal.dto.response.ApiResponse;
 import com.aut.shoomal.dto.response.CouponResponse;
 import com.aut.shoomal.exceptions.ConflictException;
@@ -20,7 +20,7 @@ import java.net.HttpURLConnection;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
-public class AdminCouponHandler extends AbstractHttpHandler {
+public class AdminDiscountHandler extends AbstractHttpHandler {
 
     private final UserManager userManager;
     private final BlacklistedTokenDao blacklistedTokenDao;
@@ -28,7 +28,7 @@ public class AdminCouponHandler extends AbstractHttpHandler {
 
     private static final Pattern DISCOUNT_ID_PATH = Pattern.compile("^/admin/discounts/(\\d+)$");
 
-    public AdminCouponHandler(UserManager userManager, BlacklistedTokenDao blacklistedTokenDao, CouponManager couponManager) {
+    public AdminDiscountHandler(UserManager userManager, BlacklistedTokenDao blacklistedTokenDao, CouponManager couponManager) {
         this.userManager = userManager;
         this.blacklistedTokenDao = blacklistedTokenDao;
         this.couponManager = couponManager;
@@ -90,7 +90,6 @@ public class AdminCouponHandler extends AbstractHttpHandler {
             sendResponse(exchange, HttpURLConnection.HTTP_INTERNAL_ERROR,
                     new ApiResponse(false, e.getMessage()));
         } catch (Exception e) {
-            System.err.println("An unexpected error occurred in AdminCouponHandler: " + e.getMessage());
             e.printStackTrace();
             sendResponse(exchange, HttpURLConnection.HTTP_INTERNAL_ERROR, new ApiResponse(false, "500 Internal Server Error: An unexpected error occurred."));
         } finally {
@@ -102,16 +101,15 @@ public class AdminCouponHandler extends AbstractHttpHandler {
         if (!checkHttpMethod(exchange, "POST")) return;
         if (!checkContentType(exchange)) return;
 
-        CreateCouponRequest requestBody;
+        CreateDiscountRequest requestBody;
         try {
-            requestBody = parseRequestBody(exchange, CreateCouponRequest.class);
+            requestBody = parseRequestBody(exchange, CreateDiscountRequest.class);
             if (requestBody == null) {
                 sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST,
                         new ApiResponse(false, "400 Invalid input: Request body is empty."));
                 return;
             }
         } catch (IOException e) {
-            System.err.println("Error parsing request body for /admin/discounts (POST): " + e.getMessage());
             e.printStackTrace();
             sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid input: Malformed JSON in request body."));
             return;
@@ -119,23 +117,18 @@ public class AdminCouponHandler extends AbstractHttpHandler {
 
         try {
             Coupon newCoupon = couponManager.createCoupon(
-                    requestBody.getCouponCode(),
                     requestBody.getType(),
                     requestBody.getValue(),
-                    requestBody.getMinPrice(),
-                    requestBody.getUserCount(),
                     requestBody.getStartDate(),
-                    requestBody.getEndDate()
+                    requestBody.getEndDate(),
+                    requestBody.getScope()
             );
             sendResponse(exchange, HttpURLConnection.HTTP_CREATED, new ApiResponse(true, "Coupon created successfully", convertToCouponResponse(newCoupon)));
         } catch (InvalidCouponException e) {
-            System.err.println("Invalid coupon input: " + e.getMessage());
             sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid input: " + e.getMessage()));
         } catch (ServiceUnavailableException e) {
-            System.err.println("Service unavailable during coupon creation: " + e.getMessage());
             sendResponse(exchange, HttpURLConnection.HTTP_INTERNAL_ERROR, new ApiResponse(false, "500 Internal Server Error: " + e.getMessage()));
         } catch (Exception e) {
-            System.err.println("An unexpected error occurred during POST /admin/discounts: " + e.getMessage());
             e.printStackTrace();
             sendResponse(exchange, HttpURLConnection.HTTP_INTERNAL_ERROR, new ApiResponse(false, "500 Internal Server Error: An unexpected error occurred."));
         }
@@ -153,10 +146,8 @@ public class AdminCouponHandler extends AbstractHttpHandler {
             couponManager.deleteCoupon(couponId);
             sendResponse(exchange, HttpURLConnection.HTTP_OK, new ApiResponse(true, "200 Coupon deleted successfully."));
         } catch (NotFoundException e) {
-            System.err.println("Coupon not found for deletion: " + e.getMessage());
             sendResponse(exchange, HttpURLConnection.HTTP_NOT_FOUND, new ApiResponse(false, e.getMessage()));
         } catch (Exception e) {
-            System.err.println("An unexpected error occurred during DELETE /admin/discounts/" + couponId + ": " + e.getMessage());
             e.printStackTrace();
             sendResponse(exchange, HttpURLConnection.HTTP_INTERNAL_ERROR, new ApiResponse(false, "500 Internal Server Error: An unexpected error occurred."));
         }
@@ -169,8 +160,6 @@ public class AdminCouponHandler extends AbstractHttpHandler {
                 coupon.getCouponCode(),
                 coupon.getCouponType().getName(),
                 coupon.getValue(),
-                coupon.getMinPrice(),
-                coupon.getUserCount(),
                 coupon.getStartDate(),
                 coupon.getEndDate()
         );
