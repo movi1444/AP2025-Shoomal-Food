@@ -2,39 +2,22 @@ package com.aut.shoomal.controllers;
 
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Hyperlink;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 import javafx.util.Duration;
-import javafx.scene.layout.StackPane;
-
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.net.URL;
 import java.util.*;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.aut.shoomal.dto.request.UserRegisterRequest;
 import com.aut.shoomal.dto.response.UserRegisterResponse;
 import com.aut.shoomal.dto.response.BankInfoResponse;
-import com.aut.shoomal.utils.ImageToBase64Converter;
 
 public class SignUpController extends AbstractBaseController {
 
@@ -183,65 +166,12 @@ public class SignUpController extends AbstractBaseController {
     @FXML
     private void handleBackToLogin() {
         System.out.println("Back to Login link clicked!");
-        Stage stage = (Stage) backToLoginLink.getScene().getWindow();
-        Parent currentRoot = backToLoginLink.getScene().getRoot();
-
-        try {
-            Parent signInRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/SignInView.fxml")));
-
-            StackPane transitionContainer = new StackPane();
-            transitionContainer.getChildren().addAll(currentRoot, signInRoot);
-
-            signInRoot.setTranslateX(-stage.getWidth());
-
-            Scene newScene = new Scene(transitionContainer, stage.getWidth(), stage.getHeight());
-            newScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/styles/SignInUpStyles.css")).toExternalForm());
-            stage.setScene(newScene);
-
-            TranslateTransition slideIn = new TranslateTransition(Duration.millis(500), signInRoot);
-            slideIn.setFromX(-stage.getWidth());
-            slideIn.setToX(0);
-
-            slideIn.setOnFinished(event -> {
-                transitionContainer.getChildren().remove(currentRoot);
-            });
-
-            slideIn.play();
-
-        } catch (IOException e) {
-            System.err.println("Failed to load SignInView.fxml: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-    public void displayProfileImage() {
-        if (profileImageBase64String != null && !profileImageBase64String.isEmpty()) {
-            byte[] imageBytes = Base64.getDecoder().decode(profileImageBase64String);
-            Image image = new Image(new ByteArrayInputStream(imageBytes));
-            profileImageView.setImage(image);
-        }
+        navigateToSignInView(backToLoginLink);
     }
 
     @FXML
     private void handleUploadImageButton() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Select Profile Image");
-        fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif")
-        );
-        File selectedFile = fileChooser.showOpenDialog(uploadImageButton.getScene().getWindow());
-
-        if (selectedFile != null) {
-            try {
-                profileImageBase64String = ImageToBase64Converter.convertImageFileToBase64(selectedFile.getAbsolutePath());
-                System.out.println("Image uploaded and converted to Base64. Size: " + profileImageBase64String.length() + " characters.");
-                displayProfileImage();
-            } catch (IOException e) {
-                System.err.println("Failed to convert image to Base64: " + e.getMessage());
-                e.printStackTrace();
-                showAlert("Image Error", "Failed to process image. Please try again.");
-            }
-        }
+        profileImageBase64String = handleImageUploadAndConvert(uploadImageButton, profileImageView);
     }
 
     private void handleSubmitSignUp() {
@@ -287,63 +217,18 @@ public class SignUpController extends AbstractBaseController {
             registerRequest.setBankInfo(bankInfo);
         }
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        String requestBodyJson;
-        try {
-            requestBodyJson = objectMapper.writeValueAsString(registerRequest);
-            System.out.println("Request JSON: " + requestBodyJson);
-        } catch (IOException e) {
-            System.err.println("Error serializing registration request: " + e.getMessage());
-            e.printStackTrace();
-            showAlert("System Error", "Could not prepare registration data. Please try again.");
-            return;
-        }
-
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/auth/register"))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(requestBodyJson))
-                .build();
-
-        new Thread(() -> {
-            try {
-                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-                javafx.application.Platform.runLater(() -> {
-                    System.out.println("Response Status Code: " + response.statusCode());
-                    System.out.println("Response Body: " + response.body());
-
-                    if (response.statusCode() == 200) {
-                        try {
-                            UserRegisterResponse registerResponse = objectMapper.readValue(response.body(), UserRegisterResponse.class);
-                            showAlert("Success", "ثبت نام با موفقیت انجام شد! شناسه کاربری: " + registerResponse.getUserId() + "\nتوکن: " + registerResponse.getToken());
-                            handleBackToLogin();
-                        } catch (IOException e) {
-                            System.err.println("Error deserializing success response: " + e.getMessage());
-                            e.printStackTrace();
-                            showAlert("Registration Error", "ثبت نام با موفقیت انجام شد، اما پاسخ قابل پردازش نبود.");
-                        }
-                    } else {
-                        try {
-                            @SuppressWarnings("unchecked")
-                            java.util.Map<String, String> errorResponse = objectMapper.readValue(response.body(), java.util.Map.class);
-                            String errorMessage = errorResponse.getOrDefault("error", "خطای ناشناخته در هنگام ثبت نام رخ داد.");
-                            showAlert("Registration Failed", errorMessage);
-                        } catch (IOException e) {
-                            System.err.println("Error parsing error response: " + e.getMessage());
-                            e.printStackTrace();
-                            showAlert("Registration Failed", "خطای غیرمنتظره‌ای رخ داد. کد وضعیت: " + response.statusCode());
-                        }
-                    }
-                });
-            } catch (IOException | InterruptedException e) {
-                System.err.println("Network/API call error: " + e.getMessage());
-                e.printStackTrace();
-                javafx.application.Platform.runLater(() -> {
-                    showAlert("Network Error", "اتصال به سرور برقرار نشد. لطفاً اتصال اینترنت خود را بررسی کرده یا بعداً امتحان کنید.");
-                });
-            }
-        }).start();
+        sendHttpRequest(
+                "http://localhost:8080/auth/register",
+                "POST",
+                registerRequest,
+                UserRegisterResponse.class,
+                response -> {
+                    showAlert("Success", "ثبت نام با موفقیت انجام شد! شناسه کاربری: " + response.getUserId() + "\nتوکن: " + response.getToken());
+                    navigateToSignInView(submitButton);
+                },
+                (statusCode, errorMessage) -> {
+                    showAlert("Registration Failed", errorMessage);
+                }
+        );
     }
 }
