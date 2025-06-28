@@ -24,7 +24,7 @@
         <StackPane alignment="TOP_CENTER" maxHeight="Infinity" maxWidth="Infinity">
             <children>
 
-                <GridPane fx:id="optionalFieldsSection" alignment="CENTER" maxWidth="1.7976931348623157E308" vgap="10">
+                <GridPane fx:id="optionalFieldsSection" alignment="CENTER" maxWidth="1.7976931348623157E308" vgap="10" visible="false">
                     <padding><Insets top="20.0" /></padding>
                     <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="245.39998474121094" minWidth="155.19998779296876" prefWidth="245.39998474121094" />
@@ -98,16 +98,16 @@
                         </ImageView>
                     </children>
                 </GridPane>
-                <GridPane fx:id="requiredFieldsSection" maxHeight="Infinity" maxWidth="Infinity" prefHeight="550.0" prefWidth="775.0" visible="false">
+                <GridPane fx:id="requiredFieldsSection" maxHeight="Infinity" maxWidth="Infinity" prefHeight="550.0" prefWidth="775.0">
                     <columnConstraints>
                         <ColumnConstraints hgrow="ALWAYS" />
                         <ColumnConstraints hgrow="ALWAYS" />
                     </columnConstraints>
                     <rowConstraints>
-                        <RowConstraints maxHeight="130.2" minHeight="123.19999237060546" prefHeight="130.2" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="217.60000762939455" minHeight="165.6" prefHeight="165.6" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="181.8" minHeight="149.8" prefHeight="179.39999999999998" vgrow="ALWAYS" />
-                        <RowConstraints maxHeight="49.400000000000034" minHeight="10.0" prefHeight="40.60000000000002" vgrow="ALWAYS" />
+                        <RowConstraints maxHeight="130.2" minHeight="114.39999237060547" prefHeight="114.39999237060547" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="217.60000762939455" minHeight="122.4" prefHeight="143.80000000000004" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="215.0" minHeight="110.60000000000002" prefHeight="168.0" vgrow="ALWAYS" />
+                        <RowConstraints maxHeight="149.8" minHeight="10.0" prefHeight="124.39999999999998" vgrow="ALWAYS" />
                     </rowConstraints>
                     <children>
                         <Label prefHeight="35.0" prefWidth="100.0" styleClass="my-label" stylesheets="@styles/SignInUpStyles.css" text=" نام کامل" GridPane.columnIndex="1" GridPane.halignment="RIGHT">
@@ -187,12 +187,12 @@
                         </ChoiceBox>
                         <TextArea fx:id="addressArea" maxHeight="Infinity" maxWidth="Infinity" prefHeight="84.0" prefWidth="674.0" styleClass="my-text-area" stylesheets="@styles/SignInUpStyles.css" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.vgrow="ALWAYS">
                             <GridPane.margin>
-                                <Insets bottom="50.0" left="50.0" right="50.0" top="10.0" />
+                                <Insets left="50.0" right="50.0" top="50.0" />
                             </GridPane.margin>
                         </TextArea>
                         <Label prefHeight="35.0" prefWidth="80.0" styleClass="my-label" stylesheets="@styles/SignInUpStyles.css" text="آدرس" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
                             <GridPane.margin>
-                                <Insets right="40.0" top="170.0" />
+                                <Insets right="40.0" top="200.0" />
                             </GridPane.margin>
                      <graphic>
                               <Label text="*" textFill="#bc0101">
@@ -204,12 +204,12 @@
                         </Label>
                         <Button fx:id="nextButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="26.0" prefWidth="150.0" styleClass="my-button" stylesheets="@styles/SignInUpStyles.css" text="اطلاعات تکمیلی" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="3">
                             <GridPane.margin>
-                                <Insets left="30.0" top="35.0" />
+                                <Insets left="30.0" />
                             </GridPane.margin>
                         </Button>
                         <Button fx:id="submitButton" mnemonicParsing="false" prefHeight="26.0" prefWidth="150.0" styleClass="my-button" text="ثبت نام" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
                             <GridPane.margin>
-                                <Insets right="30.0" top="35.0" />
+                                <Insets right="30.0" />
                             </GridPane.margin>
                         </Button>
                         <Hyperlink fx:id="backToLoginLink" text="برگشت به لاگین" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="3">
@@ -217,7 +217,7 @@
                                 <Font name="Vazirmatn Regular" size="18.0" />
                             </font>
                             <GridPane.margin>
-                                <Insets left="70.0" top="140.0" />
+                                <Insets left="70.0" top="100.0" />
                             </GridPane.margin></Hyperlink>
                     </children>
                 </GridPane>
