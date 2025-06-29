@@ -17,6 +17,7 @@ import com.aut.shoomal.entity.user.Seller;
 import com.aut.shoomal.entity.user.User;
 import com.aut.shoomal.entity.food.Food;
 import com.aut.shoomal.entity.menu.Menu;
+import org.hibernate.Session;
 
 import java.util.List;
 import java.util.Optional;
@@ -312,9 +313,9 @@ public class RestaurantManager {
 
     public Restaurant findById(Long restaurantId) {
         Restaurant restaurant = restaurantDao.findById(restaurantId);
-        if (restaurant != null && !restaurant.isApproved()) {
-            return null;
-        }
+    //    if (restaurant != null && !restaurant.isApproved()) {
+    //        return null;
+    //    }
         return restaurant;
     }
 
@@ -347,5 +348,4 @@ public class RestaurantManager {
         boolean approved = (userStatus == UserStatus.APPROVED);
         restaurantDao.updateApprovalStatus(restaurant.getId(), approved);
     }
-
 }

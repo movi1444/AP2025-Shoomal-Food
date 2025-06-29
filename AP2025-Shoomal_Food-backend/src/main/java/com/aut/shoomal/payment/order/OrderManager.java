@@ -8,7 +8,6 @@ import com.aut.shoomal.entity.restaurant.Restaurant;
 import com.aut.shoomal.entity.restaurant.RestaurantManager;
 import com.aut.shoomal.dao.OrderDao;
 import com.aut.shoomal.dto.request.OrderItemRequest;
-import com.aut.shoomal.exceptions.ConflictException;
 import com.aut.shoomal.exceptions.InvalidCouponException;
 import com.aut.shoomal.exceptions.InvalidInputException;
 import com.aut.shoomal.exceptions.NotFoundException;
@@ -87,22 +86,23 @@ public class OrderManager
         return orderDao.findAllWithFilters(search, vendorId, customerId, courierId, status);
     }
 
-
     public Order submitOrder(Long customerId, Long vendorId, Integer couponId,
                              String deliveryAddress, List<OrderItemRequest> items)
     {
         Transaction transaction = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        Session session = null;
+        try {
+            session = HibernateUtil.getSessionFactory().openSession();
             transaction = session.beginTransaction();
             if (items == null || items.isEmpty())
                 throw new InvalidInputException("Order must contain at least one item.");
             if (deliveryAddress == null || deliveryAddress.trim().isEmpty())
                 throw new InvalidInputException("Delivery address required.");
 
-            User customer = userManager.getUserById(customerId);
+            User customer = session.get(User.class, customerId);
             if (customer == null)
                 throw new NotFoundException("Customer with ID " + customerId + " not found.");
-            Restaurant restaurant = restaurantManager.findById(vendorId);
+            Restaurant restaurant = session.get(Restaurant.class, vendorId);
             if (restaurant == null)
                 throw new NotFoundException("Restaurant with ID " + vendorId + " not found.");
 
@@ -110,13 +110,13 @@ public class OrderManager
             List<OrderItem> orderItems = new ArrayList<>();
             for (OrderItemRequest request : items)
             {
-                Food food = foodManager.getFoodById(Long.valueOf(request.getItemId()));
+                Food food = session.get(Food.class, Long.valueOf(request.getItemId()));
                 if (food == null)
                     throw new NotFoundException("Food with ID " + request.getItemId() + "not found.");
                 if (request.getQuantity() <= 0)
                     throw new InvalidInputException("Quantity must be positive.");
                 if (food.getSupply() < request.getQuantity())
-                    throw new ConflictException("Supply is less than the quantity.");
+                    throw new InvalidInputException("Supply is less than the quantity.");
 
                 int priceAtOrder = (int) food.getPrice();
                 OrderItem newItem = new OrderItem(food, request.getQuantity(), null, priceAtOrder);
@@ -177,6 +177,11 @@ public class OrderManager
                 transaction.rollback();
             System.out.println("Order submission failed dou to invalid coupon: " + e.getMessage());
             throw new InvalidInputException("Invalid coupon: " + e.getMessage());
+        } catch (InvalidInputException e) {
+            if (transaction != null)
+                transaction.rollback();
+            System.out.println("Order submission failed dou to invalid input: " + e.getMessage());
+            throw e;
         } catch (NotFoundException e) {
             if (transaction != null)
                 transaction.rollback();
@@ -188,6 +193,9 @@ public class OrderManager
             System.err.println("Order submission failed: " + e.getMessage());
             e.printStackTrace();
             throw new RuntimeException("Failed to submit order: " + e.getMessage(), e);
+        } finally {
+            if (session != null)
+                session.close();
         }
     }
 }

@@ -4,6 +4,7 @@ import com.aut.shoomal.entity.menu.Menu;
 import com.aut.shoomal.entity.restaurant.Restaurant;
 import com.aut.shoomal.entity.user.Seller;
 import com.aut.shoomal.dao.RestaurantDao;
+import com.aut.shoomal.exceptions.NotFoundException;
 import com.aut.shoomal.util.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -12,7 +13,6 @@ import org.hibernate.query.Query;
 import java.util.List;
 
 public class RestaurantDaoImpl extends GenericDaoImpl<Restaurant> implements RestaurantDao {
-
     @Override
     public Restaurant findByName(String name) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -126,5 +126,4 @@ public class RestaurantDaoImpl extends GenericDaoImpl<Restaurant> implements Res
             throw new RuntimeException("Error updating approval status for restaurant with ID: " + restaurantId, e);
         }
     }
-
 }
