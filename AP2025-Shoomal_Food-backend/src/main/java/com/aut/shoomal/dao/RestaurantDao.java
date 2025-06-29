@@ -2,6 +2,7 @@ package com.aut.shoomal.dao;
 
 import com.aut.shoomal.entity.restaurant.Restaurant;
 import com.aut.shoomal.entity.user.Seller;
+import org.hibernate.Session;
 
 import java.util.List;
 
@@ -13,5 +14,4 @@ public interface RestaurantDao extends GenericDao<Restaurant> {
     List<Restaurant> findByOwner(Seller owner);
     List<Restaurant> findAllApproved();
     void updateApprovalStatus(Long id, boolean approved);
-
 }
