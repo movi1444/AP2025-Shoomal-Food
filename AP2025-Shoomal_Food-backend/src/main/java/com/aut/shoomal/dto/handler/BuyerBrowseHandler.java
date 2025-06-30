@@ -17,7 +17,9 @@ import com.aut.shoomal.dto.response.ViewMenuResponse;
 import com.aut.shoomal.exceptions.NotFoundException;
 import com.aut.shoomal.payment.coupon.Coupon;
 import com.aut.shoomal.payment.coupon.CouponManager;
+import com.aut.shoomal.util.HibernateUtil;
 import com.sun.net.httpserver.HttpExchange;
+import org.hibernate.Session;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -193,7 +195,7 @@ public class BuyerBrowseHandler extends AbstractHttpHandler
 
             if (hasPrice)
                 foods = foods.stream()
-                        .filter(food -> String.valueOf(food.getPrice()).equals(price))
+                        .filter(food -> String.valueOf((int)food.getPrice()).equals(price))
                         .toList();
 
             List<ListItemResponse> responses = foods.stream()
@@ -223,8 +225,8 @@ public class BuyerBrowseHandler extends AbstractHttpHandler
 
     private void getMenuByVendorId(HttpExchange exchange, Integer vendorId) throws IOException
     {
-        try {
-            Restaurant restaurant = restaurantManager.findById(Long.valueOf(vendorId));
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Restaurant restaurant = session.get(Restaurant.class, Long.valueOf(vendorId));
             if (restaurant == null)
                 throw new NotFoundException("404 Restaurant with id " + vendorId + " not found or not approved.");
 

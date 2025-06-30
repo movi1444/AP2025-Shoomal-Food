@@ -10,7 +10,12 @@
         <property name="hibernate.connection.password">Shoomal_Project</property>
         <property name="hibernate.dialect">org.hibernate.dialect.MySQL8Dialect</property>
         <property name="hibernate.hbm2ddl.auto">update</property>
-        <property name="hibernate.show_sql">false</property>  <property name="hibernate.format_sql">false</property>
+        <property name="hibernate.show_sql">false</property>
+        <property name="hibernate.format_sql">false</property>
+        <property name="hibernate.connection.provider_class">org.hibernate.hikaricp.internal.HikariCPConnectionProvider</property>
+        <property name="hibernate.hikaricp.minimumIdle">5</property>
+        <property name="hibernate.hikaricp.maximumPoolSize">20</property>
+        <property name="hibernate.hikaricp.idleTimeout">30000</property> <property name="hibernate.hikaricp.connectionTimeout">20000</property> <property name="hibernate.hikaricp.maxLifetime">1800000</property> <property name="hibernate.hikaricp.connectionTestQuery">SELECT 1</property>
         <mapping class="com.aut.shoomal.auth.BlacklistedToken"/>
         <mapping class="com.aut.shoomal.entity.user.User"/>
         <mapping class="com.aut.shoomal.entity.user.Courier"/>
