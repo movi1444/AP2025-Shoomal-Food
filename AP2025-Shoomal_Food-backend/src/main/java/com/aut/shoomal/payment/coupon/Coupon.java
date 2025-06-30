@@ -25,27 +25,24 @@ public class Coupon
 
     @Column(name = "value", nullable = false)
     private Integer value;
-    @Column(name = "min_price", nullable = false)
-    private Integer minPrice;
-    @Column(name = "user_count", nullable = false)
-    private Integer userCount;
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
     @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
+    @Column(name = "scope", nullable = false)
+    private String scope;
 
     public Coupon() {}
 
     public Coupon(String couponCode, CouponType couponType, Integer value,
-                  Integer userCount, Integer minPrice, LocalDate startDate, LocalDate endDate)
+                  LocalDate startDate, LocalDate endDate, String scope)
     {
         this.couponCode = couponCode;
         this.couponType = couponType;
         this.value = value;
-        this.userCount = userCount;
-        this.minPrice = minPrice;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.scope = scope;
     }
 
     public Integer getId()
@@ -76,26 +73,6 @@ public class Coupon
     public void setStartDate(LocalDate startDate)
     {
         this.startDate = startDate;
-    }
-
-    public Integer getUserCount()
-    {
-        return userCount;
-    }
-
-    public void setUserCount(Integer userCount)
-    {
-        this.userCount = userCount;
-    }
-
-    public Integer getMinPrice()
-    {
-        return minPrice;
-    }
-
-    public void setMinPrice(Integer minPrice)
-    {
-        this.minPrice = minPrice;
     }
 
     public Integer getValue()
@@ -136,6 +113,16 @@ public class Coupon
     public void setOrders(Set<Order> orders)
     {
         this.orders = orders;
+    }
+
+    public String getScope()
+    {
+        return scope;
+    }
+
+    public void setScope(String scope)
+    {
+        this.scope = scope;
     }
 
     @Override

@@ -16,13 +16,4 @@ public class ImageToBase64Converter {
         }
     }
 
-    public static void main(String[] args) {
-        String imagePath = "path/to/your/image.png";
-        try {
-            String base64Image = convertImageFileToBase64(imagePath);
-            System.out.println("Base64 Encoded Image:\n" + base64Image);
-        } catch (IOException e) {
-            System.err.println("Error converting image to Base64: " + e.getMessage());
-        }
-    }
 }
