@@ -167,8 +167,6 @@ public class OrderManager
                     OrderStatus.SUBMITTED
             );
 
-            for (OrderItem orderItem : orderItems)
-                order.addOrderItem(orderItem);
             this.createOrder(order, session);
             transaction.commit();
             return order;
