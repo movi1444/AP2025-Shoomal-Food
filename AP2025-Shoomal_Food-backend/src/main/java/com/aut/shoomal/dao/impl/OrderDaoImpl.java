@@ -84,7 +84,7 @@ public class OrderDaoImpl extends GenericDaoImpl<Order> implements OrderDao
     {
         StringBuilder hql = new StringBuilder("from distinct Order o where o.customer.id = :customerId");
         if (search != null && !search.trim().isEmpty())
-            hql.append(" and (lower(o.deliveryAddress) like :search)"); // add more if needed
+            hql.append(" and (lower(o.orderItems.food.name) like :search)");
         if (vendorName != null && !vendorName.trim().isEmpty())
             hql.append(" and lower(o.restaurant.name) like :vendorName");
 
