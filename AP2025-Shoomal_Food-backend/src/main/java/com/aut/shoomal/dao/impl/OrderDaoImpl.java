@@ -11,6 +11,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.JoinType;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class OrderDaoImpl extends GenericDaoImpl<Order> implements OrderDao
     public List<Order> findByVendorId(Integer vendorId)
     {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Query<Order> query = session.createQuery("from Order where restaurant.id = :vendorId", Order.class);
+            Query<Order> query = session.createQuery("SELECT DISTINCT o FROM Order o LEFT JOIN FETCH o.orderItems WHERE o.restaurant.id = :vendorId", Order.class);
             query.setParameter("vendorId", Long.valueOf(vendorId));
             return query.list();
         } catch (Exception e) {
@@ -37,11 +38,17 @@ public class OrderDaoImpl extends GenericDaoImpl<Order> implements OrderDao
             CriteriaQuery<Order> cq = cb.createQuery(Order.class);
             Root<Order> orderRoot = cq.from(Order.class);
 
+            orderRoot.fetch("orderItems", JoinType.LEFT);
+
             List<Predicate> predicates = new ArrayList<>();
+
+            if(search == null||search.isEmpty())
+                System.out.println("nigger");
 
             if (search != null && !search.trim().isEmpty()) {
                 String likePattern = "%" + search.toLowerCase() + "%";
-                predicates.add(cb.like(cb.lower(orderRoot.get("deliveryAddress")), likePattern));
+                predicates.add(cb.like(cb.lower(orderRoot.join("orderItems").get("food").get("name")), likePattern));
+                System.out.println(likePattern);
             }
             if (vendorId != null) {
                 predicates.add(cb.equal(orderRoot.get("restaurant").get("id"), vendorId));
@@ -57,6 +64,7 @@ public class OrderDaoImpl extends GenericDaoImpl<Order> implements OrderDao
             }
 
             cq.where(predicates.toArray(new Predicate[0]));
+            cq.select(orderRoot).distinct(true);
 
             return session.createQuery(cq).getResultList();
         } catch (Exception e) {

@@ -14,8 +14,10 @@ public class AddFoodItemRequest {
     private Integer price;
     @JsonProperty(value = "supply", required = true)
     private Integer supply;
-    @JsonProperty(value = "keywords", required = true)
+    @JsonProperty(value = "categories", required = true)
     private List<String> categories;
+    @JsonProperty(value = "vendor_id", required = true)
+    private Integer vendor_id;
 
     public AddFoodItemRequest(){}
 
@@ -32,4 +34,10 @@ public class AddFoodItemRequest {
     public List<String> getCategories() { return categories; }
     public void setCategories(List<String> categories) { this.categories = categories; }
 
+    public Integer getVendor_id() {
+        return vendor_id;
+    }
+    public void setVendor_id(Integer vendor_id) {
+        this.vendor_id = vendor_id;
+    }
 }
