@@ -94,53 +94,53 @@ public class OrderManager
         try {
             session = HibernateUtil.getSessionFactory().openSession();
             transaction = session.beginTransaction();
-            if (items == null || items.isEmpty())
-                throw new InvalidInputException("Order must contain at least one item.");
-            if (deliveryAddress == null || deliveryAddress.trim().isEmpty())
-                throw new InvalidInputException("Delivery address required.");
 
             User customer = session.get(User.class, customerId);
-            if (customer == null)
-                throw new NotFoundException("Customer with ID " + customerId + " not found.");
+            if (customer == null) throw new NotFoundException("Customer with ID " + customerId + " not found.");
+            if (customer.getRole().getName().equals("seller") || customer.getRole().getName().equals("courier") || customer.getRole().getName().equals("admin"))
+            {
+                throw new InvalidInputException("Customer with ID " + customerId + " is not a buyer.");
+            }
             Restaurant restaurant = session.get(Restaurant.class, vendorId);
-            if (restaurant == null)
-                throw new NotFoundException("Restaurant with ID " + vendorId + " not found.");
+            if (restaurant == null) throw new NotFoundException("Restaurant with ID " + vendorId + " not found.");
+
+            Order order = new Order();
+            order.setRestaurant(restaurant);
+            order.setCustomer(customer);
+            order.setDeliveryAddress(deliveryAddress);
+            order.setOrderStatus(OrderStatus.SUBMITTED);
+
+            Coupon coupon = null;
+            BigDecimal discountAmount = BigDecimal.ZERO;
 
             BigDecimal rawPrice = BigDecimal.ZERO;
-            List<OrderItem> orderItems = new ArrayList<>();
             for (OrderItemRequest request : items)
             {
                 Food food = session.get(Food.class, Long.valueOf(request.getItemId()));
-                if (food == null)
-                    throw new NotFoundException("Food with ID " + request.getItemId() + "not found.");
-                if (request.getQuantity() <= 0)
-                    throw new InvalidInputException("Quantity must be positive.");
-                if (food.getSupply() < request.getQuantity())
-                    throw new InvalidInputException("Supply is less than the quantity.");
+                if (food == null) throw new NotFoundException("Food with ID " + request.getItemId() + " not found.");
+                if (request.getQuantity() <= 0) throw new InvalidInputException("Quantity must be positive.");
+                if (food.getSupply() < request.getQuantity()) throw new InvalidInputException("Supply is less than the quantity.");
 
                 int priceAtOrder = (int) food.getPrice();
                 OrderItem newItem = new OrderItem(food, request.getQuantity(), null, priceAtOrder);
-                orderItems.add(newItem);
+                order.addOrderItem(newItem);
 
                 rawPrice = rawPrice.add(BigDecimal.valueOf(priceAtOrder).multiply(BigDecimal.valueOf(request.getQuantity())));
                 food.setSupply(food.getSupply() - request.getQuantity());
                 foodManager.updateFood(food, session);
             }
 
+            order.setRawPrice(rawPrice.intValue());
+
             BigDecimal taxFee = BigDecimal.valueOf(restaurant.getTaxFee());
             BigDecimal additionalFee = BigDecimal.valueOf(restaurant.getAdditionalFee());
             BigDecimal courierFee = BigDecimal.valueOf(500);
             BigDecimal subtotal = rawPrice.add(taxFee).add(additionalFee).add(courierFee);
 
-            Coupon coupon = null;
-            BigDecimal discountAmount = BigDecimal.ZERO;
-            if (couponId != null)
-            {
+            if (couponId != null) {
                 coupon = couponManager.getCouponById(couponId);
-                if (coupon == null)
-                    throw new NotFoundException("Coupon with ID " + couponId + " not found.");
+                if (coupon == null) throw new NotFoundException("Coupon with ID " + couponId + " not found.");
                 couponManager.validateCoupon(coupon, subtotal.intValue());
-
                 if (coupon.getCouponType().getName().equalsIgnoreCase("fixed"))
                     discountAmount = BigDecimal.valueOf(coupon.getValue());
                 else
@@ -149,51 +149,38 @@ public class OrderManager
                 if (discountAmount.compareTo(subtotal) > 0)
                     discountAmount = subtotal;
                 couponManager.decrementCouponCount(coupon, session);
+                order.setCoupon(coupon);
             }
 
             BigDecimal payPrice = subtotal.subtract(discountAmount);
-            Order order = new Order(
-                    restaurant,
-                    customer,
-                    null,
-                    coupon,
-                    orderItems,
-                    deliveryAddress,
-                    rawPrice.intValue(),
-                    taxFee.intValue(),
-                    additionalFee.intValue(),
-                    courierFee.intValue(),
-                    payPrice.intValue(),
-                    OrderStatus.SUBMITTED
-            );
+            order.setTaxFee(taxFee.intValue());
+            order.setAdditionalFee(additionalFee.intValue());
+            order.setCourierFee(courierFee.intValue());
+            order.setPayPrice(payPrice.intValue());
 
             this.createOrder(order, session);
+
             transaction.commit();
             return order;
         } catch (InvalidCouponException e) {
-            if (transaction != null)
-                transaction.rollback();
-            System.out.println("Order submission failed dou to invalid coupon: " + e.getMessage());
+            if (transaction != null) transaction.rollback();
+            System.out.println("Order submission failed due to invalid coupon: " + e.getMessage());
             throw new InvalidInputException("Invalid coupon: " + e.getMessage());
         } catch (InvalidInputException e) {
-            if (transaction != null)
-                transaction.rollback();
-            System.out.println("Order submission failed dou to invalid input: " + e.getMessage());
+            if (transaction != null) transaction.rollback();
+            System.out.println("Order submission failed due to invalid input: " + e.getMessage());
             throw e;
         } catch (NotFoundException e) {
-            if (transaction != null)
-                transaction.rollback();
+            if (transaction != null) transaction.rollback();
             System.err.println("Order submission failed. Resource not found: " + e.getMessage());
             throw e;
         } catch (Exception e) {
-            if (transaction != null)
-                transaction.rollback();
+            if (transaction != null) transaction.rollback();
             System.err.println("Order submission failed: " + e.getMessage());
             e.printStackTrace();
             throw new RuntimeException("Failed to submit order: " + e.getMessage(), e);
         } finally {
-            if (session != null)
-                session.close();
+            if (session != null) session.close();
         }
     }
 }
