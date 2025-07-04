@@ -117,7 +117,7 @@ public class BuyerBrowseHandler extends AbstractHttpHandler
             if (hasSearch)
                 restaurants = restaurantManager.searchRestaurantByName(search);
             else
-                restaurants = restaurantManager.getAllRestaurants();
+                restaurants = restaurantManager.getAllApprovedRestaurants();
 
             if (hasKeywords)
             {
