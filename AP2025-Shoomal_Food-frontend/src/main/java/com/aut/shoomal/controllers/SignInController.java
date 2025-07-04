@@ -1,5 +1,6 @@
 package com.aut.shoomal.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,10 +13,19 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.scene.layout.StackPane;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.ResourceBundle;
+
+import com.aut.shoomal.dto.request.UserLoginRequest;
+import com.aut.shoomal.dto.response.UserLoginResponse;
+import com.aut.shoomal.dto.response.ApiResponse;
 
 public class SignInController extends AbstractBaseController {
 
@@ -30,6 +40,8 @@ public class SignInController extends AbstractBaseController {
 
     @FXML
     private Hyperlink signUpLink;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -49,8 +61,61 @@ public class SignInController extends AbstractBaseController {
         System.out.println("Password: " + password);
 
         if (phoneNumber.isEmpty() || password.isEmpty()) {
+            showAlert("خطا", "شماره تلفن و رمز عبور الزامی هستند.");
             System.out.println("Phone number and password are required.");
         } else {
+            authenticateUser(phoneNumber, password);
+        }
+    }
+
+    private void authenticateUser(String phoneNumber, String password) {
+        try {
+            URL url = new URL("https://localhost:8080/auth/login");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setDoOutput(true);
+
+            UserLoginRequest loginRequest = new UserLoginRequest(phoneNumber, password);
+            String jsonInputString = objectMapper.writeValueAsString(loginRequest);
+
+            try (OutputStream os = conn.getOutputStream()) {
+                byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);
+                os.write(input, 0, input.length);
+            }
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
+                    StringBuilder response = new StringBuilder();
+                    String responseLine = null;
+                    while ((responseLine = br.readLine()) != null) {
+                        response.append(responseLine.trim());
+                    }
+                    UserLoginResponse loginResponse = objectMapper.readValue(response.toString(), UserLoginResponse.class);
+                    showAlert("موفقیت", loginResponse.getMessage());
+                    System.out.println("Login successful! Token: " + loginResponse.getToken());
+                }
+            } else {
+                try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getErrorStream(), StandardCharsets.UTF_8))) {
+                    StringBuilder response = new StringBuilder();
+                    String responseLine = null;
+                    while ((responseLine = br.readLine()) != null) {
+                        response.append(responseLine.trim());
+                    }
+                    ApiResponse apiResponse = objectMapper.readValue(response.toString(), ApiResponse.class);
+                    showAlert("ورود ناموفق", apiResponse.getError() != null ? apiResponse.getError() : apiResponse.getMessage());
+                    System.err.println("Login failed: " + (apiResponse.getError() != null ? apiResponse.getError() : apiResponse.getMessage()));
+                }
+            }
+        } catch (IOException e) {
+            showAlert("خطای شبکه", "نمی توان به سرور متصل شد. لطفا اتصال اینترنت خود را بررسی کنید.");
+            System.err.println("Network or IO error during login: " + e.getMessage());
+            e.printStackTrace();
+        } catch (Exception e) {
+            showAlert("خطایی رخ داد", "هنگام ورود به سیستم خطای غیرمنتظره ای رخ داد.");
+            System.err.println("An unexpected error occurred: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 

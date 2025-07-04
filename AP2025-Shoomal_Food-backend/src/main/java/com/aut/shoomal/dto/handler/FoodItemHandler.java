@@ -82,9 +82,9 @@ public class FoodItemHandler extends AbstractHttpHandler {
         }
     }
 
-    private void handleAddFoodItem(HttpExchange exchange, User authenticatedUser, Integer restaurantId) throws IOException {
+    private void handleAddFoodItem(HttpExchange exchange, User authenticatedUser, Integer restaurantIdFromPath) throws IOException {
         if (!checkHttpMethod(exchange, "POST")) return;
-        if (!restaurantManager.isOwner(restaurantId, String.valueOf(authenticatedUser.getId()))) {
+        if (!restaurantManager.isOwner(restaurantIdFromPath, String.valueOf(authenticatedUser.getId()))) {
             sendResponse(exchange, HttpURLConnection.HTTP_FORBIDDEN, new ApiResponse(false, "Forbidden request: Not the owner of this restaurant."));
             return;
         }
@@ -96,18 +96,30 @@ public class FoodItemHandler extends AbstractHttpHandler {
             sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "Invalid input: name, description, price, supply, and categories are required."));
             return;
         }
-        Food newFoodItem = foodManager.addFoodItem(restaurantId, request, String.valueOf(authenticatedUser.getId()));
+
+        if (request.getVendor_id() == null || !request.getVendor_id().equals(restaurantIdFromPath)) {
+            throw new InvalidInputException("Vendor ID in request body must match restaurant ID in path.");
+        }
+
+        Food newFoodItem = foodManager.addFoodItem(restaurantIdFromPath, request, String.valueOf(authenticatedUser.getId()));
         sendResponse(exchange, HttpURLConnection.HTTP_OK, new ApiResponse(true, "Food item added successfully", convertToFoodItemResponse(newFoodItem)));
     }
 
-    private void handleUpdateFoodItem(HttpExchange exchange, User authenticatedUser, Integer restaurantId, Integer itemId) throws IOException {
+    private void handleUpdateFoodItem(HttpExchange exchange, User authenticatedUser, Integer restaurantIdFromPath, Integer itemId) throws IOException {
         if (!checkHttpMethod(exchange, "PUT")) return;
-        if (!restaurantManager.isOwner(restaurantId, String.valueOf(authenticatedUser.getId()))) {
+        if (!restaurantManager.isOwner(restaurantIdFromPath, String.valueOf(authenticatedUser.getId()))) {
             sendResponse(exchange, HttpURLConnection.HTTP_FORBIDDEN, new ApiResponse(false, "Forbidden request: Not the owner of this restaurant."));
             return;
         }
         UpdateFoodItemRequest request = parseRequestBody(exchange, UpdateFoodItemRequest.class);
-        Food updatedFoodItem = foodManager.updateFoodItem(restaurantId, itemId, request, String.valueOf(authenticatedUser.getId()));
+        if (request == null) { 
+            sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "Invalid input: Request body is empty."));
+            return;
+        }
+        if (request.getVendor_id() != null && !request.getVendor_id().equals(restaurantIdFromPath)) {
+            throw new InvalidInputException("Vendor ID in request body must match restaurant ID in path.");
+        }
+        Food updatedFoodItem = foodManager.updateFoodItem(restaurantIdFromPath, itemId, request, String.valueOf(authenticatedUser.getId()));
         sendResponse(exchange, HttpURLConnection.HTTP_OK, new ApiResponse(true, "Food item updated successfully", convertToFoodItemResponse(updatedFoodItem)));
     }
 

@@ -11,6 +11,7 @@ import com.aut.shoomal.dto.response.BankInfoResponse;
 import com.aut.shoomal.dto.response.OrderResponse;
 import com.aut.shoomal.dto.response.RestaurantResponse;
 import com.aut.shoomal.dto.response.UserResponse;
+import com.aut.shoomal.dto.response.TransactionResponse;
 import com.aut.shoomal.exceptions.ConflictException;
 import com.aut.shoomal.exceptions.InvalidInputException;
 import com.aut.shoomal.exceptions.NotFoundException;
@@ -27,9 +28,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.logging.Logger;
+
 
 public class AdminHandler extends AbstractHttpHandler {
-
+    private static final Logger logger = Logger.getLogger(AdminHandler.class.getName());
     private final UserManager userManager;
     private final BlacklistedTokenDao blacklistedTokenDao;
     private final OrderManager orderManager;
@@ -172,10 +175,26 @@ public class AdminHandler extends AbstractHttpHandler {
         }
     }
 
-    private void handleListAllTransactions(HttpExchange exchange) throws IOException {
+    public void handleListAllTransactions(HttpExchange exchange) throws IOException {
         try {
             List<PaymentTransaction> transactions = transactionManager.getAllTransactions();
-            sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, transactions);
+            List<TransactionResponse> transactionResponses = transactions.stream()
+                    .map(transaction -> {
+                        Long userId = (transaction.getUser() != null) ? transaction.getUser().getId() : null;
+                        Integer orderId = (transaction.getOrder() != null) ? transaction.getOrder().getId() : null;
+
+                        return new TransactionResponse(
+                                transaction.getId(),
+                                transaction.getAmount(),
+                                transaction.getStatus().toString(),
+                                transaction.getTransactionTime().toString(),
+                                transaction.getMethod().toString(),
+                                orderId,
+                                userId
+                        );
+                    })
+                    .collect(Collectors.toList());
+            sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, transactionResponses);
         } catch (Exception e) {
             System.err.println("An unexpected error occurred during GET /admin/transactions: " + e.getMessage());
             e.printStackTrace();
