@@ -1,4 +1,5 @@
 package com.aut.shoomal.dao.impl;
+import com.aut.shoomal.entity.restaurant.Restaurant;
 import com.aut.shoomal.entity.user.Courier;
 import com.aut.shoomal.entity.user.User;
 import com.aut.shoomal.dao.UserDao;
@@ -71,7 +72,7 @@ public class UserDaoImpl extends GenericDaoImpl<User> implements UserDao
         }
     }
     @Override
-    public void updateApprovalStatusC(Long id, boolean approved) {
+    public void updateApprovalStatus(Long id, boolean approved) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
@@ -95,5 +96,4 @@ public class UserDaoImpl extends GenericDaoImpl<User> implements UserDao
             throw new RuntimeException("Error updating approval status for user with ID: " + id, e);
         }
     }
-
 }

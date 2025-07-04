@@ -49,6 +49,8 @@ public class RatingManager
     public Rating submitRating(Integer orderId, Integer ratingNumber, Long userId, String comment, String image)
     {
         try {
+            if (orderId == null)
+                throw new InvalidInputException("orderId required.");
             Order order = orderManager.findOrderById(orderId);
             User user = userManager.getUserById(userId);
             if (order == null)
