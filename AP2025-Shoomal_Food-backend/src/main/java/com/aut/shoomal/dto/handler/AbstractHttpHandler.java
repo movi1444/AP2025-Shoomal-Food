@@ -8,6 +8,7 @@ import com.aut.shoomal.exceptions.InvalidInputException;
 import com.aut.shoomal.exceptions.UnauthorizedException;
 import com.aut.shoomal.util.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
@@ -25,10 +26,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.Map;
 import java.util.stream.Collectors;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 public abstract class AbstractHttpHandler implements HttpHandler
 {
-    protected final ObjectMapper mapper = new ObjectMapper();
+    protected final ObjectMapper mapper;
+
+    public AbstractHttpHandler() {
+        this.mapper = new ObjectMapper();
+        this.mapper.registerModule(new JavaTimeModule());
+        this.mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    }
 
     protected <T> T parseRequestBody(HttpExchange exchange, Class<T> clazz) throws IOException
     {

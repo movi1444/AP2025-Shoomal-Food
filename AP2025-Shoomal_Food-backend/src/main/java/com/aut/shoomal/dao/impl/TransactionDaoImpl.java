@@ -23,4 +23,14 @@ public class TransactionDaoImpl extends GenericDaoImpl<PaymentTransaction> imple
             return null;
         }
     }
+    @Override
+    public List<PaymentTransaction> findAll() {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.createQuery("from PaymentTransaction", PaymentTransaction.class).list();
+        } catch (Exception e) {
+            System.err.println("Error listing all payment transactions: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
 }
