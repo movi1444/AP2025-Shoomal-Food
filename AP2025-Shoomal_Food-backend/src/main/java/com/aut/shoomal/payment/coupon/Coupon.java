@@ -3,7 +3,8 @@ package com.aut.shoomal.payment.coupon;
 import com.aut.shoomal.payment.order.Order;
 import jakarta.persistence.*;
 
-import java.time.LocalDate;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Set;
 
@@ -24,25 +25,28 @@ public class Coupon
     private Set<Order> orders;
 
     @Column(name = "value", nullable = false)
-    private Integer value;
+    private BigDecimal value;
+    @Column(name = "min_price", nullable = false)
+    private Integer minPrice;
+    @Column(name = "user_count", nullable = false)
+    private Integer userCount;
     @Column(name = "start_date", nullable = false)
-    private LocalDate startDate;
+    private LocalDateTime startDate;
     @Column(name = "end_date", nullable = false)
-    private LocalDate endDate;
-    @Column(name = "scope", nullable = false)
-    private String scope;
+    private LocalDateTime endDate;
 
     public Coupon() {}
 
-    public Coupon(String couponCode, CouponType couponType, Integer value,
-                  LocalDate startDate, LocalDate endDate, String scope)
+    public Coupon(String couponCode, CouponType couponType, BigDecimal value, Integer minPrice, Integer userCount,
+                  LocalDateTime startDate, LocalDateTime endDate)
     {
         this.couponCode = couponCode;
         this.couponType = couponType;
         this.value = value;
+        this.minPrice = minPrice;
+        this.userCount = userCount;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.scope = scope;
     }
 
     public Integer getId()
@@ -55,34 +59,54 @@ public class Coupon
         this.id = id;
     }
 
-    public LocalDate getEndDate()
+    public LocalDateTime getEndDate()
     {
         return endDate;
     }
 
-    public void setEndDate(LocalDate endDate)
+    public void setEndDate(LocalDateTime endDate)
     {
         this.endDate = endDate;
     }
 
-    public LocalDate getStartDate()
+    public LocalDateTime getStartDate()
     {
         return startDate;
     }
 
-    public void setStartDate(LocalDate startDate)
+    public void setStartDate(LocalDateTime startDate)
     {
         this.startDate = startDate;
     }
 
-    public Integer getValue()
+    public BigDecimal getValue()
     {
         return value;
     }
 
-    public void setValue(Integer value)
+    public void setValue(BigDecimal value)
     {
         this.value = value;
+    }
+
+    public Integer getMinPrice()
+    {
+        return minPrice;
+    }
+
+    public void setMinPrice(Integer minPrice)
+    {
+        this.minPrice = minPrice;
+    }
+
+    public Integer getUserCount()
+    {
+        return userCount;
+    }
+
+    public void setUserCount(Integer userCount)
+    {
+        this.userCount = userCount;
     }
 
     public CouponType getCouponType()
@@ -113,16 +137,6 @@ public class Coupon
     public void setOrders(Set<Order> orders)
     {
         this.orders = orders;
-    }
-
-    public String getScope()
-    {
-        return scope;
-    }
-
-    public void setScope(String scope)
-    {
-        this.scope = scope;
     }
 
     @Override

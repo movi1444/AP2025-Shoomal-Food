@@ -94,7 +94,9 @@ public class BuyerFavoriteHandler extends AbstractHttpHandler
                             restaurant.getName(),
                             restaurant.getAddress(),
                             restaurant.getPhone(),
-                            restaurant.getLogoBase64()
+                            restaurant.getLogoBase64(),
+                            restaurant.getTaxFee(),
+                            restaurant.getAdditionalFee()
                     ))
                     .toList();
             sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, responses);

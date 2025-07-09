@@ -127,7 +127,8 @@ public class BuyerBrowseHandler extends AbstractHttpHandler
                     for (String keyword : keywords)
                     {
                         List<Food> foodsMatching = foodManager.getFoodsByRestaurantId(restaurant.getId()).stream()
-                                .filter(food -> food.getCategories().stream().anyMatch(cat -> cat.equalsIgnoreCase(keyword)))
+                                .filter(food -> food.getCategories().stream()
+                                        .anyMatch(cat -> cat.equalsIgnoreCase(keyword)))
                                 .toList();
                         if (foodsMatching.isEmpty())
                         {
@@ -143,13 +144,8 @@ public class BuyerBrowseHandler extends AbstractHttpHandler
                 finalResult = restaurants;
 
             List<RestaurantResponse> responses = finalResult.stream()
-                    .map(r -> new RestaurantResponse(
-                            r.getId(),
-                            r.getName(),
-                            r.getAddress(),
-                            r.getPhone(),
-                            r.getLogoBase64()
-                    )).toList();
+                    .map(this::generateResponse)
+                    .toList();
             sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, responses);
         } catch (IOException e) {
             System.err.println("Error parsing request body: " + e.getMessage());
@@ -174,12 +170,12 @@ public class BuyerBrowseHandler extends AbstractHttpHandler
 
             List<Food> foods;
             String search = requestBody.getSearch();
-            String price = requestBody.getPrice();
+            Integer price = requestBody.getPrice();
             List<String> keywords = requestBody.getKeywords();
 
             boolean hasSearch = (search != null) && (!search.trim().isEmpty());
             boolean hasKeywords = (keywords != null) && (!keywords.isEmpty());
-            boolean hasPrice = (price != null) && (!price.trim().isEmpty());
+            boolean hasPrice = (price != null);
 
             if (hasSearch)
                 foods = foodManager.searchFoodByName(search);
@@ -195,7 +191,7 @@ public class BuyerBrowseHandler extends AbstractHttpHandler
 
             if (hasPrice)
                 foods = foods.stream()
-                        .filter(food -> String.valueOf((int)food.getPrice()).equals(price))
+                        .filter(food -> (int)food.getPrice() >= price)
                         .toList();
 
             List<ListItemResponse> responses = foods.stream()
@@ -230,6 +226,8 @@ public class BuyerBrowseHandler extends AbstractHttpHandler
             if (restaurant == null)
                 throw new NotFoundException("404 Restaurant with id " + vendorId + " not found or not approved.");
 
+            RestaurantResponse vendor = this.generateResponse(restaurant);
+
             List<String> categories = restaurant.getMenus().stream()
                     .map(Menu::getTitle)
                     .distinct()
@@ -248,7 +246,7 @@ public class BuyerBrowseHandler extends AbstractHttpHandler
                     ))
                     .toList();
 
-            ViewMenuResponse response = new ViewMenuResponse(categories, foods);
+            ViewMenuResponse response = new ViewMenuResponse(vendor, categories, foods);
             sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, response);
         } catch (NotFoundException e) {
             System.err.println("Restaurant not found: " + e.getMessage());
@@ -309,5 +307,18 @@ public class BuyerBrowseHandler extends AbstractHttpHandler
             e.printStackTrace();
             sendResponse(exchange, HttpURLConnection.HTTP_INTERNAL_ERROR, new ApiResponse(false, "500 Internal Server Error: " + e.getMessage()));
         }
+    }
+
+    private RestaurantResponse generateResponse(Restaurant r)
+    {
+        return new RestaurantResponse(
+                r.getId(),
+                r.getName(),
+                r.getAddress(),
+                r.getPhone(),
+                r.getLogoBase64(),
+                r.getTaxFee(),
+                r.getAdditionalFee()
+        );
     }
 }
