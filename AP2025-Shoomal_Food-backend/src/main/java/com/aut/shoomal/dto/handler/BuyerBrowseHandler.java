@@ -1,5 +1,6 @@
 package com.aut.shoomal.dto.handler;
 
+import com.aut.shoomal.dto.response.*;
 import com.aut.shoomal.entity.user.User;
 import com.aut.shoomal.entity.user.UserManager;
 import com.aut.shoomal.entity.food.Food;
@@ -10,10 +11,6 @@ import com.aut.shoomal.entity.restaurant.RestaurantManager;
 import com.aut.shoomal.dao.BlacklistedTokenDao;
 import com.aut.shoomal.dto.request.ListItemRequest;
 import com.aut.shoomal.dto.request.ListVendorsRequest;
-import com.aut.shoomal.dto.response.ApiResponse;
-import com.aut.shoomal.dto.response.ListItemResponse;
-import com.aut.shoomal.dto.response.RestaurantResponse;
-import com.aut.shoomal.dto.response.ViewMenuResponse;
 import com.aut.shoomal.exceptions.NotFoundException;
 import com.aut.shoomal.payment.coupon.Coupon;
 import com.aut.shoomal.payment.coupon.CouponManager;
@@ -298,7 +295,17 @@ public class BuyerBrowseHandler extends AbstractHttpHandler
             Coupon coupon = couponManager.getCouponByCode(couponCode);
             if (coupon == null)
                 throw new NotFoundException("404 Coupon with code " + couponCode + " not found.");
-            sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, coupon);
+            CouponResponse couponResponse = new CouponResponse(
+                    coupon.getId(),
+                    coupon.getCouponCode(),
+                    coupon.getCouponType().getName(),
+                    coupon.getValue(),
+                    coupon.getMinPrice(),
+                    coupon.getUserCount(),
+                    coupon.getStartDate(),
+                    coupon.getEndDate()
+            );
+            sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, couponResponse);
         } catch (NotFoundException e) {
             System.err.println(e.getMessage());
             sendResponse(exchange, HttpURLConnection.HTTP_NOT_FOUND, new ApiResponse(false, e.getMessage()));

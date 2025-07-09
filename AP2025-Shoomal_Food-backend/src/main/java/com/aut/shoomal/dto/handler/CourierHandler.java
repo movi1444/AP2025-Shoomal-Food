@@ -194,6 +194,7 @@ public class CourierHandler extends AbstractHttpHandler {
                 (order.getCoupon() != null) ? order.getCoupon().getId() : null,
                 order.getOrderItems().stream().map(item -> Math.toIntExact(item.getFood().getId())).toList(),
                 order.getRawPrice(),
+                order.getAdditionalFee(),
                 order.getTaxFee(),
                 order.getCourierFee(),
                 order.getPayPrice(),

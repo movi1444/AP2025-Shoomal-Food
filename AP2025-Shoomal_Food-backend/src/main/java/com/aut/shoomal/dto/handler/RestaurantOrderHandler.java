@@ -187,6 +187,7 @@ public class RestaurantOrderHandler extends AbstractHttpHandler {
                 (order.getCoupon() != null) ? order.getCoupon().getId() : null,
                 order.getOrderItems().stream().map(item -> item.getFood().getId().intValue()).toList(),
                 order.getRawPrice(),
+                order.getAdditionalFee(),
                 order.getTaxFee(),
                 order.getCourierFee(),
                 order.getPayPrice(),
