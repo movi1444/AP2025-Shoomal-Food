@@ -1,13 +1,12 @@
-package com.aut.shoomal.dto.response;
+package com.aut.shoomal.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-public class CouponResponse
+public class CreateCouponRequest
 {
-    private Integer id;
     @JsonProperty("coupon_code")
     private String couponCode;
     private String type;
@@ -21,12 +20,11 @@ public class CouponResponse
     @JsonProperty("end_date")
     private String endDate;
 
-    public CouponResponse() {}
+    public CreateCouponRequest() {}
 
-    public CouponResponse(Integer id, String couponCode, String type, BigDecimal value, Integer minPrice, Integer userCount,
+    public CreateCouponRequest(String couponCode, String type, BigDecimal value, Integer minPrice, Integer userCount,
                           LocalDateTime startDate, LocalDateTime endDate)
     {
-        this.id = id;
         this.couponCode = couponCode;
         this.type = type;
         this.value = value;
@@ -34,14 +32,6 @@ public class CouponResponse
         this.userCount = userCount;
         this.startDate = (startDate != null) ? startDate.toString() : null;
         this.endDate = (endDate != null) ? endDate.toString() : null;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getCouponCode() {

@@ -1,6 +1,6 @@
 package com.aut.shoomal.dto.handler;
 
-import com.aut.shoomal.dto.request.CreateDiscountRequest;
+import com.aut.shoomal.dto.request.CreateCouponRequest;
 import com.aut.shoomal.entity.user.User;
 import com.aut.shoomal.entity.user.UserManager;
 import com.aut.shoomal.dao.BlacklistedTokenDao;
@@ -101,9 +101,9 @@ public class AdminDiscountHandler extends AbstractHttpHandler {
         if (!checkHttpMethod(exchange, "POST")) return;
         if (!checkContentType(exchange)) return;
 
-        CreateDiscountRequest requestBody;
+        CreateCouponRequest requestBody;
         try {
-            requestBody = parseRequestBody(exchange, CreateDiscountRequest.class);
+            requestBody = parseRequestBody(exchange, CreateCouponRequest.class);
             if (requestBody == null) {
                 sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST,
                         new ApiResponse(false, "400 Invalid input: Request body is empty."));
@@ -117,13 +117,15 @@ public class AdminDiscountHandler extends AbstractHttpHandler {
 
         try {
             Coupon newCoupon = couponManager.createCoupon(
+                    requestBody.getCouponCode(),
                     requestBody.getType(),
                     requestBody.getValue(),
                     requestBody.getStartDate(),
                     requestBody.getEndDate(),
-                    requestBody.getScope()
+                    requestBody.getUserCount(),
+                    requestBody.getMinPrice()
             );
-            sendResponse(exchange, HttpURLConnection.HTTP_CREATED, new ApiResponse(true, "Coupon created successfully", convertToCouponResponse(newCoupon)));
+            sendRawJsonResponse(exchange, HttpURLConnection.HTTP_CREATED, convertToCouponResponse(newCoupon));
         } catch (InvalidCouponException e) {
             sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid input: " + e.getMessage()));
         } catch (ServiceUnavailableException e) {
@@ -154,12 +156,15 @@ public class AdminDiscountHandler extends AbstractHttpHandler {
     }
 
     private CouponResponse convertToCouponResponse(Coupon coupon) {
-        if (coupon == null) return null;
+        if (coupon == null)
+            return null;
         return new CouponResponse(
                 coupon.getId(),
                 coupon.getCouponCode(),
                 coupon.getCouponType().getName(),
                 coupon.getValue(),
+                coupon.getMinPrice(),
+                coupon.getUserCount(),
                 coupon.getStartDate(),
                 coupon.getEndDate()
         );

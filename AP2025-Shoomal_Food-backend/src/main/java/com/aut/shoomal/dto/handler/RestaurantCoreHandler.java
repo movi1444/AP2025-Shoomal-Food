@@ -139,7 +139,9 @@ public class RestaurantCoreHandler extends AbstractHttpHandler {
                 restaurant.getName(),
                 restaurant.getAddress(),
                 restaurant.getPhone(),
-                restaurant.getLogoBase64()
+                restaurant.getLogoBase64(),
+                restaurant.getTaxFee(),
+                restaurant.getAdditionalFee()
         );
     }
 }
