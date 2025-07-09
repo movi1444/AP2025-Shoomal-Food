@@ -125,22 +125,7 @@ public class BuyerOrderHandler extends AbstractHttpHandler
                     requestBody.getItems()
             );
 
-            OrderResponse response = new OrderResponse(
-                    order.getId(),
-                    order.getDeliveryAddress(),
-                    Math.toIntExact(customerId),
-                    requestBody.getVendorId(),
-                    (order.getCourier() != null) ? Math.toIntExact(order.getCourier().getId()) : null,
-                    (order.getCoupon() != null) ? order.getCoupon().getId() : null,
-                    requestBody.getItems().stream().map(OrderItemRequest::getItemId).toList(),
-                    order.getRawPrice(),
-                    order.getTaxFee(),
-                    order.getCourierFee(),
-                    order.getPayPrice(),
-                    order.getOrderStatus().getName(),
-                    order.getCreatedAt().toString(),
-                    order.getUpdatedAt().toString()
-            );
+            OrderResponse response = this.createResponse(order);
             sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, response);
         } catch (IOException e) {
             System.err.println("Error parsing request body: Malformed JSON in request body.");
@@ -338,6 +323,7 @@ public class BuyerOrderHandler extends AbstractHttpHandler
                 (order.getCoupon() != null) ? order.getCoupon().getId() : null,
                 order.getOrderItems().stream().map(item -> Math.toIntExact(item.getFood().getId())).toList(),
                 order.getRawPrice(),
+                order.getAdditionalFee(),
                 order.getTaxFee(),
                 order.getCourierFee(),
                 order.getPayPrice(),

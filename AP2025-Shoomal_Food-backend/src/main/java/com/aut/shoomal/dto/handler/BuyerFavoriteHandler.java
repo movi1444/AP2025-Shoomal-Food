@@ -112,10 +112,8 @@ public class BuyerFavoriteHandler extends AbstractHttpHandler
 
     private void addOrRemoveFavorite(HttpExchange exchange, Long customerId, Integer restaurantId, boolean isAddOperation) throws IOException
     {
-        Session session;
         Transaction transaction = null;
-        try (Session tempSession = HibernateUtil.getSessionFactory().openSession()) {
-            session = tempSession;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
 
             Restaurant restaurant = session.get(Restaurant.class, Long.valueOf(restaurantId));

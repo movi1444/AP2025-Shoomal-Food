@@ -58,7 +58,7 @@ public class BuyerRatingHandler extends AbstractHttpHandler
             {
                 Optional<Integer> ratingId = extractIdFromPath(path, RATINGS_ID_PATTERN);
                 if (ratingId.isPresent())
-                    getRating(exchange, ratingId.get());
+                    getRatingById(exchange, ratingId.get());
                 else
                     sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid rating ID."));
             }
@@ -139,7 +139,7 @@ public class BuyerRatingHandler extends AbstractHttpHandler
 
     }
 
-    private void getRating(HttpExchange exchange, Integer ratingId)
+    private void getRatingById(HttpExchange exchange, Integer ratingId)
     {
 
     }
