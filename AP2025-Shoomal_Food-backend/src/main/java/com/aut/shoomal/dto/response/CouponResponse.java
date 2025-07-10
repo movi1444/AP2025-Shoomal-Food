@@ -1,14 +1,21 @@
 package com.aut.shoomal.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.time.LocalDate;
 
-public class CouponResponse {
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+public class CouponResponse
+{
     private Integer id;
     @JsonProperty("coupon_code")
     private String couponCode;
     private String type;
+<<<<<<< HEAD
     private Integer value;
+=======
+    private BigDecimal value;
+>>>>>>> a2f6b05ac90114b00207d6b28ffe919b5874949a
     @JsonProperty("min_price")
     private Integer minPrice;
     @JsonProperty("user_count")
@@ -21,7 +28,13 @@ public class CouponResponse {
 
     public CouponResponse() {}
 
+<<<<<<< HEAD
     public CouponResponse(Integer id, String couponCode, String type, Integer value, Integer minPrice, Integer userCount, LocalDate startDate, LocalDate endDate, String scope) {
+=======
+    public CouponResponse(Integer id, String couponCode, String type, BigDecimal value, Integer minPrice, Integer userCount,
+                          LocalDateTime startDate, LocalDateTime endDate)
+    {
+>>>>>>> a2f6b05ac90114b00207d6b28ffe919b5874949a
         this.id = id;
         this.couponCode = couponCode;
         this.type = type;
@@ -57,12 +70,32 @@ public class CouponResponse {
         this.type = type;
     }
 
-    public Integer getValue() {
+    public BigDecimal getValue() {
         return value;
     }
 
-    public void setValue(Integer value) {
+    public void setValue(BigDecimal value) {
         this.value = value;
+    }
+
+    public Integer getMinPrice()
+    {
+        return minPrice;
+    }
+
+    public void setMinPrice(Integer minPrice)
+    {
+        this.minPrice = minPrice;
+    }
+
+    public Integer getUserCount()
+    {
+        return userCount;
+    }
+
+    public void setUserCount(Integer userCount)
+    {
+        this.userCount = userCount;
     }
 
     public String getStartDate() {

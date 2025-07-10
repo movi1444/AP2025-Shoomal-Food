@@ -3,7 +3,8 @@ package com.aut.shoomal.payment.coupon;
 import com.aut.shoomal.payment.order.Order;
 import jakarta.persistence.*;
 
-import java.time.LocalDate;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Set;
 
@@ -24,22 +25,29 @@ public class Coupon
     private Set<Order> orders;
 
     @Column(name = "value", nullable = false)
+<<<<<<< HEAD
     private Integer value;
+=======
+    private BigDecimal value;
+>>>>>>> a2f6b05ac90114b00207d6b28ffe919b5874949a
     @Column(name = "min_price", nullable = false)
     private Integer minPrice;
     @Column(name = "user_count", nullable = false)
     private Integer userCount;
     @Column(name = "start_date", nullable = false)
-    private LocalDate startDate;
+    private LocalDateTime startDate;
     @Column(name = "end_date", nullable = false)
-    private LocalDate endDate;
-    @Column(name = "scope", nullable = false)
-    private String scope;
+    private LocalDateTime endDate;
 
     public Coupon() {}
 
+<<<<<<< HEAD
     public Coupon(String couponCode, CouponType couponType, Integer value, Integer minPrice, Integer userCount,
                   LocalDate startDate, LocalDate endDate, String scope)
+=======
+    public Coupon(String couponCode, CouponType couponType, BigDecimal value, Integer minPrice, Integer userCount,
+                  LocalDateTime startDate, LocalDateTime endDate)
+>>>>>>> a2f6b05ac90114b00207d6b28ffe919b5874949a
     {
         this.couponCode = couponCode;
         this.couponType = couponType;
@@ -48,7 +56,6 @@ public class Coupon
         this.userCount = userCount;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.scope = scope;
     }
 
     public Integer getId()
@@ -61,34 +68,54 @@ public class Coupon
         this.id = id;
     }
 
-    public LocalDate getEndDate()
+    public LocalDateTime getEndDate()
     {
         return endDate;
     }
 
-    public void setEndDate(LocalDate endDate)
+    public void setEndDate(LocalDateTime endDate)
     {
         this.endDate = endDate;
     }
 
-    public LocalDate getStartDate()
+    public LocalDateTime getStartDate()
     {
         return startDate;
     }
 
-    public void setStartDate(LocalDate startDate)
+    public void setStartDate(LocalDateTime startDate)
     {
         this.startDate = startDate;
     }
 
-    public Integer getValue()
+    public BigDecimal getValue()
     {
         return value;
     }
 
-    public void setValue(Integer value)
+    public void setValue(BigDecimal value)
     {
         this.value = value;
+    }
+
+    public Integer getMinPrice()
+    {
+        return minPrice;
+    }
+
+    public void setMinPrice(Integer minPrice)
+    {
+        this.minPrice = minPrice;
+    }
+
+    public Integer getUserCount()
+    {
+        return userCount;
+    }
+
+    public void setUserCount(Integer userCount)
+    {
+        this.userCount = userCount;
     }
 
     public CouponType getCouponType()
@@ -121,6 +148,7 @@ public class Coupon
         this.orders = orders;
     }
 
+<<<<<<< HEAD
     public String getScope()
     {
         return scope;
@@ -147,6 +175,8 @@ public class Coupon
         this.userCount = userCount;
     }
 
+=======
+>>>>>>> a2f6b05ac90114b00207d6b28ffe919b5874949a
     @Override
     public boolean equals(Object o)
     {

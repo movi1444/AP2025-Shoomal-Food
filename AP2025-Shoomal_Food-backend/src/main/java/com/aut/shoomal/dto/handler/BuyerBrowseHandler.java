@@ -1,5 +1,6 @@
 package com.aut.shoomal.dto.handler;
 
+import com.aut.shoomal.dto.response.*;
 import com.aut.shoomal.entity.user.User;
 import com.aut.shoomal.entity.user.UserManager;
 import com.aut.shoomal.entity.food.Food;
@@ -10,10 +11,6 @@ import com.aut.shoomal.entity.restaurant.RestaurantManager;
 import com.aut.shoomal.dao.BlacklistedTokenDao;
 import com.aut.shoomal.dto.request.ListItemRequest;
 import com.aut.shoomal.dto.request.ListVendorsRequest;
-import com.aut.shoomal.dto.response.ApiResponse;
-import com.aut.shoomal.dto.response.ListItemResponse;
-import com.aut.shoomal.dto.response.RestaurantResponse;
-import com.aut.shoomal.dto.response.ViewMenuResponse;
 import com.aut.shoomal.exceptions.NotFoundException;
 import com.aut.shoomal.payment.coupon.Coupon;
 import com.aut.shoomal.payment.coupon.CouponManager;
@@ -117,7 +114,7 @@ public class BuyerBrowseHandler extends AbstractHttpHandler
             if (hasSearch)
                 restaurants = restaurantManager.searchRestaurantByName(search);
             else
-                restaurants = restaurantManager.getAllRestaurants();
+                restaurants = restaurantManager.getAllApprovedRestaurants();
 
             if (hasKeywords)
             {
@@ -127,7 +124,12 @@ public class BuyerBrowseHandler extends AbstractHttpHandler
                     for (String keyword : keywords)
                     {
                         List<Food> foodsMatching = foodManager.getFoodsByRestaurantId(restaurant.getId()).stream()
+<<<<<<< HEAD
                                 .filter(food -> food.getKeywords().stream().anyMatch(cat -> cat.equalsIgnoreCase(keyword)))
+=======
+                                .filter(food -> food.getCategories().stream()
+                                        .anyMatch(cat -> cat.equalsIgnoreCase(keyword)))
+>>>>>>> a2f6b05ac90114b00207d6b28ffe919b5874949a
                                 .toList();
                         if (foodsMatching.isEmpty())
                         {
@@ -143,13 +145,8 @@ public class BuyerBrowseHandler extends AbstractHttpHandler
                 finalResult = restaurants;
 
             List<RestaurantResponse> responses = finalResult.stream()
-                    .map(r -> new RestaurantResponse(
-                            r.getId(),
-                            r.getName(),
-                            r.getAddress(),
-                            r.getPhone(),
-                            r.getLogoBase64()
-                    )).toList();
+                    .map(this::generateResponse)
+                    .toList();
             sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, responses);
         } catch (IOException e) {
             System.err.println("Error parsing request body: " + e.getMessage());
@@ -174,12 +171,12 @@ public class BuyerBrowseHandler extends AbstractHttpHandler
 
             List<Food> foods;
             String search = requestBody.getSearch();
-            String price = requestBody.getPrice();
+            Integer price = requestBody.getPrice();
             List<String> keywords = requestBody.getKeywords();
 
             boolean hasSearch = (search != null) && (!search.trim().isEmpty());
             boolean hasKeywords = (keywords != null) && (!keywords.isEmpty());
-            boolean hasPrice = (price != null) && (!price.trim().isEmpty());
+            boolean hasPrice = (price != null);
 
             if (hasSearch)
                 foods = foodManager.searchFoodByName(search);
@@ -195,7 +192,7 @@ public class BuyerBrowseHandler extends AbstractHttpHandler
 
             if (hasPrice)
                 foods = foods.stream()
-                        .filter(food -> String.valueOf((int)food.getPrice()).equals(price))
+                        .filter(food -> (int)food.getPrice() >= price)
                         .toList();
 
             List<ListItemResponse> responses = foods.stream()
@@ -230,6 +227,8 @@ public class BuyerBrowseHandler extends AbstractHttpHandler
             if (restaurant == null)
                 throw new NotFoundException("404 Restaurant with id " + vendorId + " not found or not approved.");
 
+            RestaurantResponse vendor = this.generateResponse(restaurant);
+
             List<String> categories = restaurant.getMenus().stream()
                     .map(Menu::getTitle)
                     .distinct()
@@ -248,7 +247,7 @@ public class BuyerBrowseHandler extends AbstractHttpHandler
                     ))
                     .toList();
 
-            ViewMenuResponse response = new ViewMenuResponse(categories, foods);
+            ViewMenuResponse response = new ViewMenuResponse(vendor, categories, foods);
             sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, response);
         } catch (NotFoundException e) {
             System.err.println("Restaurant not found: " + e.getMessage());
@@ -300,7 +299,17 @@ public class BuyerBrowseHandler extends AbstractHttpHandler
             Coupon coupon = couponManager.getCouponByCode(couponCode);
             if (coupon == null)
                 throw new NotFoundException("404 Coupon with code " + couponCode + " not found.");
-            sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, coupon);
+            CouponResponse couponResponse = new CouponResponse(
+                    coupon.getId(),
+                    coupon.getCouponCode(),
+                    coupon.getCouponType().getName(),
+                    coupon.getValue(),
+                    coupon.getMinPrice(),
+                    coupon.getUserCount(),
+                    coupon.getStartDate(),
+                    coupon.getEndDate()
+            );
+            sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, couponResponse);
         } catch (NotFoundException e) {
             System.err.println(e.getMessage());
             sendResponse(exchange, HttpURLConnection.HTTP_NOT_FOUND, new ApiResponse(false, e.getMessage()));
@@ -309,5 +318,18 @@ public class BuyerBrowseHandler extends AbstractHttpHandler
             e.printStackTrace();
             sendResponse(exchange, HttpURLConnection.HTTP_INTERNAL_ERROR, new ApiResponse(false, "500 Internal Server Error: " + e.getMessage()));
         }
+    }
+
+    private RestaurantResponse generateResponse(Restaurant r)
+    {
+        return new RestaurantResponse(
+                r.getId(),
+                r.getName(),
+                r.getAddress(),
+                r.getPhone(),
+                r.getLogoBase64(),
+                r.getTaxFee(),
+                r.getAdditionalFee()
+        );
     }
 }

@@ -2,7 +2,11 @@ package com.aut.shoomal.entity.food;
 
 import com.aut.shoomal.entity.restaurant.Restaurant;
 import com.aut.shoomal.payment.order.OrderItem;
+import com.aut.shoomal.rating.Rating;
 import jakarta.persistence.*;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -40,6 +44,9 @@ public class Food {
 
     @OneToMany(mappedBy = "food", fetch = FetchType.LAZY)
     private List<OrderItem> orderItems;
+
+    @OneToMany(mappedBy = "food", fetch = FetchType.LAZY)
+    private List<Rating> ratings = new ArrayList<>();
     public Food() {}
 
     public Food(String name, String description, double price, int supply,
@@ -131,6 +138,26 @@ public class Food {
 
     public void setOrderItems(List<OrderItem> orderItems) {
         this.orderItems = orderItems;
+    }
+
+    public List<Rating> getRatings()
+    {
+        return ratings;
+    }
+
+    public void setRatings(List<Rating> ratings)
+    {
+        this.ratings = ratings;
+    }
+
+    public BigDecimal calculateAverageRating()
+    {
+        BigDecimal sum = BigDecimal.ZERO;
+        if (ratings == null || ratings.isEmpty())
+            return sum;
+        for (Rating rating : ratings)
+            sum = sum.add(BigDecimal.valueOf(rating.getRating()));
+        return sum.divide(BigDecimal.valueOf(ratings.size()), 2, BigDecimal.ROUND_HALF_UP);
     }
 
     @Override

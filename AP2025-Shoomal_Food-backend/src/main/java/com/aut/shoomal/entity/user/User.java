@@ -59,7 +59,7 @@ public abstract class User
     @JoinColumn(name = "wallet_id", unique = true)
     private Wallet wallet;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "user_favorite_restaurants",
             joinColumns = @JoinColumn(name = "user_id"),

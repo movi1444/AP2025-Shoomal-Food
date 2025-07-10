@@ -17,11 +17,9 @@ import com.aut.shoomal.entity.user.Seller;
 import com.aut.shoomal.entity.user.User;
 import com.aut.shoomal.entity.food.Food;
 import com.aut.shoomal.entity.menu.Menu;
-import org.hibernate.Session;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class RestaurantManager {
 
@@ -300,50 +298,41 @@ public class RestaurantManager {
     }
 
     public List<Restaurant> searchRestaurantByName(String restaurantName) {
-        return restaurantDao.searchByName(restaurantName).stream()
-                .filter(Restaurant::isApproved)
-                .collect(Collectors.toList());
-    }
-
-    public List<Restaurant> getAllRestaurants() {
-        return restaurantDao.findAll().stream()
-                .filter(Restaurant::isApproved)
-                .collect(Collectors.toList());
+        return restaurantDao.searchByName(restaurantName);
     }
 
     public Restaurant findById(Long restaurantId) {
         Restaurant restaurant = restaurantDao.findById(restaurantId);
+<<<<<<< HEAD
         //    if (restaurant != null && !restaurant.isApproved()) {
         //        return null;
         //    }
+=======
+        if (restaurant == null || !restaurant.isApproved())
+            return null;
+>>>>>>> a2f6b05ac90114b00207d6b28ffe919b5874949a
         return restaurant;
     }
 
     public void setApprovalStatus(String Id, UserStatus userStatus)
-            throws NotFoundException, ForbiddenException {
-
+            throws NotFoundException, ForbiddenException
+    {
         Long  sellerId = Long.parseLong(Id);
         User user = userDao.findById(sellerId);
-        if (user == null) {
+        if (user == null)
             throw new NotFoundException("User not found.");
-        }
-        if (!(user instanceof Seller)) {
+        if (!(user instanceof Seller seller))
             throw new ForbiddenException("User is not a seller.");
-        }
-
-        Seller seller = (Seller) user;
 
         List<Restaurant> restaurants = restaurantDao.findByOwner(seller);
 
-        if (restaurants == null || restaurants.isEmpty()) {
+        if (restaurants == null || restaurants.isEmpty())
             throw new NotFoundException("No restaurant found for this seller.");
-        }
 
-        Restaurant restaurant = restaurants.get(0);
+        Restaurant restaurant = restaurants.getFirst();
 
-        if (!restaurant.getOwner().getId().equals(sellerId)) {
+        if (!restaurant.getOwner().getId().equals(sellerId))
             throw new ForbiddenException("Seller does not own this restaurant.");
-        }
 
         boolean approved = (userStatus == UserStatus.APPROVED);
         restaurantDao.updateApprovalStatus(restaurant.getId(), approved);

@@ -125,22 +125,7 @@ public class BuyerOrderHandler extends AbstractHttpHandler
                     requestBody.getItems()
             );
 
-            OrderResponse response = new OrderResponse(
-                    order.getId(),
-                    order.getDeliveryAddress(),
-                    Math.toIntExact(customerId),
-                    requestBody.getVendorId(),
-                    (order.getCourier() != null) ? Math.toIntExact(order.getCourier().getId()) : null,
-                    (order.getCoupon() != null) ? order.getCoupon().getId() : null,
-                    requestBody.getItems().stream().map(OrderItemRequest::getItemId).toList(),
-                    order.getRawPrice(),
-                    order.getTaxFee(),
-                    order.getCourierFee(),
-                    order.getPayPrice(),
-                    order.getOrderStatus().getName(),
-                    order.getCreatedAt().toString(),
-                    order.getUpdatedAt().toString()
-            );
+            OrderResponse response = this.createResponse(order);
             sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, response);
         } catch (IOException e) {
             System.err.println("Error parsing request body: Malformed JSON in request body.");
@@ -172,7 +157,7 @@ public class BuyerOrderHandler extends AbstractHttpHandler
             e.printStackTrace();
             sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid input: Malformed JSON in request body."));
         } catch (NotFoundException e) {
-            System.err.println("404 Not found:" + e.getMessage());
+            System.err.println("404 Not found: " + e.getMessage());
             sendResponse(exchange, HttpURLConnection.HTTP_NOT_FOUND, new ApiResponse(false, "404 Not found: " + e.getMessage()));
         } catch (Exception e) {
             System.err.println("An unexpected error occurred during GET /orders/" + orderId);
@@ -336,8 +321,9 @@ public class BuyerOrderHandler extends AbstractHttpHandler
                 Math.toIntExact(order.getRestaurant().getId()),
                 (order.getCourier() != null) ? Math.toIntExact(order.getCourier().getId()) : null,
                 (order.getCoupon() != null) ? order.getCoupon().getId() : null,
-                order.getOrderItems().stream().map(OrderItem::getId).toList(),
+                order.getOrderItems().stream().map(item -> Math.toIntExact(item.getFood().getId())).toList(),
                 order.getRawPrice(),
+                order.getAdditionalFee(),
                 order.getTaxFee(),
                 order.getCourierFee(),
                 order.getPayPrice(),

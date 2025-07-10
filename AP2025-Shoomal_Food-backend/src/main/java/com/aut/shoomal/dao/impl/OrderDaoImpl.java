@@ -90,17 +90,11 @@ public class OrderDaoImpl extends GenericDaoImpl<Order> implements OrderDao
 
     private static StringBuilder getHql(String search, String vendorName)
     {
-        StringBuilder hql = new StringBuilder("from distinct Order o where o.customer.id = :customerId");
+        StringBuilder hql = new StringBuilder("select o from Order o where o.customer.id = :customerId");
         if (search != null && !search.trim().isEmpty())
-            hql.append(" and (lower(o.orderItems.food.name) like :search)");
+            hql.append(" and exists (select oi from OrderItem oi join oi.food f where oi.order.id = o.id and lower(f.name) like :search)");
         if (vendorName != null && !vendorName.trim().isEmpty())
             hql.append(" and lower(o.restaurant.name) like :vendorName");
-
-        hql.append(" left join fetch o.customer");
-        hql.append(" left join fetch o.restaurant");
-        hql.append(" left join fetch o.courier");
-        hql.append(" left join fetch o.coupon");
-        hql.append(" left join fetch o.orderItems");
         return hql;
     }
 }

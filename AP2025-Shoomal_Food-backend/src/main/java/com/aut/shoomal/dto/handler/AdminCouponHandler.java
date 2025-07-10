@@ -132,9 +132,10 @@ public class AdminCouponHandler extends AbstractHttpHandler {
                     requestBody.getUserCount(),
                     requestBody.getStartDate(),
                     requestBody.getEndDate(),
-                    requestBody.getScope()
+                    requestBody.getUserCount(),
+                    requestBody.getMinPrice()
             );
-            sendResponse(exchange, HttpURLConnection.HTTP_CREATED, new ApiResponse(true, "Coupon created successfully", convertToCouponResponse(newCoupon)));
+            sendRawJsonResponse(exchange, HttpURLConnection.HTTP_CREATED, convertToCouponResponse(newCoupon));
         } catch (InvalidCouponException e) {
             sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid input: " + e.getMessage()));
         } catch (ServiceUnavailableException e) {
@@ -244,7 +245,8 @@ public class AdminCouponHandler extends AbstractHttpHandler {
 
 
     private CouponResponse convertToCouponResponse(Coupon coupon) {
-        if (coupon == null) return null;
+        if (coupon == null)
+            return null;
         return new CouponResponse(
                 coupon.getId(),
                 coupon.getCouponCode(),

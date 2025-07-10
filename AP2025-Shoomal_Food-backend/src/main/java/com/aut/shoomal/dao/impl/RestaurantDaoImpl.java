@@ -74,7 +74,7 @@ public class RestaurantDaoImpl extends GenericDaoImpl<Restaurant> implements Res
     public List<Restaurant> searchByName(String partialName) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Query<Restaurant> query = session.createQuery(
-                    "FROM Restaurant WHERE lower(name) LIKE :name", Restaurant.class);
+                    "FROM Restaurant WHERE lower(name) LIKE :name AND approved = true", Restaurant.class);
             query.setParameter("name", "%" + partialName.toLowerCase() + "%");
             return query.getResultList();
         } catch (Exception e) {
@@ -99,7 +99,7 @@ public class RestaurantDaoImpl extends GenericDaoImpl<Restaurant> implements Res
             Query<Restaurant> query = session.createQuery("FROM Restaurant WHERE approved = true", Restaurant.class);
             return query.list();
         } catch (Exception e) {
-            System.err.println("Error finding restaurants approved.");
+            System.err.println("Error finding approved restaurants.");
             e.printStackTrace();
             return null;
         }

@@ -1,18 +1,15 @@
 package com.aut.shoomal.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.List;
 
 public class ListItemRequest
 {
     private String search;
-    @JsonProperty("categories")
     private List<String> keywords;
-    private String price;
+    private Integer price;
     public ListItemRequest() {}
 
-    public ListItemRequest(String search, List<String> keywords, String price)
+    public ListItemRequest(String search, List<String> keywords, Integer price)
     {
         this.search = search;
         this.keywords = keywords;
@@ -39,12 +36,12 @@ public class ListItemRequest
         this.keywords = keywords;
     }
 
-    public String getPrice()
+    public Integer getPrice()
     {
         return price;
     }
 
-    public void setPrice(String price)
+    public void setPrice(Integer price)
     {
         this.price = price;
     }

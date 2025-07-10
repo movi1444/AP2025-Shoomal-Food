@@ -7,6 +7,7 @@ import com.aut.shoomal.payment.transaction.PaymentTransaction;
 import com.aut.shoomal.rating.Rating;
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,8 +59,8 @@ public class Order
     @Column(name = "status", nullable = false)
     private OrderStatus orderStatus;
 
-    @OneToOne(mappedBy = "order")
-    private Rating rating;
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
+    private List<Rating> ratings = new ArrayList<>();
 
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
     private List<PaymentTransaction> transactions = new ArrayList<>();
@@ -220,19 +221,14 @@ public class Order
         this.coupon = coupon;
     }
 
-    public Rating getRating()
+    public List<Rating> getRatings()
     {
-        return rating;
+        return ratings;
     }
 
-    public void setRatings(Rating rating)
+    public void setRatings(List<Rating> ratings)
     {
-        this.rating = rating;
-    }
-
-    public void setRating(Rating rating)
-    {
-        this.rating = rating;
+        this.ratings = ratings;
     }
 
     public List<PaymentTransaction> getTransactions()

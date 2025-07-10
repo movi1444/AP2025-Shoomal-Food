@@ -5,7 +5,9 @@ import com.aut.shoomal.exceptions.InvalidCouponException;
 import com.aut.shoomal.exceptions.ServiceUnavailableException;
 import org.hibernate.Session;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.time.format.DateTimeParseException;
 
@@ -51,7 +53,7 @@ public class CouponManager
     {
         if (coupon == null)
             throw new InvalidCouponException("Coupon is null or does not exist.");
-        LocalDate now = LocalDate.now();
+        LocalDateTime now = LocalDateTime.now();
         if (now.isBefore(coupon.getStartDate()) || now.isAfter(coupon.getEndDate()))
             throw new InvalidCouponException("Coupon has expired.");
         if (totalPrice < coupon.getMinPrice())
@@ -69,13 +71,22 @@ public class CouponManager
         return couponDao.findAll();
     }
 
+<<<<<<< HEAD
     public Coupon createCoupon(String couponCode, String type, Integer value, Integer minPrice, Integer userCount, String startDate, String endDate, String scope)
+=======
+    public Coupon createCoupon(String couponCode, String type, BigDecimal value, String startDate, String endDate,
+                               Integer userCount, Integer minPrice)
+>>>>>>> a2f6b05ac90114b00207d6b28ffe919b5874949a
     {
         StringBuilder errors = new StringBuilder();
 
         if (couponCode == null || couponCode.trim().isEmpty())
+<<<<<<< HEAD
             errors.append(" 'coupon_code' is required.");
 
+=======
+            errors.append(" 'couponCode' is required.");
+>>>>>>> a2f6b05ac90114b00207d6b28ffe919b5874949a
         if (type == null || type.trim().isEmpty())
             errors.append(" 'type' is required.");
 
@@ -90,9 +101,10 @@ public class CouponManager
 
         if (value == null)
             errors.append(" 'value' is required.");
-        else if (value <= 0)
+        else if (value.compareTo(BigDecimal.ZERO) <= 0)
             errors.append(" 'value' must be positive.");
 
+<<<<<<< HEAD
         if (minPrice == null)
             errors.append(" 'min_price' is required.");
         else if (minPrice < 0)
@@ -104,30 +116,38 @@ public class CouponManager
             errors.append(" 'user_count' cannot be negative.");
 
         LocalDate start;
+=======
+        LocalDateTime start;
+>>>>>>> a2f6b05ac90114b00207d6b28ffe919b5874949a
         if (startDate == null || startDate.trim().isEmpty())
             errors.append(" 'start_date' is required.");
         try {
-            start = LocalDate.parse(startDate);
+            start = LocalDateTime.parse(startDate);
         } catch (DateTimeParseException e) {
             throw new InvalidCouponException("Invalid start date.");
         }
 
-        LocalDate end;
+        LocalDateTime end;
         if (endDate == null || endDate.trim().isEmpty())
             errors.append(" 'end_date' is required.");
         try {
-            end = LocalDate.parse(endDate);
+            end = LocalDateTime.parse(endDate);
         } catch (DateTimeParseException e) {
             throw new InvalidCouponException("Invalid end date.");
         }
 
-        if (scope == null || scope.trim().isEmpty())
-            errors.append(" 'scope' is required.");
+        if (userCount == null)
+            errors.append(" 'userCount' is required.");
+        if (minPrice == null)
+            errors.append(" 'minPrice' is required.");
 
         if (!errors.isEmpty())
             throw new InvalidCouponException("400 Invalid input: " + errors);
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> a2f6b05ac90114b00207d6b28ffe919b5874949a
         Coupon coupon = new Coupon(
                 couponCode,
                 couponType,
@@ -135,8 +155,7 @@ public class CouponManager
                 minPrice,
                 userCount,
                 start,
-                end,
-                scope
+                end
         );
         try {
             couponDao.create(coupon);
