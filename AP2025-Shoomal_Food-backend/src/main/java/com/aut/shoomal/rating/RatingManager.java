@@ -8,6 +8,9 @@ import com.aut.shoomal.exceptions.NotFoundException;
 import com.aut.shoomal.payment.order.Order;
 import com.aut.shoomal.payment.order.OrderManager;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
+
+import java.util.List;
 
 public class RatingManager
 {
@@ -31,24 +34,52 @@ public class RatingManager
         ratingDao.create(rating, session);
     }
 
-    public void deleteRating(Integer ratingId)
+    public void deleteRating(Session session, Integer ratingId)
     {
-        ratingDao.delete(Long.valueOf(ratingId));
+        Rating rating = this.findById(ratingId);
+        if (rating == null)
+            throw new NotFoundException("Rating with id " + ratingId + " not found.");
+        session.remove(rating);
     }
 
-    public void updateRating(Rating rating)
+    public void updateRating(Session session, Integer id, Integer ratingNumber, String comment, List<String> images)
     {
-        ratingDao.update(rating);
+        Transaction transaction = null;
+        try {
+            Rating rating = session.get(Rating.class, id);
+            transaction = session.beginTransaction();
+            if (ratingNumber != null)
+            {
+                if (ratingNumber > 5 || ratingNumber < 1)
+                    throw new InvalidInputException("Rating number out of range.");
+                rating.setRating(ratingNumber);
+            }
+
+            if (comment != null)
+                rating.setComment(comment.trim());
+            if (images != null)
+                rating.setImageBase64(images);
+            else if (rating.getImageBase64() != null)
+                rating.setImageBase64(null);
+
+            ratingDao.update(rating, session);
+            transaction.commit();
+        } catch (InvalidInputException e) {
+            if (transaction != null)
+                transaction.rollback();
+            throw e;
+        } catch (Exception e) {
+            if (transaction != null)
+                transaction.rollback();
+            throw new RuntimeException("Update rating failed: " + e.getMessage(), e);
+        }
     }
 
-    public void updateRating(Rating rating, Session session)
-    {
-        ratingDao.update(rating, session);
-    }
-
-    public Rating submitRating(Integer orderId, Integer ratingNumber, Long userId, String comment, String image)
+    public Rating submitRating(Integer orderId, Integer ratingNumber, Long userId, String comment, List<String> image)
     {
         try {
+            if (orderId == null)
+                throw new InvalidInputException("orderId required.");
             Order order = orderManager.findOrderById(orderId);
             User user = userManager.getUserById(userId);
             if (order == null)
@@ -65,7 +96,7 @@ public class RatingManager
 
             return new Rating(
                     order,
-                    (image != null && !image.trim().isEmpty()) ? image : null,
+                    image,
                     comment,
                     ratingNumber,
                     user
@@ -81,5 +112,10 @@ public class RatingManager
             e.printStackTrace();
             throw new RuntimeException("Failed to submit rating: " + e.getMessage(), e);
         }
+    }
+
+    public Rating findById(Integer ratingId)
+    {
+        return ratingDao.findById(Long.valueOf(ratingId));
     }
 }

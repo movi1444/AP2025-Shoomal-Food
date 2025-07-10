@@ -54,6 +54,6 @@ public class UserManager
 
     public void setUserApprovalStatus(String userId, UserStatus userStatus){
         boolean approved = userStatus == UserStatus.APPROVED;
-        userDao.updateApprovalStatusC(Long.parseLong(userId), approved);
+        userDao.updateApprovalStatus(Long.parseLong(userId), approved);
     }
 }

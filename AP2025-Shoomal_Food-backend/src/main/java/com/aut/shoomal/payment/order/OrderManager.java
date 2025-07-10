@@ -110,7 +110,7 @@ public class OrderManager
             order.setDeliveryAddress(deliveryAddress);
             order.setOrderStatus(OrderStatus.SUBMITTED);
 
-            Coupon coupon = null;
+            Coupon coupon;
             BigDecimal discountAmount = BigDecimal.ZERO;
 
             BigDecimal rawPrice = BigDecimal.ZERO;
@@ -142,7 +142,7 @@ public class OrderManager
                 if (coupon == null) throw new NotFoundException("Coupon with ID " + couponId + " not found.");
                 couponManager.validateCoupon(coupon, subtotal.intValue());
                 if (coupon.getCouponType().getName().equalsIgnoreCase("fixed"))
-                    discountAmount = BigDecimal.valueOf(coupon.getValue());
+                    discountAmount = coupon.getValue();
                 else
                     discountAmount = subtotal.multiply(BigDecimal.valueOf(5).divide(BigDecimal.valueOf(100), 2, BigDecimal.ROUND_HALF_UP));
 

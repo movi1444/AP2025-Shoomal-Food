@@ -21,6 +21,8 @@ public class OrderResponse {
     private Integer rawPrice;
     @JsonProperty("tax_fee")
     private Integer taxFee;
+    @JsonProperty("additional_fee")
+    private Integer additionalFee;
     @JsonProperty("courier_fee")
     private Integer courierFee;
     @JsonProperty("pay_price")
@@ -34,7 +36,7 @@ public class OrderResponse {
     public OrderResponse() {}
 
     public OrderResponse(Integer id, String deliveryAddress, Integer customerId, Integer vendorId,
-                         Integer courierId, Integer couponId, List<Integer> items, Integer rawPrice,
+                         Integer courierId, Integer couponId, List<Integer> items, Integer rawPrice, Integer additionalFee,
                          Integer taxFee, Integer courierFee, Integer payPrice,
                          String status, String createdAt, String updatedAt) {
         this.id = id;
@@ -45,6 +47,7 @@ public class OrderResponse {
         this.couponId = couponId;
         this.items = items;
         this.rawPrice = rawPrice;
+        this.additionalFee = additionalFee;
         this.taxFee = taxFee;
         this.courierFee = courierFee;
         this.payPrice = payPrice;
@@ -101,4 +104,12 @@ public class OrderResponse {
     public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
     public String getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(String updatedAt) { this.updatedAt = updatedAt; }
+    public Integer getAdditionalFee()
+    {
+        return additionalFee;
+    }
+    public void setAdditionalFee(Integer additionalFee)
+    {
+        this.additionalFee = additionalFee;
+    }
 }

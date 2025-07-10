@@ -123,20 +123,17 @@ public class AdminHandler extends AbstractHttpHandler {
             if (user == null) throw new NotFoundException("User not found");
 
             String role = user.getRole().getName().toLowerCase();
-            String message;
-
-            switch (role) {
-                case "courier":
+            String message = switch (role) {
+                case "courier" -> {
                     userManager.setUserApprovalStatus(userId.get().toString(), request.getStatus());
-                    message = "Courier status updated";
-                    break;
-                case "seller":
+                    yield "Courier status updated";
+                }
+                case "seller" -> {
                     restaurantManager.setApprovalStatus(userId.get().toString(), request.getStatus());
-                    message = "Seller and restaurant status updated";
-                    break;
-                default:
-                    throw new InvalidInputException("Only sellers/couriers can be approved");
-            }
+                    yield "Seller and restaurant status updated";
+                }
+                default -> throw new InvalidInputException("Only sellers/couriers can be approved");
+            };
 
             sendResponse(exchange, HttpURLConnection.HTTP_OK,
                     new ApiResponse(true, message));
@@ -225,7 +222,9 @@ public class AdminHandler extends AbstractHttpHandler {
                 restaurant.getName(),
                 restaurant.getAddress(),
                 restaurant.getPhone(),
-                restaurant.getLogoBase64()
+                restaurant.getLogoBase64(),
+                restaurant.getTaxFee(),
+                restaurant.getAdditionalFee()
         );
     }
 
@@ -240,6 +239,7 @@ public class AdminHandler extends AbstractHttpHandler {
                 (order.getCoupon() != null) ? order.getCoupon().getId() : null,
                 order.getOrderItems().stream().map(item -> Math.toIntExact(item.getFood().getId())).toList(),
                 order.getRawPrice(),
+                order.getAdditionalFee(),
                 order.getTaxFee(),
                 order.getCourierFee(),
                 order.getPayPrice(),
