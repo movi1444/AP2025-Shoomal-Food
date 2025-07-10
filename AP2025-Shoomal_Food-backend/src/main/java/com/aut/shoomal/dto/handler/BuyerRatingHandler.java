@@ -1,5 +1,6 @@
 package com.aut.shoomal.dto.handler;
 
+import com.aut.shoomal.dto.request.UpdateRatingRequest;
 import com.aut.shoomal.dto.response.ItemRatingResponse;
 import com.aut.shoomal.dto.response.RatingResponse;
 import com.aut.shoomal.dto.response.UpdateRatingResponse;
@@ -209,10 +210,17 @@ public class BuyerRatingHandler extends AbstractHttpHandler
     private void updateRating(HttpExchange exchange, Integer ratingId) throws IOException
     {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            UpdateRatingRequest request = parseRequestBody(exchange, UpdateRatingRequest.class);
+            if (request == null)
+            {
+                sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid input: Request body is empty."));
+                return;
+            }
+
             Rating rating = session.get(Rating.class, ratingId);
             if (rating == null)
                 throw new NotFoundException("Rating with id " + ratingId + " not found.");
-            ratingManager.updateRating(session, ratingId, rating.getRating(), rating.getComment(), rating.getImageBase64());
+            ratingManager.updateRating(session, ratingId, request.getRating(), request.getComment(), request.getImageBase64());
             UpdateRatingResponse response = new UpdateRatingResponse(
                     rating.getId(),
                     (rating.getOrder() != null) ? rating.getOrder().getId() : null,
@@ -223,6 +231,9 @@ public class BuyerRatingHandler extends AbstractHttpHandler
             );
 
             sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, response);
+        } catch (InvalidInputException e) {
+            System.err.println("400 Invalid input: " + e.getMessage());
+            sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid input: " + e.getMessage()));
         } catch (NotFoundException e) {
             System.err.println("404 Resource not found: " + e.getMessage());
             sendResponse(exchange, HttpURLConnection.HTTP_NOT_FOUND, new ApiResponse(false, "404 Resource not found."));
