@@ -76,13 +76,16 @@ public class FoodManager {
         if (!restaurantManager.isOwner(restaurantId, userId)) {
             throw new ForbiddenException("Not authorized to add food item to this restaurant.");
         }
+        if (!restaurant.isApproved()) {
+            throw new ForbiddenException("Restaurant is not yet approved. Please wait for admin approval.");
+        }
 
         Food newFood = new Food();
         newFood.setName(request.getName());
         newFood.setDescription(request.getDescription());
         newFood.setPrice(request.getPrice().doubleValue());
         newFood.setSupply(request.getSupply());
-        newFood.setCategories(request.getCategories());
+        newFood.setKeywords(request.getKeywords());
         newFood.setVendor(restaurant);
 
         foodDao.create(newFood);
@@ -97,6 +100,9 @@ public class FoodManager {
         if (!restaurantManager.isOwner(restaurantId, userId)) {
             throw new ForbiddenException("Not authorized to update food item in this restaurant.");
         }
+        if (!restaurant.isApproved()) {
+            throw new ForbiddenException("Restaurant is not yet approved. Please wait for admin approval.");
+        }
 
         Food existingFood = foodDao.findById((long) itemId);
         if (existingFood == null || !existingFood.getVendor().getId().equals(restaurant.getId())) {
@@ -108,7 +114,7 @@ public class FoodManager {
         if (request.getPrice() != null) existingFood.setPrice(request.getPrice().doubleValue());
         if (request.getSupply() != null) existingFood.setSupply(request.getSupply());
         if (request.getImageBase64() != null) existingFood.setImageBase64(request.getImageBase64());
-        if (request.getCategories() != null && !request.getCategories().isEmpty()) existingFood.setCategories(request.getCategories());
+        if (request.getKeywords() != null && !request.getKeywords().isEmpty()) existingFood.setKeywords(request.getKeywords()); // Changed from getCategories() to getKeywords()
 
         foodDao.update(existingFood);
         return existingFood;
@@ -121,6 +127,9 @@ public class FoodManager {
         }
         if (!restaurantManager.isOwner(restaurantId, userId)) {
             throw new ForbiddenException("Not authorized to delete food item from this restaurant.");
+        }
+        if (!restaurant.isApproved()) {
+            throw new ForbiddenException("Restaurant is not yet approved. Please wait for admin approval.");
         }
 
         Food foodToDelete = foodDao.findById((long) itemId);

@@ -11,7 +11,7 @@ public class ListItemResponse
     @JsonProperty("vendor_id")
     private Integer vendorId;
     private Integer price, supply;
-    @JsonProperty("categories")
+    @JsonProperty("keywords")
     private List<String> keywords;
 
     public ListItemResponse() {}
@@ -37,11 +37,13 @@ public class ListItemResponse
         this.id = id;
     }
 
+    @JsonProperty("keywords")
     public List<String> getKeywords()
     {
         return keywords;
     }
 
+    @JsonProperty("keywords")
     public void setKeywords(List<String> keywords)
     {
         this.keywords = keywords;

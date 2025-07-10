@@ -36,21 +36,21 @@ public class Food {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "food_item_categories", joinColumns = @JoinColumn(name = "food_item_id"))
     @Column(name = "category")
-    private List<String> categories;
+    private List<String> keywords;
 
     @OneToMany(mappedBy = "food", fetch = FetchType.LAZY)
     private List<OrderItem> orderItems;
     public Food() {}
 
     public Food(String name, String description, double price, int supply,
-                    String imageBase64, Restaurant vendor, List<String> categories) {
+                String imageBase64, Restaurant vendor, List<String> keywords) {
         this.name = name;
         this.description = description;
         this.price = price;
         this.supply = supply;
         this.imageBase64 = imageBase64;
         this.vendor = vendor;
-        this.categories = categories;
+        this.keywords = keywords;
     }
 
     public Long getId() {
@@ -60,7 +60,7 @@ public class Food {
     @PrePersist
     @PreUpdate
     private void validateCategories() {
-        if (categories == null || categories.isEmpty()) {
+        if (keywords == null || keywords.isEmpty()) {
             throw new IllegalStateException("Categories list must not be empty");
         }
     }
@@ -117,12 +117,12 @@ public class Food {
         this.vendor = vendor;
     }
 
-    public List<String> getCategories() {
-        return categories;
+    public List<String> getKeywords() {
+        return keywords;
     }
 
-    public void setCategories(List<String> categories) {
-        this.categories = categories;
+    public void setKeywords(List<String> keywords) {
+        this.keywords = keywords;
     }
 
     public List<OrderItem> getOrderItems() {

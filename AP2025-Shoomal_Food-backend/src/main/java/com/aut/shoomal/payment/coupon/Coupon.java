@@ -25,6 +25,10 @@ public class Coupon
 
     @Column(name = "value", nullable = false)
     private Integer value;
+    @Column(name = "min_price", nullable = false)
+    private Integer minPrice;
+    @Column(name = "user_count", nullable = false)
+    private Integer userCount;
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
     @Column(name = "end_date", nullable = false)
@@ -34,12 +38,14 @@ public class Coupon
 
     public Coupon() {}
 
-    public Coupon(String couponCode, CouponType couponType, Integer value,
+    public Coupon(String couponCode, CouponType couponType, Integer value, Integer minPrice, Integer userCount,
                   LocalDate startDate, LocalDate endDate, String scope)
     {
         this.couponCode = couponCode;
         this.couponType = couponType;
         this.value = value;
+        this.minPrice = minPrice;
+        this.userCount = userCount;
         this.startDate = startDate;
         this.endDate = endDate;
         this.scope = scope;
@@ -123,6 +129,22 @@ public class Coupon
     public void setScope(String scope)
     {
         this.scope = scope;
+    }
+
+    public Integer getMinPrice() {
+        return minPrice;
+    }
+
+    public void setMinPrice(Integer minPrice) {
+        this.minPrice = minPrice;
+    }
+
+    public Integer getUserCount() {
+        return userCount;
+    }
+
+    public void setUserCount(Integer userCount) {
+        this.userCount = userCount;
     }
 
     @Override
