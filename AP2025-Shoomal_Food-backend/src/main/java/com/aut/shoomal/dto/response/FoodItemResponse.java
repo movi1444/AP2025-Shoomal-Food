@@ -12,18 +12,18 @@ public class FoodItemResponse {
     private double price;
     private Integer supply;
     @JsonProperty("keywords")
-    private List<String> categories;
+    private List<String> keywords;
 
     public FoodItemResponse() {}
 
-    public FoodItemResponse(Long id, String name, String imageBase64, String description, double price, Integer supply, List<String> categories) {
+    public FoodItemResponse(Long id, String name, String imageBase64, String description, double price, Integer supply, List<String> keywords) { // Changed from 'categories' to 'keywords'
         this.id = id;
         this.name = name;
         this.imageBase64 = imageBase64;
         this.description = description;
         this.price = price;
         this.supply = supply;
-        this.categories = categories;
+        this.keywords = keywords;
     }
 
     public Long getId() { return id; }
@@ -38,6 +38,8 @@ public class FoodItemResponse {
     public void setPrice(Integer price) { this.price = price; }
     public Integer getSupply() { return supply; }
     public void setSupply(Integer supply) { this.supply = supply; }
-    public List<String> getCategories() { return categories; }
-    public void setCategories(List<String> categories) { this.categories = categories; }
+    @JsonProperty("keywords")
+    public List<String> getKeywords() { return keywords; }
+    @JsonProperty("keywords")
+    public void setKeywords(List<String> keywords) { this.keywords = keywords; }
 }

@@ -174,25 +174,36 @@ public class AdminHandler extends AbstractHttpHandler {
 
     public void handleListAllTransactions(HttpExchange exchange) throws IOException {
         try {
-            List<PaymentTransaction> transactions = transactionManager.getAllTransactions();
+            Map<String, String> queryParams = parseQueryParams(exchange);
+            String search = queryParams.get("search");
+            String userId = queryParams.get("user");
+            String method = queryParams.get("method");
+            String status = queryParams.get("status");
+
+
+            List<PaymentTransaction> transactions = transactionManager.getAllTransactions(search, userId, method, status);
             List<TransactionResponse> transactionResponses = transactions.stream()
                     .map(transaction -> {
-                        Long userId = (transaction.getUser() != null) ? transaction.getUser().getId() : null;
+                        Long transactionUserId = (transaction.getUser() != null) ? transaction.getUser().getId() : null;
                         Integer orderId = (transaction.getOrder() != null) ? transaction.getOrder().getId() : null;
 
                         return new TransactionResponse(
                                 transaction.getId(),
                                 transaction.getAmount(),
-                                transaction.getStatus().toString(),
+                                transaction.getStatus().getStatus(),
                                 transaction.getTransactionTime().toString(),
-                                transaction.getMethod().toString(),
+                                transaction.getMethod().getName(),
                                 orderId,
-                                userId
+                                transactionUserId
                         );
                     })
                     .collect(Collectors.toList());
             sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, transactionResponses);
-        } catch (Exception e) {
+        } catch (InvalidInputException e) {
+            System.err.println("400 Invalid input: " + e.getMessage());
+            sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid input: " + e.getMessage()));
+        }
+        catch (Exception e) {
             System.err.println("An unexpected error occurred during GET /admin/transactions: " + e.getMessage());
             e.printStackTrace();
             sendResponse(exchange, HttpURLConnection.HTTP_INTERNAL_ERROR, new ApiResponse(false, "500 Internal Server Error: An unexpected error occurred."));

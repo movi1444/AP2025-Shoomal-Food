@@ -92,8 +92,8 @@ public class FoodItemHandler extends AbstractHttpHandler {
         if (request == null || request.getName() == null || request.getName().trim().isEmpty() ||
                 request.getDescription() == null || request.getDescription().trim().isEmpty() ||
                 request.getPrice() == null || request.getSupply() == null ||
-                request.getCategories() == null || request.getCategories().isEmpty()) {
-            sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "Invalid input: name, description, price, supply, and categories are required."));
+                request.getKeywords() == null || request.getKeywords().isEmpty()) {
+            sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "Invalid input: name, description, price, supply, and keywords are required."));
             return;
         }
 
@@ -112,7 +112,7 @@ public class FoodItemHandler extends AbstractHttpHandler {
             return;
         }
         UpdateFoodItemRequest request = parseRequestBody(exchange, UpdateFoodItemRequest.class);
-        if (request == null) { 
+        if (request == null) {
             sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "Invalid input: Request body is empty."));
             return;
         }
@@ -142,7 +142,7 @@ public class FoodItemHandler extends AbstractHttpHandler {
                 food.getDescription(),
                 (int) food.getPrice(),
                 food.getSupply(),
-                food.getCategories()
+                food.getKeywords()
         );
     }
 }

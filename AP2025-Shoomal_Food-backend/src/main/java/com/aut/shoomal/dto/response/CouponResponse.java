@@ -11,7 +11,11 @@ public class CouponResponse
     @JsonProperty("coupon_code")
     private String couponCode;
     private String type;
+<<<<<<< HEAD
+    private Integer value;
+=======
     private BigDecimal value;
+>>>>>>> a2f6b05ac90114b00207d6b28ffe919b5874949a
     @JsonProperty("min_price")
     private Integer minPrice;
     @JsonProperty("user_count")
@@ -20,12 +24,17 @@ public class CouponResponse
     private String startDate;
     @JsonProperty("end_date")
     private String endDate;
+    private String scope;
 
     public CouponResponse() {}
 
+<<<<<<< HEAD
+    public CouponResponse(Integer id, String couponCode, String type, Integer value, Integer minPrice, Integer userCount, LocalDate startDate, LocalDate endDate, String scope) {
+=======
     public CouponResponse(Integer id, String couponCode, String type, BigDecimal value, Integer minPrice, Integer userCount,
                           LocalDateTime startDate, LocalDateTime endDate)
     {
+>>>>>>> a2f6b05ac90114b00207d6b28ffe919b5874949a
         this.id = id;
         this.couponCode = couponCode;
         this.type = type;
@@ -34,6 +43,7 @@ public class CouponResponse
         this.userCount = userCount;
         this.startDate = (startDate != null) ? startDate.toString() : null;
         this.endDate = (endDate != null) ? endDate.toString() : null;
+        this.scope = scope;
     }
 
     public Integer getId() {
@@ -102,5 +112,29 @@ public class CouponResponse
 
     public void setEndDate(String endDate) {
         this.endDate = endDate;
+    }
+
+    public Integer getMinPrice() {
+        return minPrice;
+    }
+
+    public void setMinPrice(Integer minPrice) {
+        this.minPrice = minPrice;
+    }
+
+    public Integer getUserCount() {
+        return userCount;
+    }
+
+    public void setUserCount(Integer userCount) {
+        this.userCount = userCount;
+    }
+
+    public String getScope() {
+        return scope;
+    }
+
+    public void setScope(String scope) {
+        this.scope = scope;
     }
 }

@@ -135,7 +135,7 @@ public class RestaurantManager {
         newFood.setDescription(request.getDescription());
         newFood.setPrice(request.getPrice().doubleValue());
         newFood.setSupply(request.getSupply());
-        newFood.setCategories(request.getCategories());
+        newFood.setKeywords(request.getKeywords());
         newFood.setVendor(restaurant);
 
         foodDao.create(newFood);
@@ -164,7 +164,7 @@ public class RestaurantManager {
         if (request.getPrice() != null) existingFood.setPrice(request.getPrice().doubleValue());
         if (request.getSupply() != null) existingFood.setSupply(request.getSupply());
         if (request.getImageBase64() != null) existingFood.setImageBase64(request.getImageBase64());
-        if (request.getCategories() != null && !request.getCategories().isEmpty()) existingFood.setCategories(request.getCategories());
+        if (request.getKeywords() != null && !request.getKeywords().isEmpty()) existingFood.setKeywords(request.getKeywords());
 
         foodDao.update(existingFood);
         return existingFood;
@@ -303,8 +303,14 @@ public class RestaurantManager {
 
     public Restaurant findById(Long restaurantId) {
         Restaurant restaurant = restaurantDao.findById(restaurantId);
+<<<<<<< HEAD
+        //    if (restaurant != null && !restaurant.isApproved()) {
+        //        return null;
+        //    }
+=======
         if (restaurant == null || !restaurant.isApproved())
             return null;
+>>>>>>> a2f6b05ac90114b00207d6b28ffe919b5874949a
         return restaurant;
     }
 

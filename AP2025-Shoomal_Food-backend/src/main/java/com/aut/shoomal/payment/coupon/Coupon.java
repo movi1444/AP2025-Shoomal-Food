@@ -25,7 +25,11 @@ public class Coupon
     private Set<Order> orders;
 
     @Column(name = "value", nullable = false)
+<<<<<<< HEAD
+    private Integer value;
+=======
     private BigDecimal value;
+>>>>>>> a2f6b05ac90114b00207d6b28ffe919b5874949a
     @Column(name = "min_price", nullable = false)
     private Integer minPrice;
     @Column(name = "user_count", nullable = false)
@@ -37,8 +41,13 @@ public class Coupon
 
     public Coupon() {}
 
+<<<<<<< HEAD
+    public Coupon(String couponCode, CouponType couponType, Integer value, Integer minPrice, Integer userCount,
+                  LocalDate startDate, LocalDate endDate, String scope)
+=======
     public Coupon(String couponCode, CouponType couponType, BigDecimal value, Integer minPrice, Integer userCount,
                   LocalDateTime startDate, LocalDateTime endDate)
+>>>>>>> a2f6b05ac90114b00207d6b28ffe919b5874949a
     {
         this.couponCode = couponCode;
         this.couponType = couponType;
@@ -139,6 +148,35 @@ public class Coupon
         this.orders = orders;
     }
 
+<<<<<<< HEAD
+    public String getScope()
+    {
+        return scope;
+    }
+
+    public void setScope(String scope)
+    {
+        this.scope = scope;
+    }
+
+    public Integer getMinPrice() {
+        return minPrice;
+    }
+
+    public void setMinPrice(Integer minPrice) {
+        this.minPrice = minPrice;
+    }
+
+    public Integer getUserCount() {
+        return userCount;
+    }
+
+    public void setUserCount(Integer userCount) {
+        this.userCount = userCount;
+    }
+
+=======
+>>>>>>> a2f6b05ac90114b00207d6b28ffe919b5874949a
     @Override
     public boolean equals(Object o)
     {
