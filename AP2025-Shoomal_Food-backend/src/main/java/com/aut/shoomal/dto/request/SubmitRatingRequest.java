@@ -1,14 +1,19 @@
 package com.aut.shoomal.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.List;
 
 public class SubmitRatingRequest
 {
-    private Integer orderId, rating;
-    private String comment, imageBase64;
+    @JsonProperty("order_id")
+    private Integer orderId;
+    private Integer rating;
+    private String comment;
+    private List<String> imageBase64;
 
     public SubmitRatingRequest() {}
-    public SubmitRatingRequest(Integer orderId, Integer rating, String comment, String imageBase64)
+    public SubmitRatingRequest(Integer orderId, Integer rating, String comment, List<String> imageBase64)
     {
         this.orderId = orderId;
         this.rating = rating;
@@ -46,12 +51,12 @@ public class SubmitRatingRequest
         this.comment = comment;
     }
 
-    public String getImageBase64()
+    public List<String> getImageBase64()
     {
         return imageBase64;
     }
 
-    public void setImageBase64(String imageBase64)
+    public void setImageBase64(List<String> imageBase64)
     {
         this.imageBase64 = imageBase64;
     }

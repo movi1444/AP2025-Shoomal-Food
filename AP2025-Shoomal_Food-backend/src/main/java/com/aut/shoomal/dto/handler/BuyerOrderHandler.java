@@ -157,7 +157,7 @@ public class BuyerOrderHandler extends AbstractHttpHandler
             e.printStackTrace();
             sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid input: Malformed JSON in request body."));
         } catch (NotFoundException e) {
-            System.err.println("404 Not found:" + e.getMessage());
+            System.err.println("404 Not found: " + e.getMessage());
             sendResponse(exchange, HttpURLConnection.HTTP_NOT_FOUND, new ApiResponse(false, "404 Not found: " + e.getMessage()));
         } catch (Exception e) {
             System.err.println("An unexpected error occurred during GET /orders/" + orderId);
