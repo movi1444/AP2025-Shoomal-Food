@@ -1,5 +1,10 @@
 package com.aut.shoomal.dto.handler;
 
+import com.aut.shoomal.dto.request.UpdateRatingRequest;
+import com.aut.shoomal.dto.response.ItemRatingResponse;
+import com.aut.shoomal.dto.response.RatingResponse;
+import com.aut.shoomal.dto.response.UpdateRatingResponse;
+import com.aut.shoomal.entity.food.Food;
 import com.aut.shoomal.entity.user.User;
 import com.aut.shoomal.entity.user.UserManager;
 import com.aut.shoomal.dao.BlacklistedTokenDao;
@@ -9,10 +14,15 @@ import com.aut.shoomal.exceptions.InvalidInputException;
 import com.aut.shoomal.exceptions.NotFoundException;
 import com.aut.shoomal.rating.Rating;
 import com.aut.shoomal.rating.RatingManager;
+import com.aut.shoomal.util.HibernateUtil;
 import com.sun.net.httpserver.HttpExchange;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.HttpURLConnection;
+import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -134,23 +144,116 @@ public class BuyerRatingHandler extends AbstractHttpHandler
         }
     }
 
-    private void getItemRatings(HttpExchange exchange, Integer itemId)
+    private void getItemRatings(HttpExchange exchange, Integer itemId) throws IOException
     {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Food food = session.get(Food.class, Long.valueOf(itemId));
+            if (food == null)
+                throw new NotFoundException("Item with id " + itemId + " not found.");
 
+            BigDecimal avgRating = food.calculateAverageRating();
+            List<RatingResponse> comments = food.getRatings().stream()
+                    .map(this::createRatingResponse)
+                    .toList();
+            ItemRatingResponse response = new ItemRatingResponse(avgRating, comments);
+            sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, response);
+        } catch (NotFoundException e) {
+            System.err.println("404 Resource not found: " + e.getMessage());
+            sendResponse(exchange, HttpURLConnection.HTTP_NOT_FOUND, new ApiResponse(false, "404 Resource not found: " + e.getMessage()));
+        } catch (Exception e) {
+            System.err.println("An unexpected error occurred during GET /ratings/items/" + itemId + ": " + e.getMessage());
+            e.printStackTrace();
+            sendResponse(exchange, HttpURLConnection.HTTP_INTERNAL_ERROR, new ApiResponse(false, "500 Internal Server Error."));
+        }
     }
 
-    private void getRatingById(HttpExchange exchange, Integer ratingId)
+    private void getRatingById(HttpExchange exchange, Integer ratingId) throws IOException
     {
-
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Rating rating = session.get(Rating.class, ratingId);
+            if (rating == null)
+                throw new NotFoundException("Rating with id " + ratingId + " not found.");
+            RatingResponse response = this.createRatingResponse(rating);
+            sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, response);
+        } catch (NotFoundException e) {
+            System.err.println("404 Resource not found: " + e.getMessage());
+            sendResponse(exchange, HttpURLConnection.HTTP_NOT_FOUND, new ApiResponse(false, "404 Resource not found: " + e.getMessage()));
+        } catch (Exception e) {
+            System.err.println("An unexpected error occurred during GET /ratings/" + ratingId + ": " + e.getMessage());
+            e.printStackTrace();
+            sendResponse(exchange, HttpURLConnection.HTTP_INTERNAL_ERROR, new ApiResponse(false, "500 Internal Server Error."));
+        }
     }
 
-    private void deleteRating(HttpExchange exchange, Integer ratingId)
+    private void deleteRating(HttpExchange exchange, Integer ratingId) throws IOException
     {
-
+        Transaction transaction = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+            ratingManager.deleteRating(session, ratingId);
+            transaction.commit();
+            sendResponse(exchange, HttpURLConnection.HTTP_OK, new ApiResponse(true, "200 Rating deleted."));
+        } catch (NotFoundException e) {
+            if (transaction != null)
+                transaction.rollback();
+            System.err.println("404 Resource not found: " + e.getMessage());
+            sendResponse(exchange, HttpURLConnection.HTTP_NOT_FOUND, new ApiResponse(false, "404 Resource not found: " + e.getMessage()));
+        } catch (Exception e) {
+            if (transaction != null)
+                transaction.rollback();
+            System.err.println("An unexpected error occurred during DELETE /ratings/" + ratingId + ": " + e.getMessage());
+            e.printStackTrace();
+            sendResponse(exchange, HttpURLConnection.HTTP_INTERNAL_ERROR, new ApiResponse(false, "500 Internal Server Error."));
+        }
     }
 
-    private void updateRating(HttpExchange exchange, Integer ratingId)
+    private void updateRating(HttpExchange exchange, Integer ratingId) throws IOException
     {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            UpdateRatingRequest request = parseRequestBody(exchange, UpdateRatingRequest.class);
+            if (request == null)
+            {
+                sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid input: Request body is empty."));
+                return;
+            }
 
+            Rating rating = session.get(Rating.class, ratingId);
+            if (rating == null)
+                throw new NotFoundException("Rating with id " + ratingId + " not found.");
+            ratingManager.updateRating(session, ratingId, request.getRating(), request.getComment(), request.getImageBase64());
+            UpdateRatingResponse response = new UpdateRatingResponse(
+                    rating.getId(),
+                    (rating.getOrder() != null) ? rating.getOrder().getId() : null,
+                    rating.getRating(),
+                    rating.getComment(),
+                    Math.toIntExact(rating.getUser().getId()),
+                    rating.getCreatedAt().toString()
+            );
+
+            sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, response);
+        } catch (InvalidInputException e) {
+            System.err.println("400 Invalid input: " + e.getMessage());
+            sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid input: " + e.getMessage()));
+        } catch (NotFoundException e) {
+            System.err.println("404 Resource not found: " + e.getMessage());
+            sendResponse(exchange, HttpURLConnection.HTTP_NOT_FOUND, new ApiResponse(false, "404 Resource not found."));
+        } catch (Exception e) {
+            System.err.println("An unexpected error occurred during PUT /ratings/" + ratingId + ": " + e.getMessage());
+            e.printStackTrace();
+            sendResponse(exchange, HttpURLConnection.HTTP_INTERNAL_ERROR, new ApiResponse(false, "500 Internal Server Error."));
+        }
+    }
+
+    private RatingResponse createRatingResponse(Rating rating)
+    {
+        return new RatingResponse(
+                rating.getId(),
+                Math.toIntExact(rating.getFood().getId()),
+                rating.getRating(),
+                rating.getComment(),
+                rating.getImageBase64(),
+                Math.toIntExact(rating.getUser().getId()),
+                rating.getCreatedAt().toString()
+        );
     }
 }
