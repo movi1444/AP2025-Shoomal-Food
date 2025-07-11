@@ -89,10 +89,10 @@ public class WalletManager
         performTransactionalWalletOperation(userId, amount, Wallet::withdraw, paymentMethod, "withdraw");
     }
 
-    public void processWalletPaymentForOrder(Long userId, Integer orderId)
+    public void processWalletPaymentForOrder(Session session, Long userId, Integer orderId)
     {
         Transaction transaction = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try {
             transaction = session.beginTransaction();
             Order order = session.get(Order.class, orderId);
             User user = session.get(User.class, userId);

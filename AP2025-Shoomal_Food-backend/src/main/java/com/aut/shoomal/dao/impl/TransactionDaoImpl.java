@@ -31,6 +31,21 @@ public class TransactionDaoImpl extends GenericDaoImpl<PaymentTransaction> imple
             return null;
         }
     }
+
+    @Override
+    public PaymentTransaction findByOrderId(Session session, Integer orderId)
+    {
+        try {
+            Query<PaymentTransaction> query = session.createQuery("from PaymentTransaction where order.id = :orderId", PaymentTransaction.class);
+            query.setParameter("orderId", orderId);
+            return query.uniqueResult();
+        } catch (Exception e) {
+            System.err.println("Error finding payment transaction by order id: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     @Override
     public List<PaymentTransaction> findAll() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {

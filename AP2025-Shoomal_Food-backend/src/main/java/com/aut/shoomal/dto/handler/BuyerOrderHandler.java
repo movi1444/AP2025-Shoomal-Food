@@ -6,16 +6,16 @@ import com.aut.shoomal.dto.response.TransactionResponse;
 import com.aut.shoomal.entity.user.User;
 import com.aut.shoomal.entity.user.UserManager;
 import com.aut.shoomal.dao.BlacklistedTokenDao;
-import com.aut.shoomal.dto.request.OrderItemRequest;
 import com.aut.shoomal.dto.request.SubmitOrderRequest;
 import com.aut.shoomal.dto.response.ApiResponse;
 import com.aut.shoomal.dto.response.OrderResponse;
 import com.aut.shoomal.exceptions.InvalidInputException;
 import com.aut.shoomal.exceptions.NotFoundException;
 import com.aut.shoomal.payment.PaymentMethod;
+import com.aut.shoomal.payment.TopupMethod;
 import com.aut.shoomal.payment.order.Order;
-import com.aut.shoomal.payment.order.OrderItem;
 import com.aut.shoomal.payment.order.OrderManager;
+import com.aut.shoomal.payment.transaction.PaymentTransaction;
 import com.aut.shoomal.payment.transaction.PaymentTransactionManager;
 import com.aut.shoomal.payment.wallet.WalletManager;
 import com.aut.shoomal.util.HibernateUtil;
@@ -23,7 +23,6 @@ import com.sun.net.httpserver.HttpExchange;
 import org.hibernate.Session;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.util.List;
 import java.util.Map;
@@ -125,7 +124,7 @@ public class BuyerOrderHandler extends AbstractHttpHandler
                     requestBody.getItems()
             );
 
-            OrderResponse response = this.createResponse(order);
+            OrderResponse response = this.createOrderResponse(order);
             sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, response);
         } catch (IOException e) {
             System.err.println("Error parsing request body: Malformed JSON in request body.");
@@ -150,7 +149,7 @@ public class BuyerOrderHandler extends AbstractHttpHandler
             Order order = session.get(Order.class, orderId);
             if (order == null)
                 throw new NotFoundException("Order with ID " + orderId + " not found.");
-            OrderResponse response = createResponse(order);
+            OrderResponse response = createOrderResponse(order);
             sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, response);
         } catch (IOException e) {
             System.err.println("Error parsing request body: Malformed JSON in request body.");
@@ -176,7 +175,7 @@ public class BuyerOrderHandler extends AbstractHttpHandler
             List<Order> orders = orderManager.getOrderHistory(session, customerId, search, vendorName);
 
             List<OrderResponse> orderResponses = orders.stream()
-                    .map(this::createResponse)
+                    .map(this::createOrderResponse)
                     .toList();
             sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, orderResponses);
         } catch (Exception e) {
@@ -194,15 +193,7 @@ public class BuyerOrderHandler extends AbstractHttpHandler
                 throw new NotFoundException("User with ID " + userId + " not found.");
 
             List<TransactionResponse> responses = user.getTransactions().stream()
-                    .map(transaction -> new TransactionResponse(
-                            transaction.getId(),
-                            transaction.getAmount(),
-                            transaction.getStatus().getStatus(),
-                            transaction.getTransactionTime().toString(),
-                            transaction.getMethod().getName(),
-                            (transaction.getOrder() != null) ? transaction.getOrder().getId() : null,
-                            transaction.getUser().getId()
-                    ))
+                    .map(this::createTransactionResponse)
                     .toList();
             sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, responses);
         } catch (NotFoundException e) {
@@ -226,10 +217,8 @@ public class BuyerOrderHandler extends AbstractHttpHandler
             }
             if (request.getAmount() == null)
                 throw new InvalidInputException("amount is required.");
-            if (request.getMethod() == null || request.getMethod().trim().isEmpty())
-                throw new InvalidInputException("method is required.");
 
-            walletManager.depositWallet(userId, request.getAmount(), request.getMethod());
+            walletManager.depositWallet(userId, request.getAmount(), TopupMethod.ONLINE.getName());
             sendResponse(exchange, HttpURLConnection.HTTP_OK, new ApiResponse(true, "200 Wallet topped up successfully."));
         } catch (IOException e) {
             System.err.println("Error parsing request body: Malformed JSON in request body. " + e.getMessage());
@@ -250,7 +239,7 @@ public class BuyerOrderHandler extends AbstractHttpHandler
 
     private void onlinePayment(HttpExchange exchange, Long userId) throws IOException
     {
-        try {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             PaymentRequest request = parseRequestBody(exchange, PaymentRequest.class);
             if (request == null)
             {
@@ -259,12 +248,15 @@ public class BuyerOrderHandler extends AbstractHttpHandler
             }
             if (request.getMethod() == null || request.getMethod().trim().isEmpty())
                 throw new InvalidInputException("method is required.");
-            if (request.getOrderId() == null || request.getOrderId().trim().isEmpty())
+            if (request.getOrderId() == null)
                 throw new InvalidInputException("orderId is required.");
 
-            Order order = orderManager.findOrderById(Integer.parseInt(request.getOrderId()));
+            Order order = session.get(Order.class, request.getOrderId());
             if (order == null)
                 throw new NotFoundException("Order with ID " + request.getOrderId() + " not found.");
+            PaymentTransaction paymentTransaction = paymentManager.getByOrderId(session, order.getId());
+            if (paymentTransaction == null)
+                throw new NotFoundException("Payment transaction with order id " + order.getId() + " not found.");
 
             PaymentMethod paymentMethod;
             try {
@@ -273,28 +265,20 @@ public class BuyerOrderHandler extends AbstractHttpHandler
                 throw new InvalidInputException("Invalid payment method: " + request.getMethod());
             }
 
-            int parsedOrderId;
-            try {
-                parsedOrderId = Integer.parseInt(request.getOrderId());
-            } catch (NumberFormatException e) {
-                throw new InvalidInputException("Invalid order ID: " + request.getOrderId());
-            }
-
             String redirectUrl;
             if (paymentMethod == PaymentMethod.WALLET)
-            {
-                walletManager.processWalletPaymentForOrder(userId, parsedOrderId);
-                sendResponse(exchange, HttpURLConnection.HTTP_OK, new ApiResponse(true, "200 Payment successful."));
-            }
+                walletManager.processWalletPaymentForOrder(session, userId, request.getOrderId());
             else if (paymentMethod == PaymentMethod.PAYWALL)
             {
-                redirectUrl = paymentManager.processExternalPayment(userId, parsedOrderId, paymentMethod);
+                redirectUrl = paymentManager.processExternalPayment(session, userId, request.getOrderId(), paymentMethod);
                 if (redirectUrl == null || redirectUrl.trim().isEmpty())
                     throw new RuntimeException("Failed to get redirect URL for external payment.");
-                sendResponse(exchange, HttpURLConnection.HTTP_OK, new ApiResponse(true, "200 Payment successful."));
             }
             else
                 sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Unsupported payment method: " + request.getMethod()));
+
+            TransactionResponse response = this.createTransactionResponse(paymentTransaction);
+            sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, response);
         } catch (IOException e) {
             System.err.println("Error parsing request body: Malformed JSON in request body. " + e.getMessage());
             e.printStackTrace();
@@ -312,7 +296,7 @@ public class BuyerOrderHandler extends AbstractHttpHandler
         }
     }
 
-    private OrderResponse createResponse(Order order)
+    private OrderResponse createOrderResponse(Order order)
     {
         return new OrderResponse(
                 order.getId(),
@@ -330,6 +314,17 @@ public class BuyerOrderHandler extends AbstractHttpHandler
                 order.getOrderStatus().getName(),
                 order.getCreatedAt().toString(),
                 order.getUpdatedAt().toString()
+        );
+    }
+
+    private TransactionResponse createTransactionResponse(PaymentTransaction transaction)
+    {
+        return new TransactionResponse(
+                Math.toIntExact(transaction.getId()),
+                transaction.getStatus().getStatus(),
+                transaction.getMethod().getName(),
+                (transaction.getOrder() != null) ? transaction.getOrder().getId() : null,
+                Math.toIntExact(transaction.getUser().getId())
         );
     }
 }

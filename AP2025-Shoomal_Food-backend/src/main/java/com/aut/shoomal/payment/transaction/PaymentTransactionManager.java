@@ -56,13 +56,18 @@ public class PaymentTransactionManager
         return transactionDao.findAllWithFilters(search, userId, method, status);
     }
 
-    public String processExternalPayment(Long userId, Integer orderId, PaymentMethod paymentMethod)
+    public PaymentTransaction getByOrderId(Session session, Integer orderId)
+    {
+        return transactionDao.findByOrderId(session, orderId);
+    }
+
+    public String processExternalPayment(Session session, Long userId, Integer orderId, PaymentMethod paymentMethod)
     {
         if (paymentMethod != PaymentMethod.PAYWALL)
             throw new InvalidInputException("Payment method must be PAYWALL.");
 
         Transaction transaction = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try {
             transaction = session.beginTransaction();
             Order order = session.get(Order.class, orderId);
             User user = session.get(User.class, userId);
