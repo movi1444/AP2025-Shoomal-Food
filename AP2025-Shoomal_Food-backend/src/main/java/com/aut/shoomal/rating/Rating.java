@@ -6,6 +6,7 @@ import com.aut.shoomal.payment.order.Order;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -20,7 +21,7 @@ public class Rating
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "rating_images", joinColumns = @JoinColumn(name = "rating_id"))
     @Column(name = "image_base64_url", columnDefinition = "TEXT")
-    private List<String> imageBase64;
+    private List<String> imageBase64 = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -33,7 +34,7 @@ public class Rating
     private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "food_id", nullable = false)
+    @JoinColumn(name = "food_id")
     private Food food;
 
     public Rating()
