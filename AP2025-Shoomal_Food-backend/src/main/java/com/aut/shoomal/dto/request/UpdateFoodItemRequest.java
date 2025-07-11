@@ -14,8 +14,8 @@ public class UpdateFoodItemRequest {
     private Integer price;
     @JsonProperty("supply")
     private Integer supply;
-    @JsonProperty("categories")
-    private List<String> categories;
+    @JsonProperty("keywords")
+    private List<String> keywords;
     @JsonProperty("vendor_id")
     private Integer vendor_id;
 
@@ -31,8 +31,8 @@ public class UpdateFoodItemRequest {
     public void setPrice(Integer price) { this.price = price; }
     public Integer getSupply() { return supply; }
     public void setSupply(Integer supply) { this.supply = supply; }
-    public List<String> getCategories() { return categories; }
-    public void setCategories(List<String> categories) { this.categories = categories; }
+    public List<String> getKeywords() { return keywords; }
+    public void setKeywords(List<String> keywords) { this.keywords = keywords; }
 
     public Integer getVendor_id() {
         return vendor_id;

@@ -7,5 +7,5 @@ import java.util.List;
 public interface FoodDao extends GenericDao<Food> {
     List<Food> searchByName(String keyword);
     List<Food> findByRestaurantId(Long restaurantId);
-    List<Food> findByCategory(String category);
+    List<Food> findByKeyword(String keyword);
 }

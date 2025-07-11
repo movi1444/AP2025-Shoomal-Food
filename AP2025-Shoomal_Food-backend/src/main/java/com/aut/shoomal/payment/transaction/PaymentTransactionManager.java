@@ -35,9 +35,25 @@ public class PaymentTransactionManager
         return paymentTransaction;
     }
 
-    public List<PaymentTransaction> getAllTransactions()
-    {
-        return transactionDao.findAll();
+    public List<PaymentTransaction> getAllTransactions(String search, Long userId, String methodStr, String statusStr) {
+        PaymentMethod method = null;
+        if (methodStr != null && !methodStr.isEmpty()) {
+            try {
+                method = PaymentMethod.fromName(methodStr);
+            } catch (IllegalArgumentException e) {
+                throw new InvalidInputException("Invalid payment method: " + methodStr);
+            }
+        }
+
+        PaymentTransactionStatus status = null;
+        if (statusStr != null && !statusStr.isEmpty()) {
+            try {
+                status = PaymentTransactionStatus.fromStatusName(statusStr);
+            } catch (IllegalArgumentException e) {
+                throw new InvalidInputException("Invalid transaction status: " + statusStr);
+            }
+        }
+        return transactionDao.findAllWithFilters(search, userId, method, status);
     }
 
     public String processExternalPayment(Long userId, Integer orderId, PaymentMethod paymentMethod)
