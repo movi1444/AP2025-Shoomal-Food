@@ -124,7 +124,7 @@ public class BuyerBrowseHandler extends AbstractHttpHandler
                     for (String keyword : keywords)
                     {
                         List<Food> foodsMatching = foodManager.getFoodsByRestaurantId(restaurant.getId()).stream()
-                                .filter(food -> food.getCategories().stream()
+                                .filter(food -> food.getKeywords().stream()
                                         .anyMatch(cat -> cat.equalsIgnoreCase(keyword)))
                                 .toList();
                         if (foodsMatching.isEmpty())
@@ -182,7 +182,7 @@ public class BuyerBrowseHandler extends AbstractHttpHandler
             if (hasKeywords)
                 foods = foods.stream()
                         .filter(food -> keywords.stream()
-                                .allMatch(keyword -> food.getCategories().stream()
+                                .allMatch(keyword -> food.getKeywords().stream()
                                         .anyMatch(cat -> cat.equalsIgnoreCase(keyword))))
                         .toList();
 
@@ -200,7 +200,7 @@ public class BuyerBrowseHandler extends AbstractHttpHandler
                             (food.getVendor() != null) ? food.getVendor().getId() : null,
                             (int) food.getPrice(),
                             food.getSupply(),
-                            food.getCategories()
+                            food.getKeywords()
                     ))
                     .toList();
 
@@ -239,7 +239,7 @@ public class BuyerBrowseHandler extends AbstractHttpHandler
                             (food.getVendor() != null) ? food.getVendor().getId() : null,
                             (int) food.getPrice(),
                             food.getSupply(),
-                            food.getCategories()
+                            food.getKeywords()
                     ))
                     .toList();
 
@@ -269,7 +269,7 @@ public class BuyerBrowseHandler extends AbstractHttpHandler
                     (food.getVendor() != null) ? food.getVendor().getId() : null,
                     (int) food.getPrice(),
                     food.getSupply(),
-                    food.getCategories()
+                    food.getKeywords()
             );
             sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, item);
         } catch (NotFoundException e) {
