@@ -62,6 +62,8 @@ public class OrderDaoImpl extends GenericDaoImpl<Order> implements OrderDao
             if (status != null) {
                 predicates.add(cb.equal(orderRoot.get("orderStatus"), status));
             }
+            else
+                System.out.println("null");
 
             cq.where(predicates.toArray(new Predicate[0]));
             cq.select(orderRoot).distinct(true);
