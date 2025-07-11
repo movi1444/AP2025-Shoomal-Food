@@ -72,7 +72,7 @@ public class TransactionDaoImpl extends GenericDaoImpl<PaymentTransaction> imple
             if (search != null && !search.trim().isEmpty()) {
                 String likePattern = "%" + search.toLowerCase() + "%";
                 Predicate userSearch = cb.like(cb.lower(transactionRoot.get("user").get("name")), likePattern);
-                Predicate orderIdSearch = cb.like(cb.lower(cb.function("CAST", String.class, transactionRoot.get("order").get("id"), cb.literal("CHAR"))), likePattern);
+                Predicate orderIdSearch = cb.like(cb.lower(transactionRoot.get("order").get("id").as(String.class)), likePattern);
                 predicates.add(cb.or(userSearch, orderIdSearch));
             }
             if (userId != null) {

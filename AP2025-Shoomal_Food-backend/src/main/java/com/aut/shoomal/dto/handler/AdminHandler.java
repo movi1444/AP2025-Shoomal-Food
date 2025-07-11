@@ -166,7 +166,7 @@ public class AdminHandler extends AbstractHttpHandler {
                     .collect(Collectors.toList());
             sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, orderResponses);
         } catch (IllegalArgumentException e) {
-            sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid input: Invalid 'status' value."));
+            sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid input: Invalid 'status' value or ids are not number."));
         }
     }
 
