@@ -150,6 +150,12 @@ public class Food {
         this.ratings = ratings;
     }
 
+    public void addRating(Rating rating)
+    {
+        this.ratings.add(rating);
+        rating.setFood(this);
+    }
+
     public BigDecimal calculateAverageRating()
     {
         BigDecimal sum = BigDecimal.ZERO;
