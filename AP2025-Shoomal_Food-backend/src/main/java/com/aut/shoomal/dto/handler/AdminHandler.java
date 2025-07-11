@@ -197,9 +197,7 @@ public class AdminHandler extends AbstractHttpHandler {
 
                         return new TransactionResponse(
                                 Math.toIntExact(transaction.getId()),
-                                transaction.getAmount(),
                                 transaction.getStatus().getStatus(),
-                                transaction.getTransactionTime().toString(),
                                 transaction.getMethod().getName(),
                                 orderId,
                                 (transactionUserId != null) ? Math.toIntExact(transactionUserId) : null
