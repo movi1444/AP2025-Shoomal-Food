@@ -18,11 +18,31 @@ public enum PaymentTransactionStatus
         return status;
     }
 
-    public PaymentTransactionStatus fromStatus(String status)
-    {
-        for (PaymentTransactionStatus t : PaymentTransactionStatus.values())
-            if (t.getStatus().equalsIgnoreCase(status))
-                return t;
-        throw new IllegalArgumentException("Not a valid transaction status: " + status);
+    public String toApiString() {
+        return switch (this) {
+            case COMPLETED -> "success";
+            case FAILED -> "failed";
+            case PENDING, REFUNDED -> this.status.toLowerCase();
+        };
+    }
+
+    public static PaymentTransactionStatus fromStatusName(String statusName) {
+        if (statusName != null) {
+            if (statusName.equalsIgnoreCase("success")) {
+                return COMPLETED;
+            }
+            if (statusName.equalsIgnoreCase("pending")) {
+                return PENDING;
+            }
+            if (statusName.equalsIgnoreCase("refunded")) {
+                return REFUNDED;
+            }
+            for (PaymentTransactionStatus s : PaymentTransactionStatus.values()) {
+                if (s.status.equalsIgnoreCase(statusName)) {
+                    return s;
+                }
+            }
+        }
+        throw new IllegalArgumentException("Unknown payment transaction status: " + statusName);
     }
 }
