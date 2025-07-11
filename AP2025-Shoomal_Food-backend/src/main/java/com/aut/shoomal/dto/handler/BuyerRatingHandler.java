@@ -131,6 +131,10 @@ public class BuyerRatingHandler extends AbstractHttpHandler
             );
             ratingManager.addRating(rating);
             sendResponse(exchange, HttpURLConnection.HTTP_OK, new ApiResponse(true, "200 Rating submitted."));
+        } catch (IOException e) {
+            System.err.println("Error parsing request body: Malformed JSON in request body. " + e.getMessage());
+            e.printStackTrace();
+            sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid input: Malformed JSON in request body."));
         } catch (InvalidInputException e) {
             System.err.println("400 Invalid input: " + e.getMessage());
             sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid input: " + e.getMessage()));
@@ -231,6 +235,10 @@ public class BuyerRatingHandler extends AbstractHttpHandler
             );
 
             sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, response);
+        } catch (IOException e) {
+            System.err.println("Error parsing request body: Malformed JSON in request body. " + e.getMessage());
+            e.printStackTrace();
+            sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid input: Malformed JSON in request body."));
         } catch (InvalidInputException e) {
             System.err.println("400 Invalid input: " + e.getMessage());
             sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid input: " + e.getMessage()));

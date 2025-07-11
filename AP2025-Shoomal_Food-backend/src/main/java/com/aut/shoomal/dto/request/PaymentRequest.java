@@ -1,23 +1,26 @@
 package com.aut.shoomal.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class PaymentRequest
 {
-    private String orderId;
+    @JsonProperty("order_id")
+    private Integer orderId;
     private String method;
     public PaymentRequest() {}
 
-    public PaymentRequest(String orderId, String method)
+    public PaymentRequest(Integer orderId, String method)
     {
         this.orderId = orderId;
         this.method = method;
     }
 
-    public String getOrderId()
+    public Integer getOrderId()
     {
         return orderId;
     }
 
-    public void setOrderId(String orderId)
+    public void setOrderId(Integer orderId)
     {
         this.orderId = orderId;
     }

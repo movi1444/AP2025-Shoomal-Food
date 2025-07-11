@@ -6,49 +6,34 @@ import java.math.BigDecimal;
 
 public class TransactionResponse
 {
-    private Long id;
-    private BigDecimal amount;
+    private Integer id;
     private String status;
-    @JsonProperty("transaction_time")
-    private String transactionTime;
     @JsonProperty("payment_method")
     private String paymentMethod;
     @JsonProperty("order_id")
     private Integer orderId;
     @JsonProperty("user_id")
-    private Long userId;
+    private Integer userId;
 
     public TransactionResponse() {}
-    public TransactionResponse(Long id, BigDecimal amount, String status, String transactionTime, String paymentMethod,
-                               Integer orderId, Long userId)
+    public TransactionResponse(Integer id, String status, String paymentMethod,
+                               Integer orderId, Integer userId)
     {
         this.id = id;
-        this.amount = amount;
         this.status = status;
-        this.transactionTime = transactionTime;
         this.paymentMethod = paymentMethod;
         this.orderId = orderId;
         this.userId = userId;
     }
 
-    public Long getId()
+    public Integer getId()
     {
         return id;
     }
 
-    public void setId(Long id)
+    public void setId(Integer id)
     {
         this.id = id;
-    }
-
-    public BigDecimal getAmount()
-    {
-        return amount;
-    }
-
-    public void setAmount(BigDecimal amount)
-    {
-        this.amount = amount;
     }
 
     public String getStatus()
@@ -59,16 +44,6 @@ public class TransactionResponse
     public void setStatus(String status)
     {
         this.status = status;
-    }
-
-    public String getTransactionTime()
-    {
-        return transactionTime;
-    }
-
-    public void setTransactionTime(String transactionTime)
-    {
-        this.transactionTime = transactionTime;
     }
 
     public String getPaymentMethod()
@@ -91,12 +66,12 @@ public class TransactionResponse
         this.orderId = orderId;
     }
 
-    public Long getUserId()
+    public Integer getUserId()
     {
         return userId;
     }
 
-    public void setUserId(Long userId)
+    public void setUserId(Integer userId)
     {
         this.userId = userId;
     }
