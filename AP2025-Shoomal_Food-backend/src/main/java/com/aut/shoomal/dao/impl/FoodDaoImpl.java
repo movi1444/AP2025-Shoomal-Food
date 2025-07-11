@@ -38,14 +38,14 @@ public class FoodDaoImpl extends GenericDaoImpl<Food> implements FoodDao {
     }
 
     @Override
-    public List<Food> findByCategory(String category) {
+    public List<Food> findByKeyword(String keyword) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Query<Food> query = session.createQuery(
-                    "SELECT f FROM Food f JOIN f.categories c WHERE LOWER(c) = :cat", Food.class);
-            query.setParameter("cat", category.toLowerCase());
+                    "SELECT f FROM Food f JOIN f.keywords c WHERE LOWER(c) = :cat", Food.class);
+            query.setParameter("cat", keyword.toLowerCase());
             return query.list();
         } catch (Exception e) {
-            System.err.println("Error finding food by category: " + e.getMessage());
+            System.err.println("Error finding food by keyword: " + e.getMessage());
             return null;
         }
     }

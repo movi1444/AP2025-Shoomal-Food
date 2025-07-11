@@ -28,11 +28,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.logging.Logger;
 
 
 public class AdminHandler extends AbstractHttpHandler {
-    private static final Logger logger = Logger.getLogger(AdminHandler.class.getName());
     private final UserManager userManager;
     private final BlacklistedTokenDao blacklistedTokenDao;
     private final OrderManager orderManager;
@@ -168,31 +166,49 @@ public class AdminHandler extends AbstractHttpHandler {
                     .collect(Collectors.toList());
             sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, orderResponses);
         } catch (IllegalArgumentException e) {
-            sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid input: Invalid 'status' value."));
+            sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid input: Invalid 'status' value or ids are not number."));
         }
     }
 
     public void handleListAllTransactions(HttpExchange exchange) throws IOException {
         try {
-            List<PaymentTransaction> transactions = transactionManager.getAllTransactions();
+            Map<String, String> queryParams = parseQueryParams(exchange);
+
+            String search = queryParams.get("search");
+            String userIdStr = queryParams.get("user");
+            String methodStr = queryParams.get("method");
+            String statusStr = queryParams.get("status");
+
+            Long userId = null;
+            if (userIdStr != null && !userIdStr.isEmpty()) {
+                try {
+                    userId = Long.parseLong(userIdStr);
+                } catch (NumberFormatException e) {
+                    sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid input: 'user' ID must be a number."));
+                    return;
+                }
+            }
+
+            List<PaymentTransaction> transactions = transactionManager.getAllTransactions(search, userId, methodStr, statusStr);
             List<TransactionResponse> transactionResponses = transactions.stream()
                     .map(transaction -> {
-                        Long userId = (transaction.getUser() != null) ? transaction.getUser().getId() : null;
+                        Long transactionUserId = (transaction.getUser() != null) ? transaction.getUser().getId() : null;
                         Integer orderId = (transaction.getOrder() != null) ? transaction.getOrder().getId() : null;
 
                         return new TransactionResponse(
-                                transaction.getId(),
-                                transaction.getAmount(),
-                                transaction.getStatus().toString(),
-                                transaction.getTransactionTime().toString(),
-                                transaction.getMethod().toString(),
+                                Math.toIntExact(transaction.getId()),
+                                transaction.getStatus().getStatus(),
+                                transaction.getMethod().getName(),
                                 orderId,
-                                userId
+                                (transactionUserId != null) ? Math.toIntExact(transactionUserId) : null
                         );
                     })
                     .collect(Collectors.toList());
             sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, transactionResponses);
-        } catch (Exception e) {
+        } catch (InvalidInputException e) {
+            sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid input: " + e.getMessage()));
+        }
+        catch (Exception e) {
             System.err.println("An unexpected error occurred during GET /admin/transactions: " + e.getMessage());
             e.printStackTrace();
             sendResponse(exchange, HttpURLConnection.HTTP_INTERNAL_ERROR, new ApiResponse(false, "500 Internal Server Error: An unexpected error occurred."));

@@ -64,7 +64,7 @@ public class Server
         BuyerFavoriteHandler buyerFavoriteHandler = new BuyerFavoriteHandler(userManager, blacklistedTokenDao);
         BuyerRatingHandler buyerRatingHandler = new BuyerRatingHandler(userManager, ratingManager, blacklistedTokenDao);
         AdminHandler adminHandler = new AdminHandler(userManager, restaurantManager, blacklistedTokenDao, orderManager, paymentTransactionManager);
-        AdminDiscountHandler adminDiscountHandler = new AdminDiscountHandler(userManager, blacklistedTokenDao, couponManager);
+        AdminCouponHandler adminCouponHandler = new AdminCouponHandler(userManager, blacklistedTokenDao, couponManager);
         CourierHandler courierHandler = new CourierHandler(userManager,orderManager,blacklistedTokenDao);
 
         try {
@@ -101,8 +101,7 @@ public class Server
             finalServer.createContext("/admin/users", adminHandler);
             finalServer.createContext("/admin/orders", adminHandler);
             finalServer.createContext("/admin/transactions", adminHandler);
-            finalServer.createContext("/admin/discounts", adminDiscountHandler);
-            //finalServer.createContext("/admin/reports", adminHandler);
+            finalServer.createContext("/admin/coupons", adminCouponHandler);
 
             finalServer.setExecutor(Executors.newFixedThreadPool(numberOfThreads));
             finalServer.start();

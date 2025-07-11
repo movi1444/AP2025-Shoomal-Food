@@ -12,6 +12,8 @@ import com.aut.shoomal.dto.request.SubmitRatingRequest;
 import com.aut.shoomal.dto.response.ApiResponse;
 import com.aut.shoomal.exceptions.InvalidInputException;
 import com.aut.shoomal.exceptions.NotFoundException;
+import com.aut.shoomal.payment.order.Order;
+import com.aut.shoomal.payment.order.OrderItem;
 import com.aut.shoomal.rating.Rating;
 import com.aut.shoomal.rating.RatingManager;
 import com.aut.shoomal.util.HibernateUtil;
@@ -22,8 +24,10 @@ import org.hibernate.Transaction;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 public class BuyerRatingHandler extends AbstractHttpHandler
@@ -113,7 +117,9 @@ public class BuyerRatingHandler extends AbstractHttpHandler
 
     private void submitRating(HttpExchange exchange) throws IOException
     {
-        try {
+        Transaction transaction = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
             SubmitRatingRequest request = parseRequestBody(exchange, SubmitRatingRequest.class);
             if (request == null)
             {
@@ -122,25 +128,54 @@ public class BuyerRatingHandler extends AbstractHttpHandler
             }
             Long userId = authenticate(exchange, userManager, blacklistedTokenDao).getId();
 
-            Rating rating = ratingManager.submitRating(
-                    request.getOrderId(),
-                    request.getRating(),
-                    userId,
-                    request.getComment(),
-                    request.getImageBase64()
-            );
-            ratingManager.addRating(rating);
+            Set<Long> foodIds = new HashSet<>();
+            if (request.getOrderId() != null)
+            {
+                Order order = session.get(Order.class, request.getOrderId());
+                if (order == null)
+                    throw new NotFoundException("Order with id " + request.getOrderId() + " not found.");
+                for (OrderItem item : order.getOrderItems())
+                    foodIds.add(item.getFood().getId());
+            }
+
+            for (Long foodId : foodIds)
+            {
+                Rating rating = ratingManager.submitRating(
+                        request.getOrderId(),
+                        request.getRating(),
+                        userId,
+                        request.getComment(),
+                        request.getImageBase64()
+                );
+                Food food = session.get(Food.class, foodId);
+                food.addRating(rating);
+                ratingManager.addRating(rating, session);
+                session.merge(food);
+            }
+            transaction.commit();
             sendResponse(exchange, HttpURLConnection.HTTP_OK, new ApiResponse(true, "200 Rating submitted."));
+        } catch (IOException e) {
+            System.err.println("Error parsing request body: Malformed JSON in request body. " + e.getMessage());
+            e.printStackTrace();
+            sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid input: Malformed JSON in request body."));
+            if (transaction != null)
+                transaction.rollback();
         } catch (InvalidInputException e) {
             System.err.println("400 Invalid input: " + e.getMessage());
             sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid input: " + e.getMessage()));
+            if (transaction != null)
+                transaction.rollback();
         } catch (NotFoundException e) {
             System.err.println("404 Resource not found: " + e.getMessage());
             sendResponse(exchange, HttpURLConnection.HTTP_NOT_FOUND, new ApiResponse(false, "404 Resource not found: " + e.getMessage()));
+            if (transaction != null)
+                transaction.rollback();
         } catch (Exception e) {
             System.err.println("An unexpected error occurred during POST /ratings: " + e.getMessage());
             e.printStackTrace();
             sendResponse(exchange, HttpURLConnection.HTTP_INTERNAL_ERROR, new ApiResponse(false, "500 Internal Server Error."));
+            if (transaction != null)
+                transaction.rollback();
         }
     }
 
@@ -231,6 +266,10 @@ public class BuyerRatingHandler extends AbstractHttpHandler
             );
 
             sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, response);
+        } catch (IOException e) {
+            System.err.println("Error parsing request body: Malformed JSON in request body. " + e.getMessage());
+            e.printStackTrace();
+            sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid input: Malformed JSON in request body."));
         } catch (InvalidInputException e) {
             System.err.println("400 Invalid input: " + e.getMessage());
             sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid input: " + e.getMessage()));
