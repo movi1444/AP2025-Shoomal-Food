@@ -63,8 +63,8 @@ public class PaymentTransactionManager
 
     public String processExternalPayment(Session session, Long userId, Integer orderId, PaymentMethod paymentMethod)
     {
-        if (paymentMethod != PaymentMethod.PAYWALL)
-            throw new InvalidInputException("Payment method must be PAYWALL.");
+        if (paymentMethod != PaymentMethod.ONLINE)
+            throw new InvalidInputException("Payment method must be ONLINE.");
 
         Transaction transaction = null;
         try {
@@ -89,6 +89,8 @@ public class PaymentTransactionManager
 
             order.setOrderStatus(OrderStatus.WAITING_VENDOR);
             orderManager.updateOrder(order, session);
+            paymentTransaction.setStatus(PaymentTransactionStatus.COMPLETED);
+            transactionDao.update(paymentTransaction, session);
             transaction.commit();
             return externalGatewayRedirectUrl;
         } catch (NotFoundException | InvalidInputException e) {
