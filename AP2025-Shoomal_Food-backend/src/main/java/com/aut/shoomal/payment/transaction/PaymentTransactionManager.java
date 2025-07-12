@@ -66,9 +66,7 @@ public class PaymentTransactionManager
         if (paymentMethod != PaymentMethod.ONLINE)
             throw new InvalidInputException("Payment method must be ONLINE.");
 
-        Transaction transaction = null;
         try {
-            transaction = session.beginTransaction();
             Order order = session.get(Order.class, orderId);
             User user = session.get(User.class, userId);
             if (order == null)
@@ -87,19 +85,15 @@ public class PaymentTransactionManager
                 throw new RuntimeException("External payment gateway failed to provide redirect URL.");
             }
 
-            order.setOrderStatus(OrderStatus.WAITING_VENDOR);
-            orderManager.updateOrder(order, session);
             paymentTransaction.setStatus(PaymentTransactionStatus.COMPLETED);
             transactionDao.update(paymentTransaction, session);
-            transaction.commit();
+            order.setOrderStatus(OrderStatus.WAITING_VENDOR);
+            order.addTransaction(paymentTransaction);
+            orderManager.updateOrder(order, session);
             return externalGatewayRedirectUrl;
         } catch (NotFoundException | InvalidInputException e) {
-            if (transaction != null)
-                transaction.rollback();
             throw e;
         } catch (Exception e) {
-            if (transaction != null)
-                transaction.rollback();
             System.err.println("Error initiating external payment: " + e.getMessage());
             e.printStackTrace();
             throw new RuntimeException("Failed to initiate external payment: " + e.getMessage(), e);
