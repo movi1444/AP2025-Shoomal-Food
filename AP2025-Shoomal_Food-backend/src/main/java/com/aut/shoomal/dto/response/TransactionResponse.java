@@ -8,7 +8,7 @@ public class TransactionResponse
 {
     private Integer id;
     private String status;
-    @JsonProperty("payment_method")
+    @JsonProperty("method")
     private String paymentMethod;
     @JsonProperty("order_id")
     private Integer orderId;

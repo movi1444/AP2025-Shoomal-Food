@@ -5,10 +5,10 @@ import com.aut.shoomal.entity.user.User;
 import com.aut.shoomal.exceptions.InvalidInputException;
 import com.aut.shoomal.exceptions.NotFoundException;
 import com.aut.shoomal.payment.PaymentMethod;
-import com.aut.shoomal.payment.TopupMethod;
 import com.aut.shoomal.payment.order.Order;
 import com.aut.shoomal.payment.order.OrderManager;
 import com.aut.shoomal.payment.order.OrderStatus;
+import com.aut.shoomal.payment.transaction.PaymentTransaction;
 import com.aut.shoomal.payment.transaction.PaymentTransactionManager;
 import com.aut.shoomal.payment.transaction.PaymentTransactionStatus;
 import com.aut.shoomal.util.HibernateUtil;
@@ -30,7 +30,8 @@ public class WalletManager
         this.orderManager = orderManager;
     }
 
-    private void performTransactionalWalletOperation(
+    private PaymentTransaction performTransactionalWalletOperation(
+            Session session,
             Long userId,
             BigDecimal amount,
             BiConsumer<Wallet, BigDecimal> action,
@@ -38,9 +39,7 @@ public class WalletManager
             String description
     ) throws InvalidInputException, NotFoundException
     {
-        Transaction transaction = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            transaction = session.beginTransaction();
+        try {
             Wallet wallet = this.findWalletByUserId(session, userId);
             User user = session.get(User.class, userId);
             if (wallet == null)
@@ -49,51 +48,29 @@ public class WalletManager
                 throw new NotFoundException("User with user id " + userId + " not found.");
             action.accept(wallet, amount);
             walletDao.update(wallet, session);
-            transactionManager.createTransaction(session, user, null, paymentMethod, amount, PaymentTransactionStatus.COMPLETED);
-            transaction.commit();
+            return transactionManager.createTransaction(session, user, null, paymentMethod, amount, PaymentTransactionStatus.COMPLETED);
         } catch (InvalidInputException | NotFoundException | IllegalArgumentException e) {
-            if (transaction != null)
-                transaction.rollback();
             throw e;
         } catch (Exception e) {
-            if (transaction != null)
-                transaction.rollback();
             System.err.println("Error during " + description + "operation: " + e.getMessage());
             e.printStackTrace();
             throw new RuntimeException("Failed to " + description + ": " + e.getMessage(), e);
         }
     }
 
-    public void depositWallet(Long userId, BigDecimal amount, String method)
+    public void depositWallet(Session session, Long userId, BigDecimal amount)
     {
-        PaymentMethod paymentMethod;
-        try {
-            TopupMethod topupMethod = TopupMethod.fromName(method);
-            if (topupMethod == TopupMethod.CARD || topupMethod == TopupMethod.ONLINE)
-                paymentMethod = PaymentMethod.PAYWALL;
-            else
-                throw new InvalidInputException("Invalid top-up method: " + method);
-        } catch (IllegalArgumentException e) {
-            throw new InvalidInputException("Invalid top-up method: " + method);
-        }
-        performTransactionalWalletOperation(userId, amount, Wallet::deposit, paymentMethod, "deposit");
+        performTransactionalWalletOperation(session, userId, amount, Wallet::deposit, PaymentMethod.ONLINE, "deposit");
     }
 
-    public void withdrawWallet(Long userId, BigDecimal amount, String method)
+    public PaymentTransaction withdrawWallet(Session session, Long userId, BigDecimal amount)
     {
-        PaymentMethod paymentMethod;
-        if (method.equalsIgnoreCase(PaymentMethod.WALLET.getName()))
-            paymentMethod = PaymentMethod.WALLET;
-        else
-            throw new InvalidInputException("Invalid method: " + method);
-        performTransactionalWalletOperation(userId, amount, Wallet::withdraw, paymentMethod, "withdraw");
+        return performTransactionalWalletOperation(session, userId, amount, Wallet::withdraw, PaymentMethod.WALLET, "withdraw");
     }
 
     public void processWalletPaymentForOrder(Session session, Long userId, Integer orderId)
     {
-        Transaction transaction = null;
         try {
-            transaction = session.beginTransaction();
             Order order = session.get(Order.class, orderId);
             User user = session.get(User.class, userId);
             if (order == null)
@@ -106,17 +83,13 @@ public class WalletManager
             if (order.getPayPrice() <= 0)
                 throw new InvalidInputException("Order has a non-positive pay price.");
 
-            this.withdrawWallet(userId, BigDecimal.valueOf(order.getPayPrice()), PaymentMethod.WALLET.getName());
+            PaymentTransaction paymentTransaction = this.withdrawWallet(session, userId, BigDecimal.valueOf(order.getPayPrice()));
             order.setOrderStatus(OrderStatus.WAITING_VENDOR);
+            order.addTransaction(paymentTransaction);
             orderManager.updateOrder(order, session);
-            transaction.commit();
         } catch (InvalidInputException | NotFoundException e) {
-            if (transaction != null)
-                transaction.rollback();
             throw e;
         } catch (Exception e) {
-            if (transaction != null)
-                transaction.rollback();
             System.err.println("Error processing wallet payment for order: " + e.getMessage());
             e.printStackTrace();
             throw new RuntimeException("Failed to process wallet payment: " + e.getMessage(), e);

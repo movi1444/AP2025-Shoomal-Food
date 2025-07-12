@@ -241,6 +241,12 @@ public class Order
         this.transactions = transactions;
     }
 
+    public void addTransaction(PaymentTransaction transaction)
+    {
+        this.transactions.add(transaction);
+        transaction.setOrder(this);
+    }
+
     @PreUpdate
     protected void onUpdate()
     {
