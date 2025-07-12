@@ -40,6 +40,11 @@ import com.aut.shoomal.utils.ImageToBase64Converter;
 
 public abstract class AbstractBaseController implements Initializable {
 
+    public enum TransitionType {
+        SLIDE_LEFT,
+        SLIDE_UP
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
     }
@@ -105,7 +110,7 @@ public abstract class AbstractBaseController implements Initializable {
         alert.showAndWait();
     }
 
-    protected void navigateToSignInView(Node currentNode) {
+    protected void navigateToSignInView(Node currentNode, TransitionType transitionType) {
         Stage stage = (Stage) currentNode.getScene().getWindow();
         Parent currentRoot = currentNode.getScene().getRoot();
 
@@ -115,15 +120,21 @@ public abstract class AbstractBaseController implements Initializable {
             StackPane transitionContainer = new StackPane();
             transitionContainer.getChildren().addAll(currentRoot, signInRoot);
 
-            signInRoot.setTranslateX(-stage.getWidth());
+            TranslateTransition slideIn = new TranslateTransition(Duration.millis(500), signInRoot);
+
+            if (transitionType == TransitionType.SLIDE_UP) {
+                signInRoot.setTranslateY(stage.getHeight());
+                slideIn.setFromY(stage.getHeight());
+                slideIn.setToY(0);
+            } else {
+                signInRoot.setTranslateX(-stage.getWidth());
+                slideIn.setFromX(-stage.getWidth());
+                slideIn.setToX(0);
+            }
 
             Scene newScene = new Scene(transitionContainer, stage.getWidth(), stage.getHeight());
             newScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/styles/SignInUpStyles.css")).toExternalForm());
             stage.setScene(newScene);
-
-            TranslateTransition slideIn = new TranslateTransition(Duration.millis(500), signInRoot);
-            slideIn.setFromX(-stage.getWidth());
-            slideIn.setToX(0);
 
             slideIn.setOnFinished(event -> {
                 transitionContainer.getChildren().remove(currentRoot);
@@ -135,6 +146,10 @@ public abstract class AbstractBaseController implements Initializable {
             System.err.println("Failed to load SignInView.fxml: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    protected void navigateToSignInView(Node currentNode) {
+        navigateToSignInView(currentNode, TransitionType.SLIDE_LEFT);
     }
 
     protected String handleImageUploadAndConvert(Button uploadButton, ImageView imageView) {
@@ -173,11 +188,13 @@ public abstract class AbstractBaseController implements Initializable {
         if (requestBody != null) {
             try {
                 requestBodyJson = objectMapper.writeValueAsString(requestBody);
-                System.out.println("Request JSON: " + requestBodyJson);
+                System.out.println("HTTP Request Body: " + requestBodyJson);
             } catch (IOException e) {
-                System.err.println("Error serializing request: " + e.getMessage());
+                System.err.println("Error serializing request body: " + e.getMessage());
                 e.printStackTrace();
-                showAlert("System Error", "Could not prepare request data. Please try again.", AlertType.ERROR, null);
+                javafx.application.Platform.runLater(() ->
+                        onFailure.accept(0, "Failed to prepare request data. Please try again.")
+                );
                 return;
             }
         }
@@ -196,7 +213,9 @@ public abstract class AbstractBaseController implements Initializable {
         } else if (method.equalsIgnoreCase("DELETE")) {
             requestBuilder.DELETE();
         } else {
-            onFailure.accept(405, "Method Not Allowed: " + method);
+            javafx.application.Platform.runLater(() ->
+                    onFailure.accept(405, "Unsupported HTTP method: " + method)
+            );
             return;
         }
 
@@ -207,8 +226,8 @@ public abstract class AbstractBaseController implements Initializable {
                 HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
                 javafx.application.Platform.runLater(() -> {
-                    System.out.println("Response Status Code: " + response.statusCode());
-                    System.out.println("Response Body: " + response.body());
+                    System.out.println("HTTP Response Status Code: " + response.statusCode());
+                    System.out.println("HTTP Response Body: " + response.body());
 
                     if (response.statusCode() >= 200 && response.statusCode() < 300) {
                         try {
@@ -217,26 +236,27 @@ public abstract class AbstractBaseController implements Initializable {
                         } catch (IOException e) {
                             System.err.println("Error deserializing success response: " + e.getMessage());
                             e.printStackTrace();
-                            showAlert("Registration Error", "Success, but response could not be processed.", AlertType.ERROR, null);
+                            onFailure.accept(response.statusCode(), "Failed to process server response.");
                         }
                     } else {
                         try {
+                            //
                             @SuppressWarnings("unchecked")
                             java.util.Map<String, String> errorResponse = objectMapper.readValue(response.body(), java.util.Map.class);
-                            String errorMessage = errorResponse.getOrDefault("error", "Unknown error occurred.");
+                            String errorMessage = errorResponse.getOrDefault("error", "An unknown error occurred.");
                             onFailure.accept(response.statusCode(), errorMessage);
                         } catch (IOException e) {
                             System.err.println("Error parsing error response: " + e.getMessage());
                             e.printStackTrace();
-                            showAlert("Registration Failed", "Unexpected error occurred. Status code: " + response.statusCode(), AlertType.ERROR, null);
+                            onFailure.accept(response.statusCode(), "Server returned an unreadable error. Status: " + response.statusCode());
                         }
                     }
                 });
             } catch (IOException | InterruptedException e) {
-                System.err.println("Network/API call error: " + e.getMessage());
+                System.err.println("Network or API call failed: " + e.getMessage());
                 e.printStackTrace();
                 javafx.application.Platform.runLater(() -> {
-                    showAlert("Network Error", "Failed to connect to server. Please check your internet connection or try again later.", AlertType.ERROR, null);
+                    onFailure.accept(-1, "Failed to connect to server. Please check your internet connection.");
                 });
             }
         }).start();

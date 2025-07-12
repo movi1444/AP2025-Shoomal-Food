@@ -1,9 +1,19 @@
 package com.aut.shoomal.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class UserResponse
 {
     private Long id;
-    private String name, phoneNumber, email, role, address, profileImageBase64;
+    @JsonProperty("full_name")
+    private String name;
+    @JsonProperty("phone")
+    private String phoneNumber;
+    private String email;
+    private String role;
+    private String address;
+    private String profileImageBase64;
+    @JsonProperty("bank_info")
     private BankInfoResponse bank;
 
     public UserResponse() {}
@@ -30,21 +40,25 @@ public class UserResponse
         this.id = id;
     }
 
+    @JsonProperty("full_name")
     public String getName()
     {
         return name;
     }
 
+    @JsonProperty("full_name")
     public void setName(String name)
     {
         this.name = name;
     }
 
+    @JsonProperty("phone")
     public String getPhoneNumber()
     {
         return phoneNumber;
     }
 
+    @JsonProperty("phone")
     public void setPhoneNumber(String phoneNumber)
     {
         this.phoneNumber = phoneNumber;
@@ -90,11 +104,13 @@ public class UserResponse
         this.profileImageBase64 = profileImageBase64;
     }
 
+    @JsonProperty("bank_info")
     public BankInfoResponse getBank()
     {
         return bank;
     }
 
+    @JsonProperty("bank_info")
     public void setBank(BankInfoResponse bank)
     {
         this.bank = bank;
