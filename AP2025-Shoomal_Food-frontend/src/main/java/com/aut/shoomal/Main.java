@@ -14,8 +14,8 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws IOException {
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/SignInView.fxml")));
         primaryStage.setTitle("Shoomal Food");
-        primaryStage.setMinWidth(500);
-        primaryStage.setMinHeight(500);
+        primaryStage.setMinWidth(800);
+        primaryStage.setMinHeight(600);
         Scene scene = new Scene(root, 1280, 720);
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/styles/SignInUpStyles.css")).toExternalForm());
         primaryStage.setScene(scene);

@@ -2,11 +2,7 @@ package com.aut.shoomal.controllers;
 
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Hyperlink;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.collections.FXCollections;
@@ -14,6 +10,7 @@ import javafx.collections.ObservableList;
 import javafx.util.Duration;
 import java.net.URL;
 import java.util.*;
+import javafx. scene. control. Alert. AlertType;
 
 import com.aut.shoomal.dto.request.UserRegisterRequest;
 import com.aut.shoomal.dto.response.UserRegisterResponse;
@@ -81,7 +78,7 @@ public class SignUpController extends AbstractBaseController {
             backButton.setOnAction(event -> handlePreviousSection());
         }
         if (backToLoginLink != null) {
-            backToLoginLink.setOnAction(event -> handleBackToLogin());
+            backToLoginLink.setOnAction(event -> navigateToSignInView(backToLoginLink, TransitionType.SLIDE_LEFT));
         }
 
         if (fullNameField != null) addTextDirectionListener(fullNameField);
@@ -93,6 +90,10 @@ public class SignUpController extends AbstractBaseController {
         if (emailField != null) addTextDirectionListener(emailField);
         if (bankNameField != null) addTextDirectionListener(bankNameField);
         if (accountNumberField != null) addTextDirectionListener(accountNumberField);
+
+        if (uploadImageButton != null) {
+            uploadImageButton.setOnAction(event -> handleUploadImageButton());
+        }
     }
 
     private void handleNextSection() {
@@ -187,13 +188,13 @@ public class SignUpController extends AbstractBaseController {
         String accountNumber = accountNumberField.getText();
 
         if (fullName.isEmpty() || phoneNumber.isEmpty() || password.isEmpty() || selectedRoleInPersian == null || address.isEmpty()) {
-            showAlert("Validation Error", "لطفاً تمام فیلدهای الزامی (نام کامل، شماره تلفن، رمز عبور، نقش، آدرس) را پر کنید.");
+            showAlert("خطای اعتبارسنجی", "لطفاً تمام فیلدهای الزامی (نام کامل، شماره تلفن، رمز عبور، نقش، آدرس) را پر کنید.", AlertType.WARNING, null);
             return;
         }
 
         String role = roleMapping.get(selectedRoleInPersian);
         if (role == null) {
-            showAlert("Validation Error", "نقش انتخاب شده نامعتبر است. لطفاً یک نقش معتبر انتخاب کنید.");
+            showAlert("خطای اعتبارسنجی", "نقش انتخاب شده نامعتبر است. لطفاً یک نقش معتبر انتخاب کنید.", AlertType.WARNING, null);
             return;
         }
 
@@ -223,11 +224,22 @@ public class SignUpController extends AbstractBaseController {
                 registerRequest,
                 UserRegisterResponse.class,
                 response -> {
-                    showAlert("Success", "ثبت نام با موفقیت انجام شد! شناسه کاربری: " + response.getUserId() + "\nتوکن: " + response.getToken());
-                    navigateToSignInView(submitButton);
+                    showAlert("موفقیت", "ثبت نام با موفقیت انجام شد! شناسه کاربری: " + response.getUserId() + "\nتوکن: " + response.getToken(), AlertType.INFORMATION, null);
+                    navigateToSignInView(submitButton, TransitionType.SLIDE_LEFT);
                 },
                 (statusCode, errorMessage) -> {
-                    showAlert("Registration Failed", errorMessage);
+                    String displayMessage;
+                    if (statusCode == -1) {
+                        displayMessage = "نمی توان به سرور متصل شد. لطفا اتصال اینترنت خود را بررسی کنید.";
+                    } else if (statusCode == 409) {
+                        displayMessage = "شماره تلفن از قبل موجود است. " + errorMessage;
+                    } else if (statusCode == 400) {
+                        displayMessage = "ورودی نامعتبر: " + errorMessage;
+                    } else {
+                        displayMessage = "هنگام ثبت نام خطای غیرمنتظره ای رخ داد: " + errorMessage;
+                    }
+                    showAlert("ثبت نام ناموفق", displayMessage, AlertType.ERROR, null);
+                    System.err.println("Registration failed: Status " + statusCode + ", Error: " + errorMessage);
                 }
         );
     }
