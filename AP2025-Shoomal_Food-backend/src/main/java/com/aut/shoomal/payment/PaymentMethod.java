@@ -3,7 +3,7 @@ package com.aut.shoomal.payment;
 public enum PaymentMethod
 {
     WALLET("wallet"),
-    PAYWALL("paywall");
+    ONLINE("online");
 
     private final String name;
     PaymentMethod(String name)

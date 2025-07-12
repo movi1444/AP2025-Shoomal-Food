@@ -97,10 +97,6 @@ public class FoodItemHandler extends AbstractHttpHandler {
             return;
         }
 
-        if (request.getVendor_id() == null || !request.getVendor_id().equals(restaurantIdFromPath)) {
-            throw new InvalidInputException("Vendor ID in request body must match restaurant ID in path.");
-        }
-
         Food newFoodItem = foodManager.addFoodItem(restaurantIdFromPath, request, String.valueOf(authenticatedUser.getId()));
         sendResponse(exchange, HttpURLConnection.HTTP_OK, new ApiResponse(true, "Food item added successfully", convertToFoodItemResponse(newFoodItem)));
     }

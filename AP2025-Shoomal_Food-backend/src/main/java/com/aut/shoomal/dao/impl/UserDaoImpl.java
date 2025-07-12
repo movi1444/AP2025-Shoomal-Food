@@ -71,6 +71,7 @@ public class UserDaoImpl extends GenericDaoImpl<User> implements UserDao
             return null;
         }
     }
+
     @Override
     public void updateApprovalStatus(Long id, boolean approved) {
         Transaction transaction = null;
