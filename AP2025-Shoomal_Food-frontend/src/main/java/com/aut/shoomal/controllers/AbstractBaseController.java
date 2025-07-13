@@ -132,7 +132,7 @@ public abstract class AbstractBaseController implements Initializable {
                 slideIn.setToX(0);
             }
 
-            Scene newScene = new Scene(transitionContainer, stage.getWidth(), stage.getHeight());
+            Scene newScene = new Scene(transitionContainer, stage.getWidth() - 15, stage.getHeight() - 38);
             newScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/styles/SignInUpStyles.css")).toExternalForm());
             stage.setScene(newScene);
 
@@ -182,7 +182,8 @@ public abstract class AbstractBaseController implements Initializable {
 
     protected <T, R> void sendHttpRequest(String uri, String method, T requestBody, Class<R> responseClass,
                                           Consumer<R> onSuccess,
-                                          BiConsumer<Integer, String> onFailure) {
+                                          BiConsumer<Integer, String> onFailure,
+                                          String authToken) {
         ObjectMapper objectMapper = new ObjectMapper();
         String requestBodyJson = null;
         if (requestBody != null) {
@@ -203,6 +204,10 @@ public abstract class AbstractBaseController implements Initializable {
         HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
                 .uri(URI.create(uri))
                 .header("Content-Type", "application/json");
+
+        if (authToken != null && !authToken.isEmpty()) {
+            requestBuilder.header("Authorization", "Bearer " + authToken);
+        }
 
         if (method.equalsIgnoreCase("POST")) {
             requestBuilder.POST(HttpRequest.BodyPublishers.ofString(requestBodyJson != null ? requestBodyJson : ""));
@@ -240,7 +245,6 @@ public abstract class AbstractBaseController implements Initializable {
                         }
                     } else {
                         try {
-                            //
                             @SuppressWarnings("unchecked")
                             java.util.Map<String, String> errorResponse = objectMapper.readValue(response.body(), java.util.Map.class);
                             String errorMessage = errorResponse.getOrDefault("error", "An unknown error occurred.");

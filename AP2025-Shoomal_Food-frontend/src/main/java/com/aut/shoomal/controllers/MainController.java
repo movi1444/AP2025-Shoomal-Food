@@ -10,6 +10,7 @@ import javafx.event.ActionEvent;
 import java.net.URL;
 import java.util.ResourceBundle;
 import com.aut.shoomal.dto.response.UserResponse;
+import com.aut.shoomal.utils.PreferencesManager;
 
 public class MainController extends AbstractBaseController {
 
@@ -111,6 +112,7 @@ public class MainController extends AbstractBaseController {
     @FXML
     private void handleLogout(ActionEvent event) {
         System.out.println("Logout button clicked!");
+        PreferencesManager.clearAuthInfo();
         if (logoutButton != null) {
             navigateToSignInView(logoutButton);
         }
