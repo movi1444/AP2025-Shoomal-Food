@@ -1,15 +1,115 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
 
-<BorderPane prefHeight="729.0" prefWidth="693.0" stylesheets="@/com/aut/shoomal/styles/MainView.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.aut.shoomal.controllers.MainController">
+<BorderPane prefHeight="729.0" prefWidth="693.0" stylesheets="@/com/aut/shoomal/styles/MainView.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.aut.shoomal.controllers.MainController">
 
     <center>
         <StackPane fx:id="contentStackPane" styleClass="content-area">
+
+            <ScrollPane fx:id="sellerDashboardScrollPane" fitToWidth="true" styleClass="dashboard-scroll-pane">
+                <VBox alignment="CENTER" prefHeight="720.0" prefWidth="678.0" styleClass="dashboard-card">
+                    <GridPane alignment="CENTER" prefHeight="532.0" prefWidth="680.0">
+                        <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        </columnConstraints>
+                        <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        </rowConstraints>
+                        <children>
+                            <ImageView fitHeight="300.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+                                <cursor>
+                                    <Cursor fx:constant="DEFAULT" />
+                                </cursor>
+                                <image>
+                                    <Image url="@/com/aut/shoomal/images/ShoomalFood-removebg.png" />
+                                </image>
+                            </ImageView>
+                        </children>
+                    </GridPane>
+                </VBox>
+                <StackPane.margin>
+                    <Insets />
+                </StackPane.margin>
+            </ScrollPane>
+
+            <ScrollPane fx:id="courierDashboardScrollPane" fitToWidth="true" styleClass="dashboard-scroll-pane">
+                <VBox alignment="CENTER" prefHeight="720.0" prefWidth="678.0" styleClass="dashboard-card">
+                    <GridPane alignment="CENTER" prefHeight="532.0" prefWidth="680.0">
+                        <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        </columnConstraints>
+                        <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        </rowConstraints>
+                        <children>
+                            <ImageView fitHeight="300.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+                                <cursor>
+                                    <Cursor fx:constant="DEFAULT" />
+                                </cursor>
+                                <image>
+                                    <Image url="@/com/aut/shoomal/images/ShoomalFood-removebg.png" />
+                                </image>
+                            </ImageView>
+                        </children>
+                    </GridPane>
+                </VBox>
+                <StackPane.margin>
+                    <Insets />
+                </StackPane.margin>
+            </ScrollPane>
+
+            <ScrollPane fx:id="adminDashboardScrollPane" fitToWidth="true" styleClass="dashboard-scroll-pane">
+                <VBox alignment="CENTER" prefHeight="720.0" prefWidth="678.0" styleClass="dashboard-card">
+                    <GridPane alignment="CENTER" prefHeight="532.0" prefWidth="680.0">
+                        <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        </columnConstraints>
+                        <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        </rowConstraints>
+                        <children>
+                            <ImageView fitHeight="300.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+                                <cursor>
+                                    <Cursor fx:constant="DEFAULT" />
+                                </cursor>
+                                <image>
+                                    <Image url="@/com/aut/shoomal/images/ShoomalFood-removebg.png" />
+                                </image>
+                            </ImageView>
+                        </children>
+                    </GridPane>
+                </VBox>
+                <StackPane.margin>
+                    <Insets />
+                </StackPane.margin>
+            </ScrollPane>
             <ScrollPane fx:id="buyerDashboardScrollPane" fitToWidth="true" styleClass="dashboard-scroll-pane">
                 <VBox alignment="CENTER" prefHeight="720.0" prefWidth="678.0" styleClass="dashboard-card">
                     <GridPane alignment="CENTER" prefHeight="532.0" prefWidth="680.0">
@@ -29,7 +129,7 @@
                                     <Cursor fx:constant="DEFAULT" />
                                 </cursor>
                                 <image>
-                                    <Image url="@backgrounds/ShoomalFood-removebg.png" />
+                                    <Image url="@/com/aut/shoomal/images/ShoomalFood-removebg.png" />
                                 </image>
                             </ImageView>
                         </children>
@@ -39,32 +139,6 @@
                     <Insets />
                 </StackPane.margin>
             </ScrollPane>
-
-            <ScrollPane fx:id="sellerDashboardScrollPane" managed="false" styleClass="dashboard-scroll-pane" visible="false">
-                <VBox styleClass="dashboard-card" visible="false">
-                    <Label styleClass="card-title" text="Seller Dashboard Content" />
-                    <Label styleClass="card-text" text="Manage your restaurant and menu items here." />
-                </VBox>
-            </ScrollPane>
-
-            <ScrollPane fx:id="courierDashboardScrollPane" managed="false" styleClass="dashboard-scroll-pane" visible="false">
-                <VBox styleClass="dashboard-card" visible="false">
-                    <Label styleClass="card-title" text="Courier Dashboard Content" />
-                    <Label styleClass="card-text" text="View available deliveries and update order status." />
-                </VBox>
-            </ScrollPane>
-
-            <ScrollPane fx:id="adminDashboardScrollPane" managed="false" styleClass="dashboard-scroll-pane" visible="false">
-                <VBox styleClass="dashboard-card" visible="false">
-                    <Label styleClass="card-title" text="Admin Dashboard Content" />
-                    <Label styleClass="card-text" text="Manage users, orders, and system settings." />
-                </VBox>
-            </ScrollPane>
-
-            <VBox fx:id="defaultView" alignment="CENTER" spacing="20" visible="false">
-                <Button fx:id="logoutButton" styleClass="logout-button" text="خروج" />
-                <Label styleClass="default-view-label" text="Please select a role or log in." />
-            </VBox>
         </StackPane>
     </center>
     <top>
@@ -88,11 +162,24 @@
                     <graphic>
                         <ImageView fitHeight="200.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@backgrounds/ShoomalFoodMahi-removebg.png" />
+                                <Image url="@/com/aut/shoomal/images/ShoomalFoodMahi-removebg.png" />
                             </image>
                         </ImageView>
                     </graphic>
-                </Label>s
+                </Label>
+                <Button fx:id="logoutButton" styleClass="logout-button" text="خروج" GridPane.columnIndex="2" GridPane.halignment="LEFT">
+                    <GridPane.margin>
+                        <Insets left="50.0" top="20.0" />
+                    </GridPane.margin>
+                </Button>
+                <ImageView fx:id="profilePictureImageView" fitHeight="60.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.halignment="RIGHT">
+                    <clip>
+                        <Circle centerX="30" centerY="30" radius="30" />
+                    </clip>
+               <GridPane.margin>
+                  <Insets right="50.0" top="20.0" />
+               </GridPane.margin>
+                </ImageView>
             </children>
             <BorderPane.margin>
                 <Insets top="20.0" />
