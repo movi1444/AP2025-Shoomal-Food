@@ -89,10 +89,10 @@ public class SignInController extends AbstractBaseController {
 
                         mainRoot.setTranslateY(-stage.getHeight());
 
-                        Scene newScene = new Scene(transitionContainer, stage.getWidth(), stage.getHeight());
+                        Scene newScene = new Scene(transitionContainer, stage.getWidth() - 15, stage.getHeight() - 38);
                         newScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/styles/SignInUpStyles.css")).toExternalForm());
                         stage.setScene(newScene);
-                        stage.setTitle("Shoomal Food - Main");
+                        stage.setTitle("Shoomal Food");
                         stage.show();
 
                         TranslateTransition slideIn = new TranslateTransition(Duration.millis(500), mainRoot);
@@ -143,7 +143,7 @@ public class SignInController extends AbstractBaseController {
 
             signUpRoot.setTranslateX(stage.getWidth());
 
-            Scene newScene = new Scene(transitionContainer, stage.getWidth(), stage.getHeight());
+            Scene newScene = new Scene(transitionContainer, stage.getWidth() - 15, stage.getHeight() - 38);
             newScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/styles/SignInUpStyles.css")).toExternalForm());
             stage.setScene(newScene);
 

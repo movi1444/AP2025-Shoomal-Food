@@ -132,7 +132,7 @@ public abstract class AbstractBaseController implements Initializable {
                 slideIn.setToX(0);
             }
 
-            Scene newScene = new Scene(transitionContainer, stage.getWidth(), stage.getHeight());
+            Scene newScene = new Scene(transitionContainer, stage.getWidth() - 15, stage.getHeight() - 38);
             newScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/styles/SignInUpStyles.css")).toExternalForm());
             stage.setScene(newScene);
 
@@ -240,7 +240,6 @@ public abstract class AbstractBaseController implements Initializable {
                         }
                     } else {
                         try {
-                            //
                             @SuppressWarnings("unchecked")
                             java.util.Map<String, String> errorResponse = objectMapper.readValue(response.body(), java.util.Map.class);
                             String errorMessage = errorResponse.getOrDefault("error", "An unknown error occurred.");
