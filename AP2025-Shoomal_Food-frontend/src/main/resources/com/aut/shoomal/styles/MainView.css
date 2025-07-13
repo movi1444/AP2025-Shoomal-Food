@@ -34,6 +34,12 @@
     -fx-padding: 0 10px 0 0;
 }
 
+.username-colorful-label {
+    -fx-font-family: "VazirmatnB";
+    -fx-font-size: 30px;
+    -fx-fill: #FFD700;
+}
+
 .logout-button {
     -fx-background-color: #e74c3c;
     -fx-text-fill: white;
@@ -145,4 +151,12 @@
     -fx-font-size: 24px;
     -fx-text-fill: #7f8c8d;
     -fx-alignment: center;
+}
+
+.profile-circle {
+    -fx-border-color: #f4f4f4;
+    -fx-border-width: 2px;
+    -fx-border-radius: 50%;
+    -fx-background-radius: 50%;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10, 0, 0, 5);
 }
