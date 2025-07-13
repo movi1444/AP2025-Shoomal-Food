@@ -1,77 +1,107 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.geometry.Insets?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
 
-<BorderPane fx:id="mainRootPane" prefHeight="720.0" prefWidth="1280.0"
-            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.aut.shoomal.controllers.MainController">
-
-    <top>
-        <HBox alignment="CENTER_LEFT" prefHeight="60.0" spacing="20">
-            <padding>
-                <Insets left="20" right="20"/>
-            </padding>
-            <Label text="Shoomal Food"/>
-            <HBox HBox.hgrow="ALWAYS" alignment="CENTER_RIGHT" spacing="10">
-                <Label fx:id="welcomeUserLabel" text="Welcome, User!"/>
-                <Button text="Logout" fx:id="logoutButton"/>
-            </HBox>
-        </HBox>
-    </top>
-
-    <left>
-        <VBox fx:id="navigationSidebar" prefWidth="200.0" spacing="10">
-            <padding>
-                <Insets top="20" left="10" right="10" bottom="10"/>
-            </padding>
-            <Label text="Navigation"/>
-        </VBox>
-    </left>
+<BorderPane prefHeight="729.0" prefWidth="693.0" stylesheets="@/com/aut/shoomal/styles/MainView.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.aut.shoomal.controllers.MainController">
 
     <center>
-        <StackPane fx:id="contentStackPane">
-            <ScrollPane fx:id="buyerDashboardScrollPane" fitToWidth="true" visible="false" managed="false">
-                <VBox fx:id="buyerDashboardContent">
-                    <Label text="Buyer Dashboard Content"/>
+        <StackPane fx:id="contentStackPane" styleClass="content-area">
+            <ScrollPane fx:id="buyerDashboardScrollPane" fitToWidth="true" styleClass="dashboard-scroll-pane">
+                <VBox alignment="CENTER" prefHeight="720.0" prefWidth="678.0" styleClass="dashboard-card">
+                    <GridPane alignment="CENTER" prefHeight="532.0" prefWidth="680.0">
+                        <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        </columnConstraints>
+                        <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        </rowConstraints>
+                        <children>
+                            <ImageView fitHeight="300.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+                                <cursor>
+                                    <Cursor fx:constant="DEFAULT" />
+                                </cursor>
+                                <image>
+                                    <Image url="@backgrounds/ShoomalFood-removebg.png" />
+                                </image>
+                            </ImageView>
+                        </children>
+                    </GridPane>
+                </VBox>
+            <StackPane.margin>
+               <Insets />
+            </StackPane.margin>
+            </ScrollPane>
+
+            <ScrollPane fx:id="sellerDashboardScrollPane" managed="false" styleClass="dashboard-scroll-pane" visible="false">
+                <VBox styleClass="dashboard-card" visible="false">
+                    <Label styleClass="card-title" text="Seller Dashboard Content" />
+                    <Label styleClass="card-text" text="Manage your restaurant and menu items here." />
                 </VBox>
             </ScrollPane>
 
-            <ScrollPane fx:id="sellerDashboardScrollPane" fitToWidth="true" visible="false" managed="false">
-                <VBox fx:id="sellerDashboardContent">
-                    <Label text="Seller Dashboard Content"/>
+            <ScrollPane fx:id="courierDashboardScrollPane" managed="false" styleClass="dashboard-scroll-pane" visible="false">
+                <VBox styleClass="dashboard-card" visible="false">
+                    <Label styleClass="card-title" text="Courier Dashboard Content" />
+                    <Label styleClass="card-text" text="View available deliveries and update order status." />
                 </VBox>
             </ScrollPane>
 
-            <ScrollPane fx:id="courierDashboardScrollPane" fitToWidth="true" visible="false" managed="false">
-                <VBox fx:id="courierDashboardContent">
-                    <Label text="Courier Dashboard Content"/>
+            <ScrollPane fx:id="adminDashboardScrollPane" managed="false" styleClass="dashboard-scroll-pane" visible="false">
+                <VBox styleClass="dashboard-card" visible="false">
+                    <Label styleClass="card-title" text="Admin Dashboard Content" />
+                    <Label styleClass="card-text" text="Manage users, orders, and system settings." />
                 </VBox>
             </ScrollPane>
 
-            <ScrollPane fx:id="adminDashboardScrollPane" fitToWidth="true" visible="false" managed="false">
-                <VBox fx:id="adminDashboardContent">
-                    <Label text="Admin Dashboard Content"/>
-                </VBox>
-            </ScrollPane>
-
-            <VBox fx:id="defaultView" alignment="CENTER" spacing="20" visible="true" managed="true">
-                <Label text="Loading Dashboard..."/>
+            <VBox fx:id="defaultView" alignment="CENTER" spacing="20" visible="false">
+                <Button fx:id="logoutButton" styleClass="logout-button" text="خروج" />
+                <Label styleClass="default-view-label" text="Please select a role or log in." />
             </VBox>
-
         </StackPane>
     </center>
-
+    <top>
+        <GridPane BorderPane.alignment="CENTER">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            </rowConstraints>
+            <children>
+                <Label fx:id="welcomeUserLabel" alignment="CENTER" styleClass="welcome-label" text="باع" GridPane.columnSpan="3" GridPane.halignment="CENTER">
+                    <GridPane.margin>
+                        <Insets left="20.0" top="20.0" />
+                    </GridPane.margin>
+                    <padding>
+                        <Insets left="50.0" />
+                    </padding>
+               <graphic>
+                  <ImageView fitHeight="200.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@backgrounds/ShoomalFoodMahi-removebg.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+                </Label>
+            </children>
+            <BorderPane.margin>
+                <Insets top="20.0" />
+            </BorderPane.margin>
+        </GridPane>
+    </top>
     <bottom>
-        <HBox alignment="CENTER" prefHeight="40.0">
-            <Label text="© 2025 Shoomal Food."/>
+        <HBox alignment="CENTER" prefHeight="40.0" style="-fx-background-color: #333333;">
+            <Label style="-fx-text-fill: white; -fx-font-size: 12px;" text="© 2025 Shoomal Food. All rights reserved." />
         </HBox>
     </bottom>
-
 </BorderPane>
