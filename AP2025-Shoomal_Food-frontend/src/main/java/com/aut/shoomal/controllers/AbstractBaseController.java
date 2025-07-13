@@ -25,13 +25,11 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Base64;
 import java.util.Objects;
-import java.util.ResourceBundle;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -39,14 +37,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.aut.shoomal.utils.ImageToBase64Converter;
 
 public abstract class AbstractBaseController implements Initializable {
-
     public enum TransitionType {
         SLIDE_LEFT,
         SLIDE_UP
-    }
-
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
     }
 
     protected boolean isPersianCharacter(char c) {
@@ -115,7 +108,7 @@ public abstract class AbstractBaseController implements Initializable {
         Parent currentRoot = currentNode.getScene().getRoot();
 
         try {
-            Parent signInRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/SignInView.fxml")));
+            Parent signInRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/views/SignInView.fxml")));
 
             StackPane transitionContainer = new StackPane();
             transitionContainer.getChildren().addAll(currentRoot, signInRoot);

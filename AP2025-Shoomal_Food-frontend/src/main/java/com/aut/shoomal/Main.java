@@ -20,7 +20,7 @@ public class Main extends Application {
         UserResponse loggedInUser = PreferencesManager.attemptAutoLogin();
 
         if (loggedInUser != null) {
-            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/MainView.fxml")));
+            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/views/MainView.fxml")));
             Parent mainRoot = loader.load();
 
             MainController mainController = loader.getController();
@@ -36,7 +36,7 @@ public class Main extends Application {
             primaryStage.setMinHeight(600);
             primaryStage.show();
         } else {
-            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/SignInView.fxml")));
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/views/SignInView.fxml")));
             primaryStage.setTitle("Shoomal Food");
             primaryStage.setMinWidth(800);
             primaryStage.setMinHeight(600);

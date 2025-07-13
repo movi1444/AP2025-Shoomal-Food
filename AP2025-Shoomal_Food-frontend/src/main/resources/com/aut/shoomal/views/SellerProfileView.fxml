@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<!-- The root element is an AnchorPane, which allows flexible positioning. -->
+<!-- fx:controller links this FXML to its Java controller class. -->
+
+<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.aut.shoomal.controllers.SellerProfileController">
+    <!-- A VBox is used for vertical arrangement of sections. -->
+    <VBox alignment="TOP_CENTER" layoutX="0.8" layoutY="-1.6" prefHeight="600.0" prefWidth="800.0" spacing="20" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-2.0">
+        <padding>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+        </padding>
+
+        <!-- Main title for the profile page -->
+        <Label styleClass="header-label" text="پروفایل فروشندگان" textAlignment="JUSTIFY">
+         <font>
+            <Font size="18.0" />
+         </font></Label>
+         <Label alignment="TOP_RIGHT" prefHeight="0.0" prefWidth="730.0" styleClass="section-title" text="اطلاعات بانکی">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <GridPane prefHeight="73.0" prefWidth="720.0">
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="668.0000610351562" minWidth="10.0" prefWidth="644.19990234375" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="353.5999755859375" minWidth="0.0" prefWidth="75.40009765624995" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Label alignment="CENTER_RIGHT" prefHeight="30.0" prefWidth="80.0" text="نام بانک:" GridPane.columnIndex="1">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="80.0" text="شماره کارت:" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <TextField prefHeight="26.0" prefWidth="216.0" />
+            <TextField GridPane.rowIndex="1" />
+         </children>
+      </GridPane>
+      <Label alignment="TOP_RIGHT" prefHeight="26.0" prefWidth="780.0" text="اطلاعات شخصی">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <GridPane>
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="689.5999755859375" minWidth="10.0" prefWidth="687.2" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="374.4000244140625" minWidth="10.0" prefWidth="73.60000000000002" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="378.0" text="نام:" GridPane.columnIndex="1">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="78.0" text="شماره تلفن:" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label alignment="CENTER_RIGHT" prefHeight="18.0" prefWidth="98.0" text="ایمیل:" GridPane.columnIndex="1" GridPane.rowIndex="2">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="102.0" text="آدرس:" GridPane.columnIndex="1" GridPane.rowIndex="3">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <TextField prefHeight="26.0" prefWidth="266.0" />
+            <TextField GridPane.rowIndex="1" />
+            <TextField GridPane.rowIndex="2" />
+            <TextField GridPane.rowIndex="3" />
+         </children>
+      </GridPane>
+      <TextArea prefHeight="80.0" prefWidth="658.0" promptText="اطلاعات تکمیلی رستوران..." wrapText="true">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </TextArea>
+
+        <!-- Save Button -->
+        <HBox alignment="CENTER" prefHeight="51.0" prefWidth="720.0" spacing="20">
+            <Button fx:id="saveProfileButton" onAction="#handleSaveProfile" styleClass="primary-button" text="Save Profile" />
+            <!-- Add a Cancel or Back button if needed -->
+            <Button styleClass="secondary-button" text="Cancel" />
+        </HBox>
+
+    </VBox>
+</AnchorPane>

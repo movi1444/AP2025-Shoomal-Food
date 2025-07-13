@@ -14,7 +14,7 @@
         <String fx:value="/com/aut/shoomal/styles/SignInUpStyles.css" />
     </stylesheets>
     <top>
-        <Label styleClass="my-headlabel" stylesheets="@styles/SignInUpStyles.css" text="ثبت نام در شومال فود" BorderPane.alignment="CENTER">
+        <Label styleClass="my-headlabel" stylesheets="@../styles/SignInUpStyles.css" text="ثبت نام در شومال فود" BorderPane.alignment="CENTER">
             <BorderPane.margin>
                 <Insets bottom="30.0" left="30.0" top="30.0" />
             </BorderPane.margin>
@@ -37,23 +37,23 @@
                         <RowConstraints maxHeight="109.60002441406249" minHeight="26.80000000000001" prefHeight="55.19999999999999" vgrow="SOMETIMES" />
                         <RowConstraints maxHeight="163.19998779296873" minHeight="60.80000000000001" prefHeight="60.80000000000001" vgrow="SOMETIMES" /> </rowConstraints>
                     <children>
-                        <Button fx:id="uploadImageButton" onAction="#handleUploadImageButton" prefHeight="26.0" prefWidth="140.0" styleClass="my-button2" stylesheets="@styles/SignInUpStyles.css" text="آپلود تصویر" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="3">
+                        <Button fx:id="uploadImageButton" onAction="#handleUploadImageButton" prefHeight="26.0" prefWidth="140.0" styleClass="my-button2" stylesheets="@../styles/SignInUpStyles.css" text="آپلود تصویر" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="3">
                             <GridPane.margin>
                                 <Insets right="100.0" top="50.0" />
                             </GridPane.margin></Button>
-                        <Label prefHeight="28.0" prefWidth="150.0" styleClass="my-label2" stylesheets="@styles/SignInUpStyles.css" text="اطلاعات بانکی" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+                        <Label prefHeight="28.0" prefWidth="150.0" styleClass="my-label2" stylesheets="@../styles/SignInUpStyles.css" text="اطلاعات بانکی" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="1">
                             <GridPane.margin>
                                 <Insets top="40.0" />
                             </GridPane.margin>
                             <padding>
                                 <Insets top="10.0" />
                             </padding></Label>
-                        <Label prefHeight="18.0" prefWidth="100.0" styleClass="my-label" stylesheets="@styles/SignInUpStyles.css" text=" نام بانک" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
+                        <Label prefHeight="18.0" prefWidth="100.0" styleClass="my-label" stylesheets="@../styles/SignInUpStyles.css" text=" نام بانک" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
                             <GridPane.margin>
                                 <Insets bottom="60.0" right="-70.0" />
                             </GridPane.margin>
                         </Label>
-                        <TextField fx:id="accountNumberField" styleClass="my-text-field" stylesheets="@styles/SignInUpStyles.css" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
+                        <TextField fx:id="accountNumberField" styleClass="my-text-field" stylesheets="@../styles/SignInUpStyles.css" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
                             <GridPane.margin>
                                 <Insets left="-40.0" right="10.0" top="30.0" />
                             </GridPane.margin>
@@ -62,25 +62,25 @@
                             <GridPane.margin>
                                 <Insets left="100.0" right="100.0" top="40.0" />
                             </GridPane.margin></TextField>
-                        <Label prefHeight="18.0" prefWidth="130.0" styleClass="my-label" stylesheets="@styles/SignInUpStyles.css" text=" شماره حساب" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
+                        <Label prefHeight="18.0" prefWidth="130.0" styleClass="my-label" stylesheets="@../styles/SignInUpStyles.css" text=" شماره حساب" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
                             <GridPane.margin>
                                 <Insets bottom="60.0" right="-10.0" />
                             </GridPane.margin>
                         </Label>
-                        <TextField fx:id="bankNameField" prefHeight="26.0" prefWidth="223.0" styleClass="my-text-field" stylesheets="@styles/SignInUpStyles.css" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="2">
+                        <TextField fx:id="bankNameField" prefHeight="26.0" prefWidth="223.0" styleClass="my-text-field" stylesheets="@../styles/SignInUpStyles.css" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="2">
                             <GridPane.margin>
                                 <Insets left="10.0" right="-40.0" top="30.0" />
                             </GridPane.margin></TextField>
-                        <Label prefHeight="18.0" prefWidth="80.0" styleClass="my-label" stylesheets="@styles/SignInUpStyles.css" text=" ایمیل" GridPane.columnSpan="2" GridPane.halignment="CENTER">
+                        <Label prefHeight="18.0" prefWidth="80.0" styleClass="my-label" stylesheets="@../styles/SignInUpStyles.css" text=" ایمیل" GridPane.columnSpan="2" GridPane.halignment="CENTER">
                             <GridPane.margin>
                                 <Insets bottom="60.0" left="30.0" />
                             </GridPane.margin>
                         </Label>
-                        <Label layoutX="216.0" layoutY="116.0" prefHeight="22.0" prefWidth="215.0" styleClass="my-label2" stylesheets="@styles/SignInUpStyles.css" text="آپلود عکس پروفایل" GridPane.columnSpan="2" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
+                        <Label layoutX="216.0" layoutY="116.0" prefHeight="22.0" prefWidth="215.0" styleClass="my-label2" stylesheets="@../styles/SignInUpStyles.css" text="آپلود عکس پروفایل" GridPane.columnSpan="2" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
                             <GridPane.margin>
                                 <Insets top="50.0" />
                             </GridPane.margin></Label>
-                        <Button fx:id="backButton" mnemonicParsing="false" prefHeight="26.0" prefWidth="130.0" styleClass="my-button" stylesheets="@styles/SignInUpStyles.css" text="برگشت" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="5">
+                        <Button fx:id="backButton" mnemonicParsing="false" prefHeight="26.0" prefWidth="130.0" styleClass="my-button" stylesheets="@../styles/SignInUpStyles.css" text="برگشت" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="5">
                             <GridPane.margin>
                                 <Insets top="10.0" />
                             </GridPane.margin></Button>
@@ -109,7 +109,7 @@
                         <RowConstraints maxHeight="149.8" minHeight="10.0" prefHeight="124.39999999999998" vgrow="ALWAYS" />
                     </rowConstraints>
                     <children>
-                        <Label prefHeight="35.0" prefWidth="100.0" styleClass="my-label" stylesheets="@styles/SignInUpStyles.css" text=" نام کامل" GridPane.columnIndex="1" GridPane.halignment="RIGHT">
+                        <Label prefHeight="35.0" prefWidth="100.0" styleClass="my-label" stylesheets="@../styles/SignInUpStyles.css" text=" نام کامل" GridPane.columnIndex="1" GridPane.halignment="RIGHT">
                             <GridPane.margin>
                                 <Insets bottom="100.0" right="40.0" />
                             </GridPane.margin>
@@ -121,12 +121,12 @@
                               </Label>
                      </graphic>
                         </Label>
-                        <TextField fx:id="fullNameField" maxWidth="Infinity" prefHeight="26.0" prefWidth="66.0" styleClass="my-text-field" stylesheets="@styles/SignInUpStyles.css" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS">
+                        <TextField fx:id="fullNameField" maxWidth="Infinity" prefHeight="26.0" prefWidth="66.0" styleClass="my-text-field" stylesheets="@../styles/SignInUpStyles.css" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS">
                             <GridPane.margin>
                                 <Insets left="50.0" right="50.0" />
                             </GridPane.margin>
                         </TextField>
-                        <Label prefHeight="35.0" prefWidth="130.0" styleClass="my-label" stylesheets="@styles/SignInUpStyles.css" text="شماره همراه" GridPane.halignment="RIGHT">
+                        <Label prefHeight="35.0" prefWidth="130.0" styleClass="my-label" stylesheets="@../styles/SignInUpStyles.css" text="شماره همراه" GridPane.halignment="RIGHT">
                             <GridPane.margin>
                                 <Insets bottom="100.0" right="40.0" />
                             </GridPane.margin>
@@ -138,17 +138,17 @@
                               </Label>
                      </graphic>
                         </Label>
-                        <TextField fx:id="phoneNumberField" maxWidth="Infinity" styleClass="my-text-field" stylesheets="@styles/SignInUpStyles.css" GridPane.hgrow="ALWAYS">
+                        <TextField fx:id="phoneNumberField" maxWidth="Infinity" styleClass="my-text-field" stylesheets="@../styles/SignInUpStyles.css" GridPane.hgrow="ALWAYS">
                             <GridPane.margin>
                                 <Insets left="50.0" right="50.0" />
                             </GridPane.margin>
                         </TextField>
-                        <TextField fx:id="passwordField" maxWidth="Infinity" styleClass="my-text-field" stylesheets="@styles/SignInUpStyles.css" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
+                        <TextField fx:id="passwordField" maxWidth="Infinity" styleClass="my-text-field" stylesheets="@../styles/SignInUpStyles.css" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
                             <GridPane.margin>
                                 <Insets left="50.0" right="50.0" />
                             </GridPane.margin>
                         </TextField>
-                        <Label prefHeight="35.0" prefWidth="95.0" styleClass="my-label" stylesheets="@styles/SignInUpStyles.css" text="رمز عبور" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
+                        <Label prefHeight="35.0" prefWidth="95.0" styleClass="my-label" stylesheets="@../styles/SignInUpStyles.css" text="رمز عبور" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
                             <GridPane.margin>
                                 <Insets bottom="100.0" right="40.0" />
                             </GridPane.margin>
@@ -160,7 +160,7 @@
                               </Label>
                      </graphic>
                         </Label>
-                        <Label prefHeight="35.0" prefWidth="75.0" styleClass="my-label" stylesheets="@styles/SignInUpStyles.css" text="نقش" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
+                        <Label prefHeight="35.0" prefWidth="75.0" styleClass="my-label" stylesheets="@../styles/SignInUpStyles.css" text="نقش" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
                             <GridPane.margin>
                                 <Insets bottom="100.0" right="40.0" />
                             </GridPane.margin>
@@ -172,7 +172,7 @@
                               </Label>
                      </graphic>
                         </Label>
-                        <ChoiceBox fx:id="roleChoiceBox" maxWidth="Infinity" styleClass="my-choice-box" stylesheets="@styles/SignInUpStyles.css" GridPane.halignment="RIGHT" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
+                        <ChoiceBox fx:id="roleChoiceBox" maxWidth="Infinity" styleClass="my-choice-box" stylesheets="@../styles/SignInUpStyles.css" GridPane.halignment="RIGHT" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
                             <items>
                                 <FXCollections fx:factory="observableArrayList">
                                     <String fx:value="خریدار" />
@@ -184,12 +184,12 @@
                                 <Insets left="110.0" right="50.0" />
                             </GridPane.margin>
                         </ChoiceBox>
-                        <TextArea fx:id="addressArea" maxHeight="Infinity" maxWidth="Infinity" prefHeight="84.0" prefWidth="674.0" styleClass="my-text-area" stylesheets="@styles/SignInUpStyles.css" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.vgrow="ALWAYS">
+                        <TextArea fx:id="addressArea" maxHeight="Infinity" maxWidth="Infinity" prefHeight="84.0" prefWidth="674.0" styleClass="my-text-area" stylesheets="@../styles/SignInUpStyles.css" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.vgrow="ALWAYS">
                             <GridPane.margin>
                                 <Insets left="50.0" right="50.0" top="50.0" />
                             </GridPane.margin>
                         </TextArea>
-                        <Label prefHeight="35.0" prefWidth="80.0" styleClass="my-label" stylesheets="@styles/SignInUpStyles.css" text="آدرس" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
+                        <Label prefHeight="35.0" prefWidth="80.0" styleClass="my-label" stylesheets="@../styles/SignInUpStyles.css" text="آدرس" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
                             <GridPane.margin>
                                 <Insets right="40.0" top="200.0" />
                             </GridPane.margin>
@@ -201,7 +201,7 @@
                               </Label>
                      </graphic>
                         </Label>
-                        <Button fx:id="nextButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="26.0" prefWidth="150.0" styleClass="my-button" stylesheets="@styles/SignInUpStyles.css" text="اطلاعات تکمیلی" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="3">
+                        <Button fx:id="nextButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="26.0" prefWidth="150.0" styleClass="my-button" stylesheets="@../styles/SignInUpStyles.css" text="اطلاعات تکمیلی" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="3">
                             <GridPane.margin>
                                 <Insets left="30.0" />
                             </GridPane.margin>
