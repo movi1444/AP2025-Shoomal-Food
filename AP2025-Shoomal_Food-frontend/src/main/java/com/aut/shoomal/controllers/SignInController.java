@@ -78,7 +78,7 @@ public class SignInController extends AbstractBaseController {
                         Stage stage = (Stage) enterButton.getScene().getWindow();
                         Parent currentRoot = enterButton.getScene().getRoot();
 
-                        FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/MainView.fxml")));
+                        FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/views/MainView.fxml")));
                         Parent mainRoot = loader.load();
 
                         MainController mainController = loader.getController();
@@ -139,7 +139,7 @@ public class SignInController extends AbstractBaseController {
         Parent currentRoot = signUpLink.getScene().getRoot();
 
         try {
-            Parent signUpRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/SignUpView.fxml")));
+            Parent signUpRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/views/SignUpView.fxml")));
 
             StackPane transitionContainer = new StackPane();
             transitionContainer.getChildren().addAll(currentRoot, signUpRoot);
