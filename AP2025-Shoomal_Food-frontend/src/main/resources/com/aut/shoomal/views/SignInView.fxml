@@ -115,7 +115,7 @@
                      <Insets right="120.0" />
                   </GridPane.margin>
                </TextField>
-               <Label stylesheets="@styles/SignInUpStyles.css" text="حساب کاربری نداری؟" textFill="#f50000" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="2">
+               <Label stylesheets="@../styles/SignInUpStyles.css" text="حساب کاربری نداری؟" textFill="#f50000" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="2">
                   <font>
                      <Font name="Vazirmatn Regular" size="18.0" />
                   </font>
