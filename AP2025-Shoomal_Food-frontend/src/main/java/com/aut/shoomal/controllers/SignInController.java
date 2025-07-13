@@ -92,7 +92,7 @@ public class SignInController extends AbstractBaseController {
                         mainRoot.setTranslateY(-stage.getHeight());
 
                         Scene newScene = new Scene(transitionContainer, stage.getWidth() - 15, stage.getHeight() - 38);
-                        newScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/styles/MainView.css")).toExternalForm());
+                        newScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/styles/SignInUpStyles.css")).toExternalForm());
                         stage.setScene(newScene);
                         stage.setTitle("Shoomal Food");
                         stage.show();
