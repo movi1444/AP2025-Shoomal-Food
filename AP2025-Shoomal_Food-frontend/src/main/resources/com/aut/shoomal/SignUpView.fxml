@@ -23,7 +23,6 @@
     <center>
         <StackPane alignment="TOP_CENTER" maxHeight="Infinity" maxWidth="Infinity">
             <children>
-
                 <GridPane fx:id="optionalFieldsSection" alignment="CENTER" maxWidth="1.7976931348623157E308" vgap="10" visible="false">
                     <padding><Insets top="20.0" /></padding>
                     <columnConstraints>

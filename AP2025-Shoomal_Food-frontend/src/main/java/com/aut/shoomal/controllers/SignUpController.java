@@ -240,7 +240,8 @@ public class SignUpController extends AbstractBaseController {
                     }
                     showAlert("ثبت نام ناموفق", displayMessage, AlertType.ERROR, null);
                     System.err.println("Registration failed: Status " + statusCode + ", Error: " + errorMessage);
-                }
+                },
+                null
         );
     }
 }
