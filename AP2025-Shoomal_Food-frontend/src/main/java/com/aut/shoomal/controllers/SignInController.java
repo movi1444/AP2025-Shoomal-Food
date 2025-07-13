@@ -20,7 +20,7 @@ import java.util.ResourceBundle;
 
 import com.aut.shoomal.dto.request.UserLoginRequest;
 import com.aut.shoomal.dto.response.UserLoginResponse;
-import com.aut.shoomal.dto.response.UserResponse;
+import com.aut.shoomal.utils.PreferencesManager;
 
 public class SignInController extends AbstractBaseController {
 
@@ -71,6 +71,8 @@ public class SignInController extends AbstractBaseController {
                 response -> {
                     showAlert("موفقیت", response.getMessage());
                     System.out.println("Login successful! Token: " + response.getToken());
+
+                    PreferencesManager.saveAuthInfo(response.getToken(), response.getUser());
 
                     try {
                         Stage stage = (Stage) enterButton.getScene().getWindow();
@@ -124,7 +126,8 @@ public class SignInController extends AbstractBaseController {
                     }
                     showAlert("ورود ناموفق", displayMessage, AlertType.ERROR, null);
                     System.err.println("Login failed: Status " + statusCode + ", Error: " + errorMessage);
-                }
+                },
+                null
         );
     }
 

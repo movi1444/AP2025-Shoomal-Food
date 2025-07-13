@@ -182,7 +182,8 @@ public abstract class AbstractBaseController implements Initializable {
 
     protected <T, R> void sendHttpRequest(String uri, String method, T requestBody, Class<R> responseClass,
                                           Consumer<R> onSuccess,
-                                          BiConsumer<Integer, String> onFailure) {
+                                          BiConsumer<Integer, String> onFailure,
+                                          String authToken) {
         ObjectMapper objectMapper = new ObjectMapper();
         String requestBodyJson = null;
         if (requestBody != null) {
@@ -203,6 +204,10 @@ public abstract class AbstractBaseController implements Initializable {
         HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
                 .uri(URI.create(uri))
                 .header("Content-Type", "application/json");
+
+        if (authToken != null && !authToken.isEmpty()) {
+            requestBuilder.header("Authorization", "Bearer " + authToken);
+        }
 
         if (method.equalsIgnoreCase("POST")) {
             requestBuilder.POST(HttpRequest.BodyPublishers.ofString(requestBodyJson != null ? requestBodyJson : ""));
