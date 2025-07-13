@@ -1,7 +1,5 @@
 package com.aut.shoomal.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,20 +10,17 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.scene.layout.StackPane;
+import javafx.animation.TranslateTransition;
+import javafx.scene.control.Alert.AlertType;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
 import com.aut.shoomal.dto.request.UserLoginRequest;
 import com.aut.shoomal.dto.response.UserLoginResponse;
-import com.aut.shoomal.dto.response.ApiResponse;
+import com.aut.shoomal.dto.response.UserResponse;
 
 public class SignInController extends AbstractBaseController {
 
@@ -40,8 +35,6 @@ public class SignInController extends AbstractBaseController {
 
     @FXML
     private Hyperlink signUpLink;
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -58,7 +51,6 @@ public class SignInController extends AbstractBaseController {
 
         System.out.println("Enter button clicked!");
         System.out.println("Phone Number: " + phoneNumber);
-        System.out.println("Password: " + password);
 
         if (phoneNumber.isEmpty() || password.isEmpty()) {
             showAlert("خطا", "شماره تلفن و رمز عبور الزامی هستند.");
@@ -69,54 +61,71 @@ public class SignInController extends AbstractBaseController {
     }
 
     private void authenticateUser(String phoneNumber, String password) {
-        try {
-            URL url = new URL("https://localhost:8080/auth/login");
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Type", "application/json");
-            conn.setDoOutput(true);
+        UserLoginRequest loginRequest = new UserLoginRequest(phoneNumber, password);
 
-            UserLoginRequest loginRequest = new UserLoginRequest(phoneNumber, password);
-            String jsonInputString = objectMapper.writeValueAsString(loginRequest);
+        sendHttpRequest(
+                "http://localhost:8080/auth/login",
+                "POST",
+                loginRequest,
+                UserLoginResponse.class,
+                response -> {
+                    showAlert("موفقیت", response.getMessage());
+                    System.out.println("Login successful! Token: " + response.getToken());
 
-            try (OutputStream os = conn.getOutputStream()) {
-                byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);
-                os.write(input, 0, input.length);
-            }
+                    try {
+                        Stage stage = (Stage) enterButton.getScene().getWindow();
+                        Parent currentRoot = enterButton.getScene().getRoot();
 
-            int responseCode = conn.getResponseCode();
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
-                    StringBuilder response = new StringBuilder();
-                    String responseLine = null;
-                    while ((responseLine = br.readLine()) != null) {
-                        response.append(responseLine.trim());
+                        FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/MainView.fxml")));
+                        Parent mainRoot = loader.load();
+
+                        MainController mainController = loader.getController();
+                        if (mainController != null) {
+                            mainController.setLoggedInUser(response.getUser());
+                        }
+
+                        StackPane transitionContainer = new StackPane();
+                        transitionContainer.getChildren().addAll(currentRoot, mainRoot);
+
+                        mainRoot.setTranslateY(-stage.getHeight());
+
+                        Scene newScene = new Scene(transitionContainer, stage.getWidth(), stage.getHeight());
+                        newScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/styles/SignInUpStyles.css")).toExternalForm());
+                        stage.setScene(newScene);
+                        stage.setTitle("Shoomal Food - Main");
+                        stage.show();
+
+                        TranslateTransition slideIn = new TranslateTransition(Duration.millis(500), mainRoot);
+                        slideIn.setFromY(-stage.getHeight());
+                        slideIn.setToY(0);
+
+                        slideIn.setOnFinished(event -> {
+                            transitionContainer.getChildren().remove(currentRoot);
+                        });
+
+                        slideIn.play();
+
+                    } catch (IOException e) {
+                        System.err.println("Failed to load MainView.fxml: " + e.getMessage());
+                        e.printStackTrace();
+                        showAlert("خطای ناوبری", "خطا در بارگذاری صفحه اصلی برنامه.", AlertType.ERROR, null);
                     }
-                    UserLoginResponse loginResponse = objectMapper.readValue(response.toString(), UserLoginResponse.class);
-                    showAlert("موفقیت", loginResponse.getMessage());
-                    System.out.println("Login successful! Token: " + loginResponse.getToken());
-                }
-            } else {
-                try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getErrorStream(), StandardCharsets.UTF_8))) {
-                    StringBuilder response = new StringBuilder();
-                    String responseLine = null;
-                    while ((responseLine = br.readLine()) != null) {
-                        response.append(responseLine.trim());
+                },
+                (statusCode, errorMessage) -> {
+                    String displayMessage;
+                    if (statusCode == -1) {
+                        displayMessage = "نمی توان به سرور متصل شد. لطفا اتصال اینترنت خود را بررسی کنید.";
+                    } else if (statusCode == 401) {
+                        displayMessage = "نام کاربری یا رمز عبور اشتباه است.";
+                    } else if (statusCode == 400) {
+                        displayMessage = "ورودی نامعتبر: " + errorMessage;
+                    } else {
+                        displayMessage = "هنگام ورود به سیستم خطای غیرمنتظره ای رخ داد: " + errorMessage;
                     }
-                    ApiResponse apiResponse = objectMapper.readValue(response.toString(), ApiResponse.class);
-                    showAlert("ورود ناموفق", apiResponse.getError() != null ? apiResponse.getError() : apiResponse.getMessage());
-                    System.err.println("Login failed: " + (apiResponse.getError() != null ? apiResponse.getError() : apiResponse.getMessage()));
+                    showAlert("ورود ناموفق", displayMessage, AlertType.ERROR, null);
+                    System.err.println("Login failed: Status " + statusCode + ", Error: " + errorMessage);
                 }
-            }
-        } catch (IOException e) {
-            showAlert("خطای شبکه", "نمی توان به سرور متصل شد. لطفا اتصال اینترنت خود را بررسی کنید.");
-            System.err.println("Network or IO error during login: " + e.getMessage());
-            e.printStackTrace();
-        } catch (Exception e) {
-            showAlert("خطایی رخ داد", "هنگام ورود به سیستم خطای غیرمنتظره ای رخ داد.");
-            System.err.println("An unexpected error occurred: " + e.getMessage());
-            e.printStackTrace();
-        }
+        );
     }
 
     @FXML
