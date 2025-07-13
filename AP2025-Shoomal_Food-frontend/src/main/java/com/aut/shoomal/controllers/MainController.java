@@ -44,7 +44,7 @@ public class MainController extends AbstractBaseController {
         this.currentUser = user;
         if (user != null) {
             if (welcomeUserLabel != null) {
-                welcomeUserLabel.setText("Welcome, " + user.getName() + "!");
+                welcomeUserLabel.setText(user.getName() + " به شومال فود خوش آمدید!");
             }
             displayDashboardForRole(user.getRole());
         } else {
