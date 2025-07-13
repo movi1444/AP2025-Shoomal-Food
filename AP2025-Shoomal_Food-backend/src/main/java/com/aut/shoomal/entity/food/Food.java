@@ -40,10 +40,10 @@ public class Food {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "food_item_keywords", joinColumns = @JoinColumn(name = "food_item_id"))
     @Column(name = "keywords")
-    private List<String> keywords;
+    private List<String> keywords = new ArrayList<>();
 
     @OneToMany(mappedBy = "food", fetch = FetchType.LAZY)
-    private List<OrderItem> orderItems;
+    private List<OrderItem> orderItems = new ArrayList<>();
 
     @OneToMany(mappedBy = "food", fetch = FetchType.LAZY)
     private List<Rating> ratings = new ArrayList<>();
@@ -148,6 +148,12 @@ public class Food {
     public void setRatings(List<Rating> ratings)
     {
         this.ratings = ratings;
+    }
+
+    public void addRating(Rating rating)
+    {
+        this.ratings.add(rating);
+        rating.setFood(this);
     }
 
     public BigDecimal calculateAverageRating()

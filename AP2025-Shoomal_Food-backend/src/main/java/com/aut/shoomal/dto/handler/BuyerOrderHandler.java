@@ -12,7 +12,6 @@ import com.aut.shoomal.dto.response.OrderResponse;
 import com.aut.shoomal.exceptions.InvalidInputException;
 import com.aut.shoomal.exceptions.NotFoundException;
 import com.aut.shoomal.payment.PaymentMethod;
-import com.aut.shoomal.payment.TopupMethod;
 import com.aut.shoomal.payment.order.Order;
 import com.aut.shoomal.payment.order.OrderManager;
 import com.aut.shoomal.payment.transaction.PaymentTransaction;
@@ -21,11 +20,13 @@ import com.aut.shoomal.payment.wallet.WalletManager;
 import com.aut.shoomal.util.HibernateUtil;
 import com.sun.net.httpserver.HttpExchange;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -208,7 +209,11 @@ public class BuyerOrderHandler extends AbstractHttpHandler
 
     private void chargeWallet(HttpExchange exchange, Long userId) throws IOException
     {
+        Transaction transaction = null;
+        Session session = null;
         try {
+            session = HibernateUtil.getSessionFactory().openSession();
+            transaction = session.beginTransaction();
             WalletRequest request = parseRequestBody(exchange, WalletRequest.class);
             if (request == null)
             {
@@ -218,7 +223,8 @@ public class BuyerOrderHandler extends AbstractHttpHandler
             if (request.getAmount() == null)
                 throw new InvalidInputException("amount is required.");
 
-            walletManager.depositWallet(userId, request.getAmount(), TopupMethod.ONLINE.getName());
+            walletManager.depositWallet(session, userId, request.getAmount());
+            transaction.commit();
             sendResponse(exchange, HttpURLConnection.HTTP_OK, new ApiResponse(true, "200 Wallet topped up successfully."));
         } catch (IOException e) {
             System.err.println("Error parsing request body: Malformed JSON in request body. " + e.getMessage());
@@ -227,19 +233,32 @@ public class BuyerOrderHandler extends AbstractHttpHandler
         } catch (InvalidInputException e) {
             System.err.println("400 Invalid request: " + e.getMessage());
             sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid input: " + e.getMessage()));
+            if (transaction != null && transaction.isActive())
+                transaction.rollback();
         } catch (NotFoundException e) {
-            System.err.println("404 Resource not found:" + e.getMessage());
+            System.err.println("404 Resource not found: " + e.getMessage());
             sendResponse(exchange, HttpURLConnection.HTTP_NOT_FOUND, new ApiResponse(false, "404 Resource not found: " + e.getMessage()));
+            if (transaction != null && transaction.isActive())
+                transaction.rollback();
         } catch (Exception e) {
             System.err.println("An unexpected error occurred during POST /wallet/top-up: " + e.getMessage());
             e.printStackTrace();
             sendResponse(exchange, HttpURLConnection.HTTP_INTERNAL_ERROR, new ApiResponse(false, "500 Internal Server Error."));
+            if (transaction != null && transaction.isActive())
+                transaction.rollback();
+        } finally {
+            if (session != null && session.isOpen())
+                session.close();
         }
     }
 
     private void onlinePayment(HttpExchange exchange, Long userId) throws IOException
     {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        Session session = null;
+        Transaction transaction = null;
+        try {
+            session = HibernateUtil.getSessionFactory().openSession();
+            transaction = session.beginTransaction();
             PaymentRequest request = parseRequestBody(exchange, PaymentRequest.class);
             if (request == null)
             {
@@ -254,9 +273,8 @@ public class BuyerOrderHandler extends AbstractHttpHandler
             Order order = session.get(Order.class, request.getOrderId());
             if (order == null)
                 throw new NotFoundException("Order with ID " + request.getOrderId() + " not found.");
-            PaymentTransaction paymentTransaction = paymentManager.getByOrderId(session, order.getId());
-            if (paymentTransaction == null)
-                throw new NotFoundException("Payment transaction with order id " + order.getId() + " not found.");
+            if (!Objects.equals(order.getCustomer().getId(), userId))
+                throw new NotFoundException("Order with ID " + request.getOrderId() + " is not owner of user with ID " + userId);
 
             PaymentMethod paymentMethod;
             try {
@@ -268,7 +286,7 @@ public class BuyerOrderHandler extends AbstractHttpHandler
             String redirectUrl;
             if (paymentMethod == PaymentMethod.WALLET)
                 walletManager.processWalletPaymentForOrder(session, userId, request.getOrderId());
-            else if (paymentMethod == PaymentMethod.PAYWALL)
+            else if (paymentMethod == PaymentMethod.ONLINE)
             {
                 redirectUrl = paymentManager.processExternalPayment(session, userId, request.getOrderId(), paymentMethod);
                 if (redirectUrl == null || redirectUrl.trim().isEmpty())
@@ -277,7 +295,11 @@ public class BuyerOrderHandler extends AbstractHttpHandler
             else
                 sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Unsupported payment method: " + request.getMethod()));
 
+            PaymentTransaction paymentTransaction = paymentManager.getByOrderId(session, order.getId());
+            if (paymentTransaction == null)
+                throw new NotFoundException("Payment transaction with order id " + order.getId() + " not found.");
             TransactionResponse response = this.createTransactionResponse(paymentTransaction);
+            transaction.commit();
             sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, response);
         } catch (IOException e) {
             System.err.println("Error parsing request body: Malformed JSON in request body. " + e.getMessage());
@@ -286,13 +308,22 @@ public class BuyerOrderHandler extends AbstractHttpHandler
         } catch (InvalidInputException e) {
             System.err.println("400 Invalid request: " + e.getMessage());
             sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid input: " + e.getMessage()));
+            if (transaction != null && transaction.isActive())
+                transaction.rollback();
         } catch (NotFoundException e) {
-            System.err.println("404 Resource not found:" + e.getMessage());
+            System.err.println("404 Resource not found: " + e.getMessage());
             sendResponse(exchange, HttpURLConnection.HTTP_NOT_FOUND, new ApiResponse(false, "404 Resource not found: " + e.getMessage()));
+            if (transaction != null && transaction.isActive())
+                transaction.rollback();
         } catch (Exception e) {
             System.err.println("An unexpected error occurred during POST /payment/online: " + e.getMessage());
             e.printStackTrace();
             sendResponse(exchange, HttpURLConnection.HTTP_INTERNAL_ERROR, new ApiResponse(false, "500 Internal Server Error."));
+            if (transaction != null && transaction.isActive())
+                transaction.rollback();
+        } finally {
+            if (session != null && session.isOpen())
+                session.close();
         }
     }
 
@@ -321,7 +352,7 @@ public class BuyerOrderHandler extends AbstractHttpHandler
     {
         return new TransactionResponse(
                 Math.toIntExact(transaction.getId()),
-                transaction.getStatus().getStatus(),
+                transaction.getStatus().toApiString(),
                 transaction.getMethod().getName(),
                 (transaction.getOrder() != null) ? transaction.getOrder().getId() : null,
                 Math.toIntExact(transaction.getUser().getId())
