@@ -24,7 +24,19 @@ public class PreferencesManager {
         prefs.put(KEY_JWT_TOKEN, token);
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            String userDataJson = objectMapper.writeValueAsString(user);
+
+            UserResponse userToSave = new UserResponse(
+                    user.getId(),
+                    user.getName(),
+                    user.getPhoneNumber(),
+                    user.getEmail(),
+                    user.getRole(),
+                    user.getAddress(),
+                    null,
+                    user.getBank()
+            );
+
+            String userDataJson = objectMapper.writeValueAsString(userToSave);
             prefs.put(KEY_USER_DATA, userDataJson);
         } catch (IOException e) {
             System.err.println("Error saving user data to preferences: " + e.getMessage());

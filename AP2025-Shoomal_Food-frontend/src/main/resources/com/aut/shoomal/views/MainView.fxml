@@ -1,22 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.Cursor?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Circle?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
 
-<BorderPane prefHeight="729.0" prefWidth="693.0" stylesheets="@/com/aut/shoomal/styles/MainView.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.aut.shoomal.controllers.MainController">
+<BorderPane prefHeight="729.0" prefWidth="693.0" stylesheets="@/com/aut/shoomal/styles/MainView.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.aut.shoomal.controllers.MainController">
 
     <center>
         <StackPane fx:id="contentStackPane" styleClass="content-area">
@@ -172,13 +162,10 @@
                         <Insets left="50.0" top="20.0" />
                     </GridPane.margin>
                 </Button>
-                <ImageView fx:id="profilePictureImageView" fitHeight="60.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.halignment="RIGHT">
-                    <clip>
-                        <Circle centerX="30" centerY="30" radius="30" />
-                    </clip>
-               <GridPane.margin>
-                  <Insets right="50.0" top="20.0" />
-               </GridPane.margin>
+                <ImageView fx:id="profilePictureImageView" fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.halignment="RIGHT">
+                    <GridPane.margin>
+                        <Insets right="20.0" top="20.0" />
+                    </GridPane.margin>
                 </ImageView>
             </children>
             <BorderPane.margin>

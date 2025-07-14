@@ -82,7 +82,7 @@
 
 .content-area {
     -fx-background-color: transparent;
-    -fx-padding: 20px 10px -13px 10px;
+    -fx-padding: 30px 10px -13px 10px;
 }
 
 .dashboard-scroll-pane {

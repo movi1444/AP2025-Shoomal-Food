@@ -52,7 +52,14 @@ public class UserProfileController extends AbstractBaseController {
         System.out.println("Back to Main button clicked!");
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         try {
-            Parent mainRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/views/MainView.fxml")));
+            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/views/MainView.fxml")));
+            Parent mainRoot = loader.load();
+
+            MainController mainController = loader.getController();
+            if (mainController != null) {
+                mainController.setLoggedInUser(loggedInUser);
+            }
+
             Scene newScene = new Scene(mainRoot, stage.getWidth(), stage.getHeight());
             newScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/styles/MainView.css")).toExternalForm());
             stage.setScene(newScene);
