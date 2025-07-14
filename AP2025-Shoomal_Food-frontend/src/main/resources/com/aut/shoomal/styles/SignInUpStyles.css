@@ -14,7 +14,7 @@
 }
 
 .root {
-    -fx-background-image: url("/com/aut/shoomal/backgrounds/nigger.png");
+    -fx-background-image: url("/com/aut/shoomal/images/nigger.png");
     -fx-background-size: cover;
     -fx-background-position: center center;
     -fx-background-repeat: no-repeat;

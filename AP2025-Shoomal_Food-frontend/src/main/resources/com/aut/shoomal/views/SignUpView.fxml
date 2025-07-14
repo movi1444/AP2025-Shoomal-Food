@@ -23,7 +23,7 @@
     <center>
         <StackPane alignment="TOP_CENTER" maxHeight="Infinity" maxWidth="Infinity">
             <children>
-                <GridPane fx:id="optionalFieldsSection" alignment="CENTER" maxWidth="1.7976931348623157E308" vgap="10" visible="false">
+                <GridPane fx:id="optionalFieldsSection" alignment="CENTER" maxWidth="1.7976931348623157E308" vgap="10">
                     <padding><Insets top="20.0" /></padding>
                     <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="245.39998474121094" minWidth="155.19998779296876" prefWidth="245.39998474121094" />
@@ -97,7 +97,7 @@
                         </ImageView>
                     </children>
                 </GridPane>
-                <GridPane fx:id="requiredFieldsSection" maxHeight="Infinity" maxWidth="Infinity" prefHeight="550.0" prefWidth="775.0">
+                <GridPane fx:id="requiredFieldsSection" maxHeight="Infinity" maxWidth="Infinity" prefHeight="550.0" prefWidth="775.0" visible="false">
                     <columnConstraints>
                         <ColumnConstraints hgrow="ALWAYS" />
                         <ColumnConstraints hgrow="ALWAYS" />
