@@ -1,5 +1,6 @@
 package com.aut.shoomal.controllers;
 
+import com.aut.shoomal.exceptions.FrontendServiceException;
 import javafx.animation.TranslateTransition;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
@@ -82,6 +83,11 @@ public abstract class AbstractBaseController implements Initializable {
         showAlert(title, message, AlertType.INFORMATION, null);
     }
 
+    protected void showAlert(FrontendServiceException exception)
+    {
+        showAlert("Error", exception.getMessage(), AlertType.ERROR, null);
+    }
+
     protected void showAlert(String title, String message, AlertType alertType, Image graphicImage) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
@@ -105,12 +111,12 @@ public abstract class AbstractBaseController implements Initializable {
         alert.showAndWait();
     }
 
-    protected void navigateToSignInView(Node currentNode, TransitionType transitionType) {
+    protected void navigateTo(Node currentNode, String fxmlPath, String cssPath, TransitionType transitionType) {
         Stage stage = (Stage) currentNode.getScene().getWindow();
         Parent currentRoot = currentNode.getScene().getRoot();
 
         try {
-            Parent signInRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/views/SignInView.fxml")));
+            Parent signInRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(fxmlPath)));
 
             StackPane transitionContainer = new StackPane();
             transitionContainer.getChildren().addAll(currentRoot, signInRoot);
@@ -128,7 +134,7 @@ public abstract class AbstractBaseController implements Initializable {
             }
 
             Scene newScene = new Scene(transitionContainer, stage.getWidth() - 15, stage.getHeight() - 38);
-            newScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/styles/SignInUpStyles.css")).toExternalForm());
+            newScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource(cssPath)).toExternalForm());
             stage.setScene(newScene);
 
             slideIn.setOnFinished(event -> {
@@ -138,13 +144,17 @@ public abstract class AbstractBaseController implements Initializable {
             slideIn.play();
 
         } catch (IOException e) {
-            System.err.println("Failed to load SignInView.fxml: " + e.getMessage());
+            System.err.println("Failed to load .fxml or .css file: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
+    protected void navigateToSignInView(Node currentNode, TransitionType transitionType) {
+        navigateTo(currentNode, "/com/aut/shoomal/views/SignInView.fxml", "/com/aut/shoomal/styles/SignInUpStyles.css", transitionType);
+    }
+
     protected void navigateToSignInView(Node currentNode) {
-        navigateToSignInView(currentNode, TransitionType.SLIDE_LEFT);
+        navigateTo(currentNode, "/com/aut/shoomal/views/SignInView.fxml", "/com/aut/shoomal/styles/SignInUpStyles.css", TransitionType.SLIDE_LEFT);
     }
 
     protected String handleImageUploadAndConvert(Button uploadButton, ImageView imageView) {

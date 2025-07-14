@@ -51,7 +51,7 @@ public class MainController extends AbstractBaseController {
         }
 
         if (logoutButton != null) {
-            logoutButton.setOnAction(event -> navigateToSignInView(logoutButton, TransitionType.SLIDE_UP));
+            logoutButton.setOnAction(event -> navigateTo(logoutButton, "/com/aut/shoomal/views/SignInView.fxml", "/com/aut/shoomal/styles/SignInUpStyles.css", TransitionType.SLIDE_UP));
         }
 
         if (profilePictureImageView != null) {
