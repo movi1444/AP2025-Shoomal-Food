@@ -78,7 +78,7 @@ public class SignUpController extends AbstractBaseController {
             backButton.setOnAction(event -> handlePreviousSection());
         }
         if (backToLoginLink != null) {
-            backToLoginLink.setOnAction(event -> navigateToSignInView(backToLoginLink, TransitionType.SLIDE_LEFT));
+            backToLoginLink.setOnAction(event -> navigateTo(backToLoginLink, "/com/aut/shoomal/views/SignInView.fxml", "/com/aut/shoomal/styles/SignInUpStyles.css", TransitionType.SLIDE_LEFT));
         }
 
         if (fullNameField != null) addTextDirectionListener(fullNameField);
@@ -225,7 +225,7 @@ public class SignUpController extends AbstractBaseController {
                 UserRegisterResponse.class,
                 response -> {
                     showAlert("موفقیت", "ثبت نام با موفقیت انجام شد! شناسه کاربری: " + response.getUserId() + "\nتوکن: " + response.getToken(), AlertType.INFORMATION, null);
-                    navigateToSignInView(submitButton, TransitionType.SLIDE_LEFT);
+                    navigateTo(submitButton, "/com/aut/shoomal/views/SignInView.fxml", "/com/aut/shoomal/styles/SignInUpStyles.css", TransitionType.SLIDE_LEFT);
                 },
                 (statusCode, errorMessage) -> {
                     String displayMessage;
