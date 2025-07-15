@@ -25,11 +25,13 @@ import javafx.stage.Stage;
 import javafx.scene.control.Alert.AlertType;
 import java.io.IOException;
 import javafx.scene.Cursor;
+import javafx.scene.shape.Circle;
+import javafx.scene.control.Tooltip;
+import com.aut.shoomal.dto.response.ApiResponse;
 
 public class MainController extends AbstractBaseController {
 
     @FXML private Label welcomeUserLabel;
-    @FXML private Button logoutButton;
     @FXML private StackPane contentStackPane;
 
     @FXML private ScrollPane buyerDashboardScrollPane;
@@ -50,13 +52,24 @@ public class MainController extends AbstractBaseController {
             defaultView.setManaged(true);
         }
 
-        if (logoutButton != null) {
-            logoutButton.setOnAction(event -> navigateTo(logoutButton, "/com/aut/shoomal/views/SignInView.fxml", "/com/aut/shoomal/styles/SignInUpStyles.css", TransitionType.SLIDE_UP));
-        }
-
         if (profilePictureImageView != null) {
+            final double imageSize = 100.0;
+            profilePictureImageView.setFitWidth(imageSize);
+            profilePictureImageView.setFitHeight(imageSize);
+            profilePictureImageView.setPreserveRatio(true);
+
+            Circle clip = new Circle(imageSize / 2, imageSize / 2, imageSize / 2);
+            profilePictureImageView.setClip(clip);
+
+            profilePictureImageView.layoutBoundsProperty().addListener((obs, oldBounds, newBounds) -> {
+                clip.setCenterX(newBounds.getWidth() / 2.0);
+                clip.setCenterY(newBounds.getHeight() / 2.0);
+                clip.setRadius(Math.min(newBounds.getWidth(), newBounds.getHeight()) / 2.0);
+            });
+
             profilePictureImageView.setOnMouseClicked(this::handleProfilePictureClick);
             profilePictureImageView.setCursor(Cursor.HAND);
+            Tooltip.install(profilePictureImageView, new Tooltip("Click to view profile"));
         }
         setProfileImage(null);
     }
@@ -65,7 +78,7 @@ public class MainController extends AbstractBaseController {
         this.currentUser = user;
         if (user != null) {
             if (welcomeUserLabel != null) {
-                welcomeUserLabel.setText(user.getName() + " به شومال فود خوش آمدید!");
+                welcomeUserLabel.setText(user.getName() + " به شومال فود خوش اومدی ");
             }
             displayDashboardForRole(user.getRole());
             setProfileImage(user.getProfileImageBase64());
@@ -85,10 +98,15 @@ public class MainController extends AbstractBaseController {
                     String cleanedBase64Image = base64Image.replaceAll("\\s", "");
                     byte[] imageBytes = Base64.getDecoder().decode(cleanedBase64Image);
                     Image image = new Image(new ByteArrayInputStream(imageBytes));
+
+                    if (image.isError() || image.getWidth() == 0 || image.getHeight() == 0) {
+                        throw new IllegalArgumentException("Decoded bytes do not form a valid image.");
+                    }
+
                     profilePictureImageView.setImage(image);
                     System.out.println("MainController: Profile image set from Base64.");
-                } catch (IllegalArgumentException e) {
-                    System.err.println("Invalid Base64 string for profile picture: " + e.getMessage());
+                } catch (Exception e) {
+                    System.err.println("Failed to set profile image (invalid Base64 or image data): " + e.getMessage());
                     profilePictureImageView.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/com/aut/shoomal/images/default_profile.png"))));
                 }
             } else {
@@ -151,15 +169,6 @@ public class MainController extends AbstractBaseController {
         }
     }
 
-    @FXML
-    private void handleLogout(ActionEvent event) {
-        System.out.println("Logout button clicked!");
-        PreferencesManager.clearAuthInfo();
-        if (logoutButton != null) {
-            navigateToSignInView(logoutButton);
-        }
-    }
-
     private void handleProfilePictureClick(MouseEvent event) {
         System.out.println("Profile picture clicked! Navigating to user profile.");
         navigateToProfileView(profilePictureImageView);
@@ -176,7 +185,7 @@ public class MainController extends AbstractBaseController {
                 profileController.setLoggedInUser(currentUser);
             }
 
-            Scene newScene = new Scene(profileRoot, stage.getWidth(), stage.getHeight());
+            Scene newScene = new Scene(profileRoot, stage.getWidth() - 15, stage.getHeight() - 38);
             stage.setScene(newScene);
             stage.setTitle("User Profile");
             stage.show();
