@@ -1,6 +1,9 @@
 // AP2025-Shoomal_Food-frontend/src/main/java/com/aut/shoomal/controllers/UserProfileController.java
 package com.aut.shoomal.controllers;
 
+import com.aut.shoomal.exceptions.FrontendServiceException;
+import com.aut.shoomal.service.LogoutService;
+import com.aut.shoomal.service.ProfileService;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -32,10 +35,16 @@ public class UserProfileController extends AbstractBaseController {
     @FXML private Button signOutButton;
 
     private UserResponse loggedInUser;
+    private String token;
+    private LogoutService logoutService;
+    private ProfileService profileService;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         super.initialize(url, resourceBundle);
+        this.token = PreferencesManager.getJwtToken();
+        logoutService = new LogoutService();
+        profileService = new ProfileService();
 
         if (updateProfileLink != null) {
             updateProfileLink.setOnAction(this::handleUpdateProfile);
@@ -46,22 +55,34 @@ public class UserProfileController extends AbstractBaseController {
         }
     }
 
-    public void setLoggedInUser(UserResponse user) {
-        this.loggedInUser = user;
-        Platform.runLater(() -> {
-            if (loggedInUser != null) {
-                nameLabel.setText("Full Name: " + loggedInUser.getName());
-                phoneLabel.setText("Phone: " + loggedInUser.getPhoneNumber());
-                emailLabel.setText("Email: " + (loggedInUser.getEmail() != null ? loggedInUser.getEmail() : "N/A"));
-                roleLabel.setText("Role: " + loggedInUser.getRole());
-                addressLabel.setText("Address: " + (loggedInUser.getAddress() != null ? loggedInUser.getAddress() : "N/A"));
-                if (loggedInUser.getBank() != null) {
-                    bankInfoLabel.setText("Bank Info: " + loggedInUser.getBank().getBankName() + " - " + loggedInUser.getBank().getAccountNumber());
-                } else {
-                    bankInfoLabel.setText("Bank Info: N/A");
-                }
-            }
-        });
+    public void setLoggedInUser() {
+        profileService.getProfile(token)
+                .thenAccept(userResponse -> {
+                    loggedInUser = userResponse;
+                    Platform.runLater(() -> {
+                        if (loggedInUser != null) {
+                            nameLabel.setText("Full Name: " + loggedInUser.getName());
+                            phoneLabel.setText("Phone: " + loggedInUser.getPhoneNumber());
+                            emailLabel.setText("Email: " + (loggedInUser.getEmail() != null ? loggedInUser.getEmail() : "N/A"));
+                            roleLabel.setText("Role: " + loggedInUser.getRole());
+                            addressLabel.setText("Address: " + (loggedInUser.getAddress() != null ? loggedInUser.getAddress() : "N/A"));
+                            if (loggedInUser.getBank() != null) {
+                                bankInfoLabel.setText("Bank Info: " + loggedInUser.getBank().getBankName() + " - " + loggedInUser.getBank().getAccountNumber());
+                            } else {
+                                bankInfoLabel.setText("Bank Info: N/A");
+                            }
+                        }
+                    });
+                })
+                .exceptionally(e -> {
+                    Platform.runLater(() -> {
+                       if (e.getCause() instanceof FrontendServiceException exception)
+                           showAlert(exception);
+                       else
+                           showAlert("Unexpected Error", "An unexpected error occurred: " + e.getMessage(), Alert.AlertType.ERROR, null);
+                    });
+                    return null;
+                });
     }
 
     @FXML
@@ -79,9 +100,28 @@ public class UserProfileController extends AbstractBaseController {
     @FXML
     private void handleSignOut(ActionEvent event) {
         System.out.println("Sign Out button clicked!");
-        PreferencesManager.clearAuthInfo();
-        navigateToSignInView(signOutButton);
-        showAlert("Sign Out", "You have been successfully signed out.", Alert.AlertType.INFORMATION, null);
+        logoutService.logout(token)
+              .thenAccept(response -> {
+                  Platform.runLater(() -> {
+                      if (response.isSuccess())
+                      {
+                          PreferencesManager.clearAuthInfo();
+                          navigateToSignInView(signOutButton);
+                          showAlert("Sign Out", "You have been successfully signed out.", Alert.AlertType.INFORMATION, null);
+                      }
+                      else
+                          showAlert("Error", "Failed to logout: " + response.getError(), Alert.AlertType.ERROR, null);
+                  });
+              })
+              .exceptionally(e -> {
+                  Platform.runLater(() -> {
+                      if (e.getCause() instanceof FrontendServiceException fsException)
+                          showAlert(fsException);
+                      else
+                          showAlert("Unexpected Error", "An unexpected error occurred: " + e.getMessage(), Alert.AlertType.ERROR, null);
+                  });
+                  return null;
+              });
     }
 
     private void navigateToMainView(Object sourceNode, UserResponse user) {
