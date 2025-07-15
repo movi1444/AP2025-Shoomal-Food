@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
@@ -13,118 +12,111 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<!-- The root element is an AnchorPane, which allows flexible positioning. -->
-<!-- fx:controller links this FXML to its Java controller class. -->
-
-<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.aut.shoomal.controllers.UpdateProfileController">
-    <!-- A VBox is used for vertical arrangement of sections. -->
-    <VBox alignment="TOP_CENTER" layoutX="0.8" layoutY="-1.6" prefHeight="600.0" prefWidth="800.0" spacing="20" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-2.0">
+<AnchorPane prefHeight="600.0" prefWidth="800.0" stylesheets="/com/aut/shoomal/styles/SignInUpStyles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.aut.shoomal.controllers.UpdateProfileController">
+    <VBox alignment="TOP_CENTER" prefHeight="600.0" prefWidth="800.0" spacing="20" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <padding>
             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
         </padding>
 
-        <!-- Main title for the profile page -->
-        <Label styleClass="header-label" text="تغییر پروفایل کاربران" textAlignment="JUSTIFY">
+        <Label styleClass="my-headlabel" text="تغییر پروفایل کاربران" textAlignment="JUSTIFY">
             <font>
                 <Font size="18.0" />
-            </font></Label>
-        <Label alignment="TOP_RIGHT" prefHeight="26.0" prefWidth="761.0" styleClass="section-title" text="اطلاعات بانکی">
-            <font>
-                <Font size="16.0" />
             </font>
         </Label>
-        <GridPane prefHeight="73.0" prefWidth="720.0">
-            <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="668.0000610351562" minWidth="10.0" prefWidth="644.19990234375" />
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="353.5999755859375" minWidth="0.0" prefWidth="75.40009765624995" />
-            </columnConstraints>
-            <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            </rowConstraints>
-            <children>
-                <Label alignment="CENTER_RIGHT" prefHeight="30.0" prefWidth="80.0" text="نام بانک:" GridPane.columnIndex="1">
-                    <font>
-                        <Font size="14.0" />
-                    </font>
-                </Label>
-                <TextField fx:id="bankNameField" promptText="نام بانک" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-                <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="80.0" text="شماره کارت:" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                    <font>
-                        <Font size="14.0" />
-                    </font>
-                </Label>
-                <TextField prefHeight="26.0" prefWidth="216.0" />
-                <TextField GridPane.rowIndex="1" />
-                <TextField fx:id="bankAccountField" promptText="شماره کارت" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            </children>
-        </GridPane>
-        <Label alignment="TOP_RIGHT" prefHeight="26.0" prefWidth="780.0" text="اطلاعات شخصی">
-            <font>
-                <Font size="16.0" />
-            </font>
-        </Label>
-        <GridPane>
-            <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="689.5999755859375" minWidth="10.0" prefWidth="687.2" />
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="374.4000244140625" minWidth="10.0" prefWidth="73.60000000000002" />
-            </columnConstraints>
-            <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            </rowConstraints>
-            <children>
-                <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="378.0" text="نام:" GridPane.columnIndex="1">
-                    <font>
-                        <Font size="14.0" />
-                    </font>
-                </Label>
-                <TextField fx:id="nameField" promptText="نام" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-                <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="78.0" text="شماره تلفن:" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                    <font>
-                        <Font size="14.0" />
-                    </font>
-                </Label>
-                <TextField fx:id="phoneField" promptText="شماره تلفن" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                <Label alignment="CENTER_RIGHT" prefHeight="18.0" prefWidth="98.0" text="ایمیل:" GridPane.columnIndex="1" GridPane.rowIndex="2">
-                    <font>
-                        <Font size="14.0" />
-                    </font>
-                </Label>
-                <TextField fx:id="emailField" promptText="ایمیل" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="102.0" text="آدرس:" GridPane.columnIndex="1" GridPane.rowIndex="3">
-                    <font>
-                        <Font size="14.0" />
-                    </font>
-                </Label>
-                <TextField fx:id="addressField" promptText="آدرس" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                <TextField prefHeight="26.0" prefWidth="266.0" />
-                <TextField GridPane.rowIndex="1" />
-                <TextField GridPane.rowIndex="2" />
-                <TextField GridPane.rowIndex="3" />
-                <Label alignment="TOP_RIGHT" prefHeight="21.0" prefWidth="74.0" text="نام برند:" GridPane.columnIndex="1" GridPane.rowIndex="4">
-                    <font>
-                        <Font size="14.0" />
-                    </font>
-                </Label>
-                <TextField GridPane.rowIndex="4" />
-            </children>
-        </GridPane>
-        <TextArea prefHeight="80.0" prefWidth="658.0" promptText="اطلاعات تکمیلی رستوران..." wrapText="true">
-            <font>
-                <Font size="14.0" />
-            </font>
-        </TextArea>
 
-        <!-- Save Button -->
+        <VBox fx:id="bankInfoSection" alignment="TOP_RIGHT" spacing="10">
+            <Label styleClass="my-label" text="اطلاعات بانکی">
+                <font>
+                    <Font size="16.0" />
+                </font>
+            </Label>
+            <GridPane hgap="10" vgap="10">
+                <columnConstraints>
+                    <ColumnConstraints hgrow="SOMETIMES" prefWidth="100.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" prefWidth="250.0" />
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints vgrow="SOMETIMES" />
+                    <RowConstraints vgrow="SOMETIMES" />
+                </rowConstraints>
+                <children>
+                    <Label text="نام بانک:" GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="my-label">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </Label>
+                    <TextField fx:id="bankNameField" promptText="نام بانک" GridPane.columnIndex="1" GridPane.rowIndex="0" styleClass="my-text-field" />
+                    <Label text="شماره کارت:" GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="my-label">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </Label>
+                    <TextField fx:id="bankAccountField" promptText="شماره کارت" GridPane.columnIndex="1" GridPane.rowIndex="1" styleClass="my-text-field" />
+                </children>
+            </GridPane>
+        </VBox>
+
+        <VBox alignment="TOP_RIGHT" spacing="10">
+            <Label text="اطلاعات شخصی" styleClass="my-label">
+                <font>
+                    <Font size="16.0" />
+                </font>
+            </Label>
+            <GridPane hgap="10" vgap="10">
+                <columnConstraints>
+                    <ColumnConstraints hgrow="SOMETIMES" prefWidth="100.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" prefWidth="250.0" />
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints vgrow="SOMETIMES" />
+                    <RowConstraints vgrow="SOMETIMES" />
+                    <RowConstraints vgrow="SOMETIMES" />
+                    <RowConstraints vgrow="SOMETIMES" />
+                    <RowConstraints vgrow="SOMETIMES" />
+                </rowConstraints>
+                <children>
+                    <Label text="نام:" GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="my-label">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </Label>
+                    <TextField fx:id="nameField" promptText="نام" GridPane.columnIndex="1" GridPane.rowIndex="0" styleClass="my-text-field" />
+                    <Label text="شماره تلفن:" GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="my-label">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </Label>
+                    <TextField fx:id="phoneField" promptText="شماره تلفن" GridPane.columnIndex="1" GridPane.rowIndex="1" styleClass="my-text-field" />
+                    <Label text="ایمیل:" GridPane.columnIndex="0" GridPane.rowIndex="2" styleClass="my-label">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </Label>
+                    <TextField fx:id="emailField" promptText="ایمیل" GridPane.columnIndex="1" GridPane.rowIndex="2" styleClass="my-text-field" />
+                    <Label text="آدرس:" GridPane.columnIndex="0" GridPane.rowIndex="3" styleClass="my-label">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </Label>
+                    <TextField fx:id="addressField" promptText="آدرس" GridPane.columnIndex="1" GridPane.rowIndex="3" styleClass="my-text-field" />
+                    <Label text="نام برند:" GridPane.columnIndex="0" GridPane.rowIndex="4" styleClass="my-label">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </Label>
+                    <TextField fx:id="brandNameField" promptText="نام برند" GridPane.columnIndex="1" GridPane.rowIndex="4" styleClass="my-text-field" />
+                </children>
+            </GridPane>
+            <TextArea fx:id="descriptionArea" prefHeight="80.0" prefWidth="658.0" promptText="اطلاعات تکمیلی رستوران..." wrapText="true" styleClass="my-text-area">
+                <font>
+                    <Font size="14.0" />
+                </font>
+            </TextArea>
+        </VBox>
+
         <HBox alignment="CENTER" prefHeight="51.0" prefWidth="720.0" spacing="20">
-            <Button fx:id="saveButton" onAction="#handleSaveProfile" styleClass="primary-button" text="Save Profile" />
-            <!-- Add a Cancel or Back button if needed -->
-            <Button fx:id="cancelButton" onAction="#handleCancelChange" styleClass="secondary-button" text="Cancel" />
+            <Button fx:id="saveButton" onAction="#handleSaveProfile" styleClass="my-button" text="Save Profile" />
+            <Button fx:id="cancelButton" onAction="#handleCancelChange" styleClass="my-button2" text="Cancel" />
         </HBox>
-
     </VBox>
 </AnchorPane>

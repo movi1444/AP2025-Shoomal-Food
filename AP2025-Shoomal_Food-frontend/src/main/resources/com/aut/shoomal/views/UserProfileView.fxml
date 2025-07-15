@@ -2,18 +2,35 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 
-<VBox alignment="CENTER" spacing="20" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.aut.shoomal.controllers.UserProfileController">
+<VBox alignment="TOP_CENTER" spacing="15" stylesheets="/com/aut/shoomal/styles/MainView.css"
+      xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.aut.shoomal.controllers.UserProfileController">
     <padding>
-        <Insets top="50" right="50" bottom="50" left="50"/>
+        <Insets top="30" right="50" bottom="30" left="50"/>
     </padding>
-    <Label fx:id="nameLabel" text="Full Name: " styleClass="my-label"/>
-    <Label fx:id="phoneLabel" text="Phone: " styleClass="my-label"/>
-    <Label fx:id="emailLabel" text="Email: " styleClass="my-label"/>
-    <Label fx:id="roleLabel" text="Role: " styleClass="my-label"/>
-    <Label fx:id="addressLabel" text="Address: " styleClass="my-label"/>
-    <Label fx:id="bankInfoLabel" text="Bank Info: " styleClass="my-label"/>
 
-    <Button text="Back to Main" onAction="#handleBackToMain" styleClass="my-button"/>
+    <Label text="Your Profile" styleClass="card-title"/>
+
+    <VBox styleClass="dashboard-card" alignment="TOP_LEFT" spacing="10">
+        <Label fx:id="nameLabel" styleClass="card-text"/>
+        <Label fx:id="phoneLabel" styleClass="card-text"/>
+        <Label fx:id="emailLabel" styleClass="card-text"/>
+        <Label fx:id="roleLabel" styleClass="card-text"/>
+        <Label fx:id="addressLabel" styleClass="card-text"/>
+        <Label fx:id="bankInfoLabel" styleClass="card-text"/>
+    </VBox>
+
+    <Hyperlink fx:id="updateProfileLink" text="Update Profile Information" onAction="#handleUpdateProfile" styleClass="primary-button" />
+
+    <Region VBox.vgrow="ALWAYS"/>
+
+    <HBox spacing="10" alignment="BOTTOM_RIGHT">
+        <Button text="Back to Main" onAction="#handleBackToMain" styleClass="my-button2"/>
+        <Button fx:id="signOutButton" text="Sign Out" onAction="#handleSignOut" styleClass="logout-button"/>
+    </HBox>
 </VBox>
