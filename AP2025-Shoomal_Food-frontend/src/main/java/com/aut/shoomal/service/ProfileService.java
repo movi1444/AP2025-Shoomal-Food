@@ -18,7 +18,7 @@ public class ProfileService extends AbstractService
             return sendRequest(request, UserResponse.class);
         } catch (Exception e) {
             System.err.println("Error creating get profile request: " + e.getMessage());
-            return CompletableFuture.completedFuture(null);
+            throw new RuntimeException("Client error creating get profile request: " + e.getMessage(), e);
         }
     }
 
@@ -31,7 +31,7 @@ public class ProfileService extends AbstractService
             return sendRequest(httpRequest, ApiResponse.class);
         } catch (Exception e) {
             System.err.println("Error creating update profile request: " + e.getMessage());
-            return CompletableFuture.completedFuture(new ApiResponse(false, "Client error: " + e.getMessage()));
+            throw new RuntimeException("Client error creating update profile request: " + e.getMessage(), e);
         }
     }
 }

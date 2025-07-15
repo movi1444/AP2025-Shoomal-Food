@@ -4,7 +4,10 @@ import com.aut.shoomal.dto.response.ApiResponse;
 import com.aut.shoomal.exceptions.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.IOException;
+import java.net.ConnectException;
 import java.net.URI;
+import java.net.UnknownHostException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -87,10 +90,32 @@ public abstract class AbstractService
                     }
                         })
                 .exceptionally(e -> {
-                    System.err.println("Network or request error: " + e.getMessage());
-                    if (response.equals(ApiResponse.class))
-                        return response.cast(new ApiResponse(false, "Network error or server unavailable."));
-                    return null;
+                    Throwable cause = e.getCause() != null ? e.getCause() : e;
+
+                    switch (cause) {
+                        case ConnectException ignored -> {
+                            System.err.println("Network connection refused: " + cause.getMessage());
+                            throw new FrontendServiceException(-1, "Failed to connect to the server. Please ensure the backend is running.", "Failed to connect to the server. Please check your network connection.");
+                        }
+                        case UnknownHostException ignored -> {
+                            System.err.println("Unknown host: " + cause.getMessage());
+                            throw new FrontendServiceException(-3, "Server address could not be resolved.", "Cannot reach the server. Please check the application configuration or your internet connection.");
+                        }
+                        case IOException ignored -> {
+                            System.err.println("I/O error during HTTP request: " + cause.getMessage());
+                            throw new FrontendServiceException(-4, "An I/O error occurred during the request.", "A problem occurred while sending or receiving data. Please try again.");
+                        }
+                        case InterruptedException ignored -> {
+                            Thread.currentThread().interrupt();
+                            System.err.println("Request interrupted: " + cause.getMessage());
+                            throw new FrontendServiceException(-2, "Request was interrupted.", "Operation interrupted. Please try again.");
+                        }
+                        case FrontendServiceException frontendServiceException -> throw frontendServiceException;
+                        case null, default -> {
+                            System.err.println("Unhandled client-side exception: " + cause.getMessage());
+                            throw new FrontendServiceException(0, "An unexpected client-side error occurred: " + cause.getMessage(), "An unexpected error occurred. Please try again later.");
+                        }
+                    }
                 });
     }
 }
