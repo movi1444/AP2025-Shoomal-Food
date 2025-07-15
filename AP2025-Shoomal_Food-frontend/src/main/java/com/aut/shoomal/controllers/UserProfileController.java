@@ -1,5 +1,7 @@
+// AP2025-Shoomal_Food-frontend/src/main/java/com/aut/shoomal/controllers/UserProfileController.java
 package com.aut.shoomal.controllers;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
@@ -14,6 +16,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Button;
+import com.aut.shoomal.utils.PreferencesManager;
 
 public class UserProfileController extends AbstractBaseController {
 
@@ -23,44 +28,74 @@ public class UserProfileController extends AbstractBaseController {
     @FXML private Label roleLabel;
     @FXML private Label addressLabel;
     @FXML private Label bankInfoLabel;
+    @FXML private Hyperlink updateProfileLink;
+    @FXML private Button signOutButton;
 
     private UserResponse loggedInUser;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         super.initialize(url, resourceBundle);
+
+        if (updateProfileLink != null) {
+            updateProfileLink.setOnAction(this::handleUpdateProfile);
+        }
+
+        if (signOutButton != null) {
+            signOutButton.setOnAction(this::handleSignOut);
+        }
     }
 
     public void setLoggedInUser(UserResponse user) {
         this.loggedInUser = user;
-        if (loggedInUser != null) {
-            nameLabel.setText("Full Name: " + loggedInUser.getName());
-            phoneLabel.setText("Phone: " + loggedInUser.getPhoneNumber());
-            emailLabel.setText("Email: " + (loggedInUser.getEmail() != null ? loggedInUser.getEmail() : "N/A"));
-            roleLabel.setText("Role: " + loggedInUser.getRole());
-            addressLabel.setText("Address: " + (loggedInUser.getAddress() != null ? loggedInUser.getAddress() : "N/A"));
-            if (loggedInUser.getBank() != null) {
-                bankInfoLabel.setText("Bank Info: " + loggedInUser.getBank().getBankName() + " - " + loggedInUser.getBank().getAccountNumber());
-            } else {
-                bankInfoLabel.setText("Bank Info: N/A");
+        Platform.runLater(() -> {
+            if (loggedInUser != null) {
+                nameLabel.setText("Full Name: " + loggedInUser.getName());
+                phoneLabel.setText("Phone: " + loggedInUser.getPhoneNumber());
+                emailLabel.setText("Email: " + (loggedInUser.getEmail() != null ? loggedInUser.getEmail() : "N/A"));
+                roleLabel.setText("Role: " + loggedInUser.getRole());
+                addressLabel.setText("Address: " + (loggedInUser.getAddress() != null ? loggedInUser.getAddress() : "N/A"));
+                if (loggedInUser.getBank() != null) {
+                    bankInfoLabel.setText("Bank Info: " + loggedInUser.getBank().getBankName() + " - " + loggedInUser.getBank().getAccountNumber());
+                } else {
+                    bankInfoLabel.setText("Bank Info: N/A");
+                }
             }
-        }
+        });
     }
 
     @FXML
     private void handleBackToMain(ActionEvent event) {
         System.out.println("Back to Main button clicked!");
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        navigateToMainView(event.getSource(), loggedInUser);
+    }
+
+    @FXML
+    private void handleUpdateProfile(ActionEvent event) {
+        System.out.println("Update Profile link clicked!");
+        navigateTo(updateProfileLink, "/com/aut/shoomal/views/UpdateProfileView.fxml", "/com/aut/shoomal/styles/SignInUpStyles.css", TransitionType.SLIDE_LEFT);
+    }
+
+    @FXML
+    private void handleSignOut(ActionEvent event) {
+        System.out.println("Sign Out button clicked!");
+        PreferencesManager.clearAuthInfo();
+        navigateToSignInView(signOutButton);
+        showAlert("Sign Out", "You have been successfully signed out.", Alert.AlertType.INFORMATION, null);
+    }
+
+    private void navigateToMainView(Object sourceNode, UserResponse user) {
+        Stage stage = (Stage) ((Node) sourceNode).getScene().getWindow();
         try {
             FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/views/MainView.fxml")));
             Parent mainRoot = loader.load();
 
             MainController mainController = loader.getController();
             if (mainController != null) {
-                mainController.setLoggedInUser(loggedInUser);
+                mainController.setLoggedInUser(user);
             }
 
-            Scene newScene = new Scene(mainRoot, stage.getWidth(), stage.getHeight());
+            Scene newScene = new Scene(mainRoot, stage.getWidth() - 15, stage.getHeight() - 38);
             newScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/styles/MainView.css")).toExternalForm());
             stage.setScene(newScene);
             stage.setTitle("Shoomal Food");

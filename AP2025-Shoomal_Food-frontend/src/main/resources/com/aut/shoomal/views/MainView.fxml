@@ -157,11 +157,6 @@
                         </ImageView>
                     </graphic>
                 </Label>
-                <Button fx:id="logoutButton" styleClass="logout-button" text="خروج" GridPane.columnIndex="2" GridPane.halignment="LEFT">
-                    <GridPane.margin>
-                        <Insets left="50.0" top="20.0" />
-                    </GridPane.margin>
-                </Button>
                 <ImageView fx:id="profilePictureImageView" fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.halignment="RIGHT">
                     <GridPane.margin>
                         <Insets right="20.0" top="20.0" />

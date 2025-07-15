@@ -27,11 +27,11 @@ import java.io.IOException;
 import javafx.scene.Cursor;
 import javafx.scene.shape.Circle;
 import javafx.scene.control.Tooltip;
+import com.aut.shoomal.dto.response.ApiResponse;
 
 public class MainController extends AbstractBaseController {
 
     @FXML private Label welcomeUserLabel;
-    @FXML private Button logoutButton;
     @FXML private StackPane contentStackPane;
 
     @FXML private ScrollPane buyerDashboardScrollPane;
@@ -50,10 +50,6 @@ public class MainController extends AbstractBaseController {
         if (defaultView != null) {
             defaultView.setVisible(true);
             defaultView.setManaged(true);
-        }
-
-        if (logoutButton != null) {
-            logoutButton.setOnAction(event -> navigateTo(logoutButton, "/com/aut/shoomal/views/SignInView.fxml", "/com/aut/shoomal/styles/SignInUpStyles.css", TransitionType.SLIDE_UP));
         }
 
         if (profilePictureImageView != null) {
@@ -173,15 +169,6 @@ public class MainController extends AbstractBaseController {
         }
     }
 
-    @FXML
-    private void handleLogout(ActionEvent event) {
-        System.out.println("Logout button clicked!");
-        PreferencesManager.clearAuthInfo();
-        if (logoutButton != null) {
-            navigateToSignInView(logoutButton);
-        }
-    }
-
     private void handleProfilePictureClick(MouseEvent event) {
         System.out.println("Profile picture clicked! Navigating to user profile.");
         navigateToProfileView(profilePictureImageView);
@@ -198,7 +185,7 @@ public class MainController extends AbstractBaseController {
                 profileController.setLoggedInUser(currentUser);
             }
 
-            Scene newScene = new Scene(profileRoot, stage.getWidth(), stage.getHeight());
+            Scene newScene = new Scene(profileRoot, stage.getWidth() - 15, stage.getHeight() - 38);
             stage.setScene(newScene);
             stage.setTitle("User Profile");
             stage.show();
