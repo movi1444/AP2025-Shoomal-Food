@@ -182,7 +182,7 @@ public class MainController extends AbstractBaseController {
 
             UserProfileController profileController = loader.getController();
             if (profileController != null) {
-                profileController.setLoggedInUser(currentUser);
+                profileController.setLoggedInUser();
             }
 
             Scene newScene = new Scene(profileRoot, stage.getWidth() - 15, stage.getHeight() - 38);
