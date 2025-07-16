@@ -3,6 +3,7 @@ package com.aut.shoomal.dto.handler;
 import com.aut.shoomal.entity.user.User;
 import com.aut.shoomal.entity.user.UserManager;
 import com.aut.shoomal.entity.user.CourierDeliveryStatus;
+import com.aut.shoomal.entity.user.Courier;
 import com.aut.shoomal.dao.BlacklistedTokenDao;
 import com.aut.shoomal.dto.request.UpdateDeliveryStatusRequest;
 import com.aut.shoomal.dto.response.ApiResponse;
@@ -51,6 +52,11 @@ public class CourierHandler extends AbstractHttpHandler {
         }
 
         if (!checkUserRole(exchange, authenticatedUser, "courier")) {
+            return;
+        }
+
+        if (!(authenticatedUser instanceof Courier) || !((Courier) authenticatedUser).isApproved()) {
+            sendResponse(exchange, HttpURLConnection.HTTP_FORBIDDEN, new ApiResponse(false, "Forbidden request: Courier is not yet approved to perform delivery actions."));
             return;
         }
 

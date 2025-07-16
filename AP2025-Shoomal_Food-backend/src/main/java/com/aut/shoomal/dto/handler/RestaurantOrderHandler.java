@@ -2,6 +2,7 @@ package com.aut.shoomal.dto.handler;
 
 import com.aut.shoomal.entity.user.User;
 import com.aut.shoomal.entity.user.UserManager;
+import com.aut.shoomal.entity.user.Seller;
 import com.aut.shoomal.entity.restaurant.RestaurantManager;
 import com.aut.shoomal.dao.BlacklistedTokenDao;
 import com.aut.shoomal.dto.request.UpdateOrderStatusRequest;
@@ -65,6 +66,10 @@ public class RestaurantOrderHandler extends AbstractHttpHandler {
                     sendResponse(exchange, HttpURLConnection.HTTP_FORBIDDEN, new ApiResponse(false, "Forbidden request: Not the owner of this restaurant."));
                     return;
                 }
+                if (!(authenticatedUser instanceof Seller) || !((Seller) authenticatedUser).isApproved()) {
+                    sendResponse(exchange, HttpURLConnection.HTTP_FORBIDDEN, new ApiResponse(false, "Forbidden request: Seller is not yet approved to manage restaurant orders."));
+                    return;
+                }
 
                 if (method.equalsIgnoreCase("GET")) {
                     handleListOrdersForRestaurant(exchange, restaurantId);
@@ -124,6 +129,14 @@ public class RestaurantOrderHandler extends AbstractHttpHandler {
     private void handleChangeOrderStatus(HttpExchange exchange, User authenticatedUser, int orderId) throws IOException {
         if (!checkContentType(exchange)) return;
 
+        if (!restaurantManager.isOwner(orderManager.findOrderById(orderId).getRestaurant().getId().intValue(), String.valueOf(authenticatedUser.getId()))) {
+            throw new ForbiddenException("403 Forbidden: You are not authorized to change the status of this order.");
+        }
+        if (!(authenticatedUser instanceof Seller) || !((Seller) authenticatedUser).isApproved()) {
+            sendResponse(exchange, HttpURLConnection.HTTP_FORBIDDEN, new ApiResponse(false, "Forbidden request: Seller is not yet approved to manage restaurant orders."));
+            return;
+        }
+
         UpdateOrderStatusRequest requestBody;
         try {
             requestBody = parseRequestBody(exchange, UpdateOrderStatusRequest.class);
@@ -142,10 +155,6 @@ public class RestaurantOrderHandler extends AbstractHttpHandler {
             Order order = orderManager.findOrderById(orderId);
             if (order == null) {
                 throw new NotFoundException("404 Not Found: Order with ID " + orderId + " not found.");
-            }
-
-            if (!restaurantManager.isOwner(order.getRestaurant().getId().intValue(), String.valueOf(authenticatedUser.getId()))) {
-                throw new ForbiddenException("403 Forbidden: You are not authorized to change the status of this order.");
             }
 
             OrderStatus internalOrderStatus = switch (requestBody.getStatus()) {
