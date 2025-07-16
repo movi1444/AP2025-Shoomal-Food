@@ -94,12 +94,13 @@ public class UpdateProfileController extends AbstractBaseController
                                     bankNameField.setText(userResponse.getBank().getBankName());
                                 if (userResponse.getBank().getAccountNumber() != null && bankAccountField != null)
                                     bankAccountField.setText(userResponse.getBank().getAccountNumber());
-                            } else {
-                                if (bankInfoSection != null) {
-                                    bankInfoSection.setVisible(false);
-                                    bankInfoSection.setManaged(false);
-                                }
                             }
+                            else
+                                if (bankInfoSection != null)
+                                {
+                                    bankNameField.setText("N/A");
+                                    bankAccountField.setText("N/A");
+                                }
                         }
                     });
                 })
@@ -134,7 +135,7 @@ public class UpdateProfileController extends AbstractBaseController
                             {
                                 if (!phoneField.getText().equals(firstPhoneNumber))
                                 {
-                                    showAlert("Success", "Because of changing the phone number, your session expired. Please login again.", Alert.AlertType.INFORMATION, null);
+                                    showAlert("Success", "Because of changing the phone number, your session has expired. Please login again.", Alert.AlertType.INFORMATION, null);
                                     navigateToSignInView(saveButton);
                                 }
                                 else
@@ -181,29 +182,5 @@ public class UpdateProfileController extends AbstractBaseController
     public void handleCancelChange(ActionEvent actionEvent)
     {
         navigateToUserProfileView(actionEvent.getSource());
-    }
-
-    private void navigateToUserProfileView(Object sourceNode) {
-        Stage stage = (Stage) ((Node) sourceNode).getScene().getWindow();
-        try {
-            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/views/UserProfileView.fxml")));
-            Parent profileRoot = loader.load();
-
-            UserProfileController userProfileController = loader.getController();
-
-            PreferencesManager.attemptAutoLogin();
-            userProfileController.setLoggedInUser();
-
-            Scene newScene = new Scene(profileRoot, stage.getWidth() - 15, stage.getHeight() - 38);
-            newScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/styles/MainView.css")).toExternalForm());
-            stage.setScene(newScene);
-            stage.setTitle("User Profile");
-            stage.show();
-
-        } catch (IOException e) {
-            System.err.println("Failed to load UserProfileView.fxml: " + e.getMessage());
-            e.printStackTrace();
-            showAlert("Navigation Error", "Failed to load user profile page.", Alert.AlertType.ERROR, null);
-        }
     }
 }
