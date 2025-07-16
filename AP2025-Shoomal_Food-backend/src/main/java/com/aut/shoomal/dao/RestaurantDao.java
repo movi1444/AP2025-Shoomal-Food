@@ -12,6 +12,4 @@ public interface RestaurantDao extends GenericDao<Restaurant> {
     void removeMenu(Long restaurantId, Long menuId);
     List<Restaurant> searchByName(String partialName);
     List<Restaurant> findByOwner(Seller owner);
-    List<Restaurant> findAllApproved();
-    void updateApprovalStatus(Long id, boolean approved);
 }

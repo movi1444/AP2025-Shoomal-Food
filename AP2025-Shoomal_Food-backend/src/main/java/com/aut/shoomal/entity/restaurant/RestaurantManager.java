@@ -8,7 +8,6 @@ import com.aut.shoomal.dto.request.CreateRestaurantRequest;
 import com.aut.shoomal.dto.request.UpdateRestaurantRequest;
 import com.aut.shoomal.dto.request.AddFoodItemRequest;
 import com.aut.shoomal.dto.request.UpdateFoodItemRequest;
-import com.aut.shoomal.entity.user.UserStatus;
 import com.aut.shoomal.exceptions.ConflictException;
 import com.aut.shoomal.exceptions.ForbiddenException;
 import com.aut.shoomal.exceptions.InvalidInputException;
@@ -65,11 +64,9 @@ public class RestaurantManager {
             throw new ConflictException("This seller already owns a restaurant. Each seller can only have one restaurant.");
         }
 
-
         if (restaurantDao.findByName(request.getName()) != null) {
             throw new ConflictException("Restaurant with this name already exists.");
         }
-
 
         Restaurant newRestaurant = new Restaurant();
         newRestaurant.setName(request.getName());
@@ -79,7 +76,6 @@ public class RestaurantManager {
         newRestaurant.setTaxFee(request.getTaxFee() != null ? request.getTaxFee() : 0);
         newRestaurant.setAdditionalFee(request.getAdditionalFee() != null ? request.getAdditionalFee() : 0);
         newRestaurant.setOwner(owner);
-        newRestaurant.setApproved(false);
         newRestaurant.setWorkingHours("Not set");
         newRestaurant.setDescription("No description provided.");
 
@@ -103,9 +99,6 @@ public class RestaurantManager {
         if (!isOwner(restaurantId, userId)) {
             throw new ForbiddenException("Not authorized to update this restaurant.");
         }
-        if (!existingRestaurant.isApproved()) {
-            throw new ForbiddenException("Restaurant is not yet approved. Please wait for admin approval.");
-        }
 
         if (request.getName() != null) existingRestaurant.setName(request.getName());
         if (request.getAddress() != null) existingRestaurant.setAddress(request.getAddress());
@@ -125,9 +118,6 @@ public class RestaurantManager {
         }
         if (!isOwner(restaurantId, userId)) {
             throw new ForbiddenException("Not authorized to add food item to this restaurant.");
-        }
-        if (!restaurant.isApproved()) {
-            throw new ForbiddenException("Restaurant is not yet approved. Please wait for admin approval.");
         }
 
         Food newFood = new Food();
@@ -149,9 +139,6 @@ public class RestaurantManager {
         }
         if (!isOwner(restaurantId, userId)) {
             throw new ForbiddenException("Not authorized to update food item in this restaurant.");
-        }
-        if (!restaurant.isApproved()) {
-            throw new ForbiddenException("Restaurant is not yet approved. Please wait for admin approval.");
         }
 
         Food existingFood = foodDao.findById((long) itemId);
@@ -178,9 +165,6 @@ public class RestaurantManager {
         if (!isOwner(restaurantId, userId)) {
             throw new ForbiddenException("Not authorized to delete food item from this restaurant.");
         }
-        if (!restaurant.isApproved()) {
-            throw new ForbiddenException("Restaurant is not yet approved. Please wait for admin approval.");
-        }
 
         Food foodToDelete = foodDao.findById((long) itemId);
         if (foodToDelete == null || !foodToDelete.getVendor().getId().equals(restaurant.getId())) {
@@ -196,9 +180,6 @@ public class RestaurantManager {
         }
         if (!isOwner(restaurantId, userId)) {
             throw new ForbiddenException("Not authorized to add menu to this restaurant.");
-        }
-        if (!restaurant.isApproved()) {
-            throw new ForbiddenException("Restaurant is not yet approved. Please wait for admin approval.");
         }
 
         Optional<Menu> existingMenu = menuDao.findByRestaurantIdAndTitle((long) restaurantId, title);
@@ -221,9 +202,6 @@ public class RestaurantManager {
         if (!isOwner(restaurantId, userId)) {
             throw new ForbiddenException("Not authorized to delete menu from this restaurant.");
         }
-        if (!restaurant.isApproved()) {
-            throw new ForbiddenException("Restaurant is not yet approved. Please wait for admin approval.");
-        }
 
         Optional<Menu> menuToDelete = menuDao.findByRestaurantIdAndTitle((long) restaurantId, menuTitle);
         if (menuToDelete.isEmpty()) {
@@ -240,9 +218,6 @@ public class RestaurantManager {
         }
         if (!isOwner(restaurantId, userId)) {
             throw new ForbiddenException("Not authorized to add item to menu of this restaurant.");
-        }
-        if (!restaurant.isApproved()) {
-            throw new ForbiddenException("Restaurant is not yet approved. Please wait for admin approval.");
         }
 
         Optional<Menu> menu = menuDao.findByRestaurantIdAndTitle((long) restaurantId, menuTitle);
@@ -271,9 +246,6 @@ public class RestaurantManager {
         if (!isOwner(restaurantId, userId)) {
             throw new ForbiddenException("Not authorized to remove item from menu of this restaurant.");
         }
-        if (!restaurant.isApproved()) {
-            throw new ForbiddenException("Restaurant is not yet approved. Please wait for admin approval.");
-        }
 
         Optional<Menu> menu = menuDao.findByRestaurantIdAndTitle((long) restaurantId, menuTitle);
         if (menu.isEmpty()) {
@@ -294,7 +266,7 @@ public class RestaurantManager {
     }
 
     public List<Restaurant> getAllApprovedRestaurants() {
-        return restaurantDao.findAllApproved();
+        return restaurantDao.findAll();
     }
 
     public List<Restaurant> searchRestaurantByName(String restaurantName) {
@@ -303,32 +275,6 @@ public class RestaurantManager {
 
     public Restaurant findById(Long restaurantId) {
         Restaurant restaurant = restaurantDao.findById(restaurantId);
-        if (restaurant == null || !restaurant.isApproved())
-            return null;
         return restaurant;
-    }
-
-    public void setApprovalStatus(String Id, UserStatus userStatus)
-            throws NotFoundException, ForbiddenException
-    {
-        Long  sellerId = Long.parseLong(Id);
-        User user = userDao.findById(sellerId);
-        if (user == null)
-            throw new NotFoundException("User not found.");
-        if (!(user instanceof Seller seller))
-            throw new ForbiddenException("User is not a seller.");
-
-        List<Restaurant> restaurants = restaurantDao.findByOwner(seller);
-
-        if (restaurants == null || restaurants.isEmpty())
-            throw new NotFoundException("No restaurant found for this seller.");
-
-        Restaurant restaurant = restaurants.getFirst();
-
-        if (!restaurant.getOwner().getId().equals(sellerId))
-            throw new ForbiddenException("Seller does not own this restaurant.");
-
-        boolean approved = (userStatus == UserStatus.APPROVED);
-        restaurantDao.updateApprovalStatus(restaurant.getId(), approved);
     }
 }

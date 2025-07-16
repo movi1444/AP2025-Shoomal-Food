@@ -127,9 +127,8 @@ public class AdminHandler extends AbstractHttpHandler {
                     yield "Courier status updated";
                 }
                 case "seller" -> {
-                    restaurantManager.setApprovalStatus(userId.get().toString(), request.getStatus());
                     userManager.setUserApprovalStatus(userId.get().toString(), request.getStatus());
-                    yield "Seller and restaurant status updated";
+                    yield "Seller status updated";
                 }
                 default -> throw new InvalidInputException("Only sellers/couriers can be approved");
             };
