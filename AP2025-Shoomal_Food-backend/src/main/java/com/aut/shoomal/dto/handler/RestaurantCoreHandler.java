@@ -2,6 +2,7 @@ package com.aut.shoomal.dto.handler;
 
 import com.aut.shoomal.entity.user.User;
 import com.aut.shoomal.entity.user.UserManager;
+import com.aut.shoomal.entity.user.Seller;
 import com.aut.shoomal.entity.restaurant.Restaurant;
 import com.aut.shoomal.entity.restaurant.RestaurantManager;
 import com.aut.shoomal.dao.BlacklistedTokenDao;
@@ -80,6 +81,12 @@ public class RestaurantCoreHandler extends AbstractHttpHandler {
             sendResponse(exchange, HttpURLConnection.HTTP_FORBIDDEN, new ApiResponse(false, "Forbidden request: Only sellers can create restaurants."));
             return;
         }
+
+        if (!(authenticatedUser instanceof Seller) || !((Seller) authenticatedUser).isApproved()) {
+            sendResponse(exchange, HttpURLConnection.HTTP_FORBIDDEN, new ApiResponse(false, "Forbidden request: Seller is not yet approved to create restaurants."));
+            return;
+        }
+
         CreateRestaurantRequest request = parseRequestBody(exchange, CreateRestaurantRequest.class);
         if (request == null || request.getName() == null || request.getName().trim().isEmpty() ||
                 request.getAddress() == null || request.getAddress().trim().isEmpty() ||
@@ -100,6 +107,10 @@ public class RestaurantCoreHandler extends AbstractHttpHandler {
             sendResponse(exchange, HttpURLConnection.HTTP_FORBIDDEN, new ApiResponse(false, "Forbidden request: Only sellers can view their restaurants."));
             return;
         }
+        if (!(authenticatedUser instanceof Seller) || !((Seller) authenticatedUser).isApproved()) {
+            sendResponse(exchange, HttpURLConnection.HTTP_FORBIDDEN, new ApiResponse(false, "Forbidden request: Seller is not yet approved to view restaurants."));
+            return;
+        }
         List<Restaurant> myRestaurants = restaurantManager.getRestaurantsBySeller(String.valueOf(authenticatedUser.getId()));
         List<RestaurantResponse> responseList = myRestaurants.stream()
                 .map(this::convertToRestaurantResponse)
@@ -113,13 +124,13 @@ public class RestaurantCoreHandler extends AbstractHttpHandler {
             sendResponse(exchange, HttpURLConnection.HTTP_FORBIDDEN, new ApiResponse(false, "Forbidden request: Not the owner of this restaurant."));
             return;
         }
+        if (!(authenticatedUser instanceof Seller) || !((Seller) authenticatedUser).isApproved()) {
+            sendResponse(exchange, HttpURLConnection.HTTP_FORBIDDEN, new ApiResponse(false, "Forbidden request: Seller is not yet approved to update restaurants."));
+            return;
+        }
         Restaurant restaurant = restaurantManager.findById((long) restaurantId);
         if (restaurant == null) {
             sendResponse(exchange, HttpURLConnection.HTTP_NOT_FOUND, new ApiResponse(false, "Restaurant not found."));
-            return;
-        }
-        if (!restaurant.isApproved()) {
-            sendResponse(exchange, HttpURLConnection.HTTP_FORBIDDEN, new ApiResponse(false, "Forbidden request: Restaurant is not yet approved."));
             return;
         }
 

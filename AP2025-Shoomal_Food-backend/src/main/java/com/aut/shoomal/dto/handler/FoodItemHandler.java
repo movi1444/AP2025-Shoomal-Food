@@ -2,6 +2,7 @@ package com.aut.shoomal.dto.handler;
 
 import com.aut.shoomal.entity.user.User;
 import com.aut.shoomal.entity.user.UserManager;
+import com.aut.shoomal.entity.user.Seller;
 import com.aut.shoomal.entity.food.Food;
 import com.aut.shoomal.entity.food.FoodManager;
 import com.aut.shoomal.entity.restaurant.RestaurantManager;
@@ -88,6 +89,10 @@ public class FoodItemHandler extends AbstractHttpHandler {
             sendResponse(exchange, HttpURLConnection.HTTP_FORBIDDEN, new ApiResponse(false, "Forbidden request: Not the owner of this restaurant."));
             return;
         }
+        if (!(authenticatedUser instanceof Seller) || !((Seller) authenticatedUser).isApproved()) {
+            sendResponse(exchange, HttpURLConnection.HTTP_FORBIDDEN, new ApiResponse(false, "Forbidden request: Seller is not yet approved to manage food items."));
+            return;
+        }
         AddFoodItemRequest request = parseRequestBody(exchange, AddFoodItemRequest.class);
         if (request == null || request.getName() == null || request.getName().trim().isEmpty() ||
                 request.getDescription() == null || request.getDescription().trim().isEmpty() ||
@@ -107,8 +112,12 @@ public class FoodItemHandler extends AbstractHttpHandler {
             sendResponse(exchange, HttpURLConnection.HTTP_FORBIDDEN, new ApiResponse(false, "Forbidden request: Not the owner of this restaurant."));
             return;
         }
+        if (!(authenticatedUser instanceof Seller) || !((Seller) authenticatedUser).isApproved()) {
+            sendResponse(exchange, HttpURLConnection.HTTP_FORBIDDEN, new ApiResponse(false, "Forbidden request: Seller is not yet approved to manage food items."));
+            return;
+        }
         UpdateFoodItemRequest request = parseRequestBody(exchange, UpdateFoodItemRequest.class);
-        if (request == null) { 
+        if (request == null) {
             sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "Invalid input: Request body is empty."));
             return;
         }
@@ -123,6 +132,10 @@ public class FoodItemHandler extends AbstractHttpHandler {
         if (!checkHttpMethod(exchange, "DELETE")) return;
         if (!restaurantManager.isOwner(restaurantId, String.valueOf(authenticatedUser.getId()))) {
             sendResponse(exchange, HttpURLConnection.HTTP_FORBIDDEN, new ApiResponse(false, "Forbidden request: Not the owner of this restaurant."));
+            return;
+        }
+        if (!(authenticatedUser instanceof Seller) || !((Seller) authenticatedUser).isApproved()) {
+            sendResponse(exchange, HttpURLConnection.HTTP_FORBIDDEN, new ApiResponse(false, "Forbidden request: Seller is not yet approved to manage food items."));
             return;
         }
         foodManager.deleteFoodItem(restaurantId, itemId, String.valueOf(authenticatedUser.getId()));

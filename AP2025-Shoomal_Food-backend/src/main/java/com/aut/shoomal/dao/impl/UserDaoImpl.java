@@ -1,6 +1,7 @@
 package com.aut.shoomal.dao.impl;
 import com.aut.shoomal.entity.restaurant.Restaurant;
 import com.aut.shoomal.entity.user.Courier;
+import com.aut.shoomal.entity.user.Seller;
 import com.aut.shoomal.entity.user.User;
 import com.aut.shoomal.dao.UserDao;
 import com.aut.shoomal.exceptions.NotFoundException;
@@ -83,11 +84,13 @@ public class UserDaoImpl extends GenericDaoImpl<User> implements UserDao
                 throw new RuntimeException("User not found with ID: " + id);
             }
 
-            if (!(user instanceof Courier)) {
+            if (user instanceof Courier) {
+                ((Courier) user).setApproved(approved);
+            } else if (user instanceof Seller) {
+                ((Seller) user).setApproved(approved);
+            } else {
                 throw new RuntimeException("Approval status update not applicable for this user type.");
             }
-
-            ((Courier) user).setApproved(approved);
 
             transaction.commit();
         } catch (Exception e) {
