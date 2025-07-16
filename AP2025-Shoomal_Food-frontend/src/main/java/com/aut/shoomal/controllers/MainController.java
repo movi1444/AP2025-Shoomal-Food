@@ -1,5 +1,6 @@
 package com.aut.shoomal.controllers;
 
+import com.aut.shoomal.service.RestaurantService;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -40,11 +41,12 @@ public class MainController extends AbstractBaseController {
 
     //Seller
     @FXML private VBox sellerLinksContainer;
-    @FXML private Hyperlink createRestaurantLink;
-    @FXML private Hyperlink showRestaurantLink;
-    @FXML private Hyperlink manageMenusLink;
-    @FXML private Hyperlink manageFoodsLink;
-    @FXML private Hyperlink manageOrdersLink;
+    @FXML private Button createRestaurantButton;
+    @FXML private Button showRestaurantButton;
+    @FXML private Button manageMenusButton;
+    @FXML private Button manageFoodsButton;
+    @FXML private Button manageOrdersButton;
+    private RestaurantService restaurantService;
 
     private UserResponse currentUser;
     private String token;
@@ -52,6 +54,7 @@ public class MainController extends AbstractBaseController {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         super.initialize(url, resourceBundle);
+        restaurantService = new RestaurantService();
         token = PreferencesManager.getJwtToken();
         hideAllDashboards();
         if (defaultView != null) {
@@ -172,5 +175,30 @@ public class MainController extends AbstractBaseController {
                     controller.setLoggedInUser();
                 }
         );
+    }
+
+    public void handleCreateRestaurant(ActionEvent actionEvent)
+    {
+
+    }
+
+    public void handleShowRestaurant(ActionEvent actionEvent)
+    {
+
+    }
+
+    public void handleManageMenus(ActionEvent actionEvent)
+    {
+
+    }
+
+    public void handleManageFoods(ActionEvent actionEvent)
+    {
+
+    }
+
+    public void handleManageOrders(ActionEvent actionEvent)
+    {
+
     }
 }
