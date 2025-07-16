@@ -175,24 +175,14 @@ public class MainController extends AbstractBaseController {
     }
 
     private void navigateToProfileView(Node currentNode) {
-        Stage stage = (Stage) currentNode.getScene().getWindow();
-        try {
-            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/views/UserProfileView.fxml")));
-            Parent profileRoot = loader.load();
-
-            UserProfileController profileController = loader.getController();
-            if (profileController != null) {
-                profileController.setLoggedInUser();
-            }
-
-            Scene newScene = new Scene(profileRoot, stage.getWidth() - 15, stage.getHeight() - 38);
-            stage.setScene(newScene);
-            stage.setTitle("User Profile");
-            stage.show();
-        } catch (IOException e) {
-            System.err.println("Failed to load UserProfileView.fxml: " + e.getMessage());
-            e.printStackTrace();
-            showAlert("Navigation Error", "Failed to load user profile page.", AlertType.ERROR, null);
-        }
+        navigateTo(
+                currentNode,
+                "/com/aut/shoomal/views/UserProfileView.fxml",
+                "/com/aut/shoomal/styles/MainView.css",
+                TransitionType.SLIDE_RIGHT,
+                (UserProfileController controller) -> {
+                    controller.setLoggedInUser();
+                }
+        );
     }
 }

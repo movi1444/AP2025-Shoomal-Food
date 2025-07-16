@@ -3,6 +3,7 @@ package com.aut.shoomal.controllers;
 import com.aut.shoomal.exceptions.FrontendServiceException;
 import com.aut.shoomal.utils.PreferencesManager;
 import javafx.animation.TranslateTransition;
+import javafx.animation.ParallelTransition;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -43,7 +44,8 @@ import com.aut.shoomal.utils.ImageToBase64Converter;
 public abstract class AbstractBaseController implements Initializable {
     public enum TransitionType {
         SLIDE_LEFT,
-        SLIDE_UP
+        SLIDE_UP,
+        SLIDE_RIGHT
     }
 
     protected boolean isPersianCharacter(char c) {
@@ -113,36 +115,67 @@ public abstract class AbstractBaseController implements Initializable {
     }
 
     protected void navigateTo(Node currentNode, String fxmlPath, String cssPath, TransitionType transitionType) {
+        navigateTo(currentNode, fxmlPath, cssPath, transitionType, null);
+    }
+
+    protected <C extends AbstractBaseController> void navigateTo(Node currentNode, String fxmlPath, String cssPath, TransitionType transitionType, Consumer<C> controllerSetupCallback) {
         Stage stage = (Stage) currentNode.getScene().getWindow();
         Parent currentRoot = currentNode.getScene().getRoot();
 
         try {
-            Parent signInRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(fxmlPath)));
+            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource(fxmlPath)));
+            Parent newRoot = loader.load();
+
+            C newController = loader.getController();
+            if (newController != null && controllerSetupCallback != null) {
+                controllerSetupCallback.accept(newController);
+            }
 
             StackPane transitionContainer = new StackPane();
-            transitionContainer.getChildren().addAll(currentRoot, signInRoot);
+            transitionContainer.getChildren().addAll(currentRoot, newRoot);
 
-            TranslateTransition slideIn = new TranslateTransition(Duration.millis(500), signInRoot);
+            TranslateTransition currentRootSlideOut = new TranslateTransition(Duration.millis(500), currentRoot);
+            TranslateTransition newRootSlideIn = new TranslateTransition(Duration.millis(500), newRoot);
 
             if (transitionType == TransitionType.SLIDE_UP) {
-                signInRoot.setTranslateY(stage.getHeight());
-                slideIn.setFromY(stage.getHeight());
-                slideIn.setToY(0);
+                currentRootSlideOut.setFromY(0);
+                currentRootSlideOut.setToY(stage.getHeight());
+
+                newRoot.setTranslateY(stage.getHeight());
+                newRootSlideIn.setFromY(stage.getHeight());
+                newRootSlideIn.setToY(0);
+
+            } else if (transitionType == TransitionType.SLIDE_RIGHT) {
+                currentRootSlideOut.setFromX(0);
+                currentRootSlideOut.setToX(-stage.getWidth());
+
+                newRoot.setTranslateX(stage.getWidth());
+                newRootSlideIn.setFromX(stage.getWidth());
+                newRootSlideIn.setToX(0);
+
             } else {
-                signInRoot.setTranslateX(-stage.getWidth());
-                slideIn.setFromX(-stage.getWidth());
-                slideIn.setToX(0);
+                currentRootSlideOut.setFromX(0);
+                currentRootSlideOut.setToX(stage.getWidth());
+
+                newRoot.setTranslateX(-stage.getWidth());
+                newRootSlideIn.setFromX(-stage.getWidth());
+                newRootSlideIn.setToX(0);
             }
 
             Scene newScene = new Scene(transitionContainer, stage.getWidth() - 15, stage.getHeight() - 38);
             newScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource(cssPath)).toExternalForm());
             stage.setScene(newScene);
 
-            slideIn.setOnFinished(event -> {
+            ParallelTransition parallelTransition = new ParallelTransition();
+            parallelTransition.getChildren().addAll(currentRootSlideOut, newRootSlideIn);
+
+            parallelTransition.setOnFinished(event -> {
                 transitionContainer.getChildren().remove(currentRoot);
+                newRoot.setTranslateX(0);
+                newRoot.setTranslateY(0);
             });
 
-            slideIn.play();
+            parallelTransition.play();
 
         } catch (IOException e) {
             System.err.println("Failed to load .fxml or .css file: " + e.getMessage());
@@ -155,31 +188,19 @@ public abstract class AbstractBaseController implements Initializable {
     }
 
     protected void navigateToSignInView(Node currentNode) {
-        navigateTo(currentNode, "/com/aut/shoomal/views/SignInView.fxml", "/com/aut/shoomal/styles/SignInUpStyles.css", TransitionType.SLIDE_LEFT);
+        navigateTo(currentNode, "/com/aut/shoomal/views/SignInView.fxml", "/com/aut/shoomal/styles/SignInUpStyles.css", TransitionType.SLIDE_UP);
     }
 
     protected void navigateToUserProfileView(Object sourceNode) {
-        Stage stage = (Stage) ((Node) sourceNode).getScene().getWindow();
-        try {
-            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/views/UserProfileView.fxml")));
-            Parent profileRoot = loader.load();
-
-            UserProfileController userProfileController = loader.getController();
-
-            PreferencesManager.attemptAutoLogin();
-            userProfileController.setLoggedInUser();
-
-            Scene newScene = new Scene(profileRoot, stage.getWidth() - 15, stage.getHeight() - 38);
-            newScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/styles/MainView.css")).toExternalForm());
-            stage.setScene(newScene);
-            stage.setTitle("User Profile");
-            stage.show();
-
-        } catch (IOException e) {
-            System.err.println("Failed to load UserProfileView.fxml: " + e.getMessage());
-            e.printStackTrace();
-            showAlert("Navigation Error", "Failed to load user profile page.", Alert.AlertType.ERROR, null);
-        }
+        navigateTo(
+                (Node) sourceNode,
+                "/com/aut/shoomal/views/UserProfileView.fxml",
+                "/com/aut/shoomal/styles/MainView.css",
+                TransitionType.SLIDE_LEFT,
+                (UserProfileController controller) -> {
+                    controller.setLoggedInUser();
+                }
+        );
     }
 
     protected String handleImageUploadAndConvert(Button uploadButton, ImageView imageView) {

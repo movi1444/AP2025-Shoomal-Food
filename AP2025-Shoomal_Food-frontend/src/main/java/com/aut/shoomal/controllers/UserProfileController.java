@@ -1,4 +1,3 @@
-// AP2025-Shoomal_Food-frontend/src/main/java/com/aut/shoomal/controllers/UserProfileController.java
 package com.aut.shoomal.controllers;
 
 import com.aut.shoomal.exceptions.FrontendServiceException;
@@ -83,10 +82,10 @@ public class UserProfileController extends AbstractBaseController {
                 })
                 .exceptionally(e -> {
                     Platform.runLater(() -> {
-                       if (e.getCause() instanceof FrontendServiceException exception)
-                           showAlert(exception);
-                       else
-                           showAlert("Unexpected Error", "An unexpected error occurred: " + e.getMessage(), Alert.AlertType.ERROR, null);
+                        if (e.getCause() instanceof FrontendServiceException exception)
+                            showAlert(exception);
+                        else
+                            showAlert("Unexpected Error", "An unexpected error occurred: " + e.getMessage(), Alert.AlertType.ERROR, null);
                     });
                     return null;
                 });
@@ -95,68 +94,53 @@ public class UserProfileController extends AbstractBaseController {
     @FXML
     private void handleBackToMain(ActionEvent event) {
         System.out.println("Back to Main button clicked!");
-        navigateToMainView(event.getSource(), loggedInUser);
+        navigateTo(
+                (Node) event.getSource(),
+                "/com/aut/shoomal/views/MainView.fxml",
+                "/com/aut/shoomal/styles/MainView.css",
+                TransitionType.SLIDE_LEFT,
+                (MainController controller) -> {
+                    controller.setLoggedInUser(loggedInUser);
+                }
+        );
     }
 
     @FXML
     private void handleUpdateProfile(ActionEvent event) {
         System.out.println("Update Profile link clicked!");
-        navigateTo(updateProfileLink, "/com/aut/shoomal/views/UpdateProfileView.fxml", "/com/aut/shoomal/styles/SignInUpStyles.css", TransitionType.SLIDE_LEFT);
+        navigateTo(updateProfileLink, "/com/aut/shoomal/views/UpdateProfileView.fxml", "/com/aut/shoomal/styles/SignInUpStyles.css", TransitionType.SLIDE_RIGHT);
     }
 
     @FXML
     private void handleSignOut(ActionEvent event) {
         System.out.println("Sign Out button clicked!");
         logoutService.logout(token)
-              .thenAccept(response -> {
-                  Platform.runLater(() -> {
-                      if (response.isSuccess())
-                      {
-                          PreferencesManager.clearAuthInfo();
-                          navigateToSignInView(signOutButton);
-                          showAlert("Sign Out", "You have been successfully signed out.", Alert.AlertType.INFORMATION, null);
-                      }
-                      else
-                          showAlert("Error", "Failed to logout: " + response.getError(), Alert.AlertType.ERROR, null);
-                  });
-              })
-              .exceptionally(e -> {
-                  Platform.runLater(() -> {
-                      if (e.getCause() instanceof FrontendServiceException fsException)
-                          showAlert(fsException);
-                      else
-                          showAlert("Unexpected Error", "An unexpected error occurred: " + e.getMessage(), Alert.AlertType.ERROR, null);
-                  });
-                  return null;
-              });
-    }
-
-    private void navigateToMainView(Object sourceNode, UserResponse user) {
-        Stage stage = (Stage) ((Node) sourceNode).getScene().getWindow();
-        try {
-            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/views/MainView.fxml")));
-            Parent mainRoot = loader.load();
-
-            MainController mainController = loader.getController();
-            if (mainController != null) {
-                mainController.setLoggedInUser(user);
-            }
-
-            Scene newScene = new Scene(mainRoot, stage.getWidth() - 15, stage.getHeight() - 38);
-            newScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/styles/MainView.css")).toExternalForm());
-            stage.setScene(newScene);
-            stage.setTitle("Shoomal Food");
-            stage.show();
-        } catch (IOException e) {
-            System.err.println("Failed to load MainView.fxml: " + e.getMessage());
-            e.printStackTrace();
-            showAlert("Navigation Error", "Failed to load main page.", Alert.AlertType.ERROR, null);
-        }
+                .thenAccept(response -> {
+                    Platform.runLater(() -> {
+                        if (response.isSuccess())
+                        {
+                            PreferencesManager.clearAuthInfo();
+                            navigateToSignInView(signOutButton);
+                            showAlert("Sign Out", "You have been successfully signed out.", Alert.AlertType.INFORMATION, null);
+                        }
+                        else
+                            showAlert("Error", "Failed to logout: " + response.getError(), Alert.AlertType.ERROR, null);
+                    });
+                })
+                .exceptionally(e -> {
+                    Platform.runLater(() -> {
+                        if (e.getCause() instanceof FrontendServiceException fsException)
+                            showAlert(fsException);
+                        else
+                            showAlert("Unexpected Error", "An unexpected error occurred: " + e.getMessage(), Alert.AlertType.ERROR, null);
+                    });
+                    return null;
+                });
     }
 
     @FXML
     public void handleTransactionHistory(ActionEvent actionEvent)
     {
-        navigateTo(transactionHistoryLink, "/com/aut/shoomal/views/TransactionHistoryView.fxml", "/com/aut/shoomal/styles/MainView.css", TransitionType.SLIDE_LEFT);
+        navigateTo(transactionHistoryLink, "/com/aut/shoomal/views/TransactionHistoryView.fxml", "/com/aut/shoomal/styles/MainView.css", TransitionType.SLIDE_RIGHT);
     }
 }
