@@ -14,12 +14,8 @@
 }
 
 .root {
-    -fx-background-image: url("/com/aut/shoomal/images/nigger.png");
-    -fx-background-size: cover;
-    -fx-background-position: center center;
-    -fx-background-repeat: no-repeat;
-    -fx-background-color: rgba(255, 255, 255, 0.7);
-    -fx-background-blend-mode: screen;
+    -fx-background-color: #2C3E50;
+    -fx-font-family: "Vazirmatn";
 }
 
 .my-button {
