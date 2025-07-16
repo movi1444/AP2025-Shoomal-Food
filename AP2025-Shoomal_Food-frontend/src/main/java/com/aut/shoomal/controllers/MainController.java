@@ -71,7 +71,7 @@ public class MainController extends AbstractBaseController {
             profilePictureImageView.setCursor(Cursor.HAND);
             Tooltip.install(profilePictureImageView, new Tooltip("Click to view profile"));
         }
-        setProfileImage(null);
+        super.setProfileImage(profilePictureImageView, null);
     }
 
     public void setLoggedInUser(UserResponse user) {
@@ -81,37 +81,13 @@ public class MainController extends AbstractBaseController {
                 welcomeUserLabel.setText(user.getName() + " به شومال فود خوش اومدی ");
             }
             displayDashboardForRole(user.getRole());
-            setProfileImage(user.getProfileImageBase64());
+            super.setProfileImage(profilePictureImageView, user.getProfileImageBase64());
         } else {
             if (welcomeUserLabel != null) {
                 welcomeUserLabel.setText("Welcome, Guest!");
             }
             displayDashboardForRole(null);
-            setProfileImage(null);
-        }
-    }
-
-    private void setProfileImage(String base64Image) {
-        if (profilePictureImageView != null) {
-            if (base64Image != null && !base64Image.isEmpty()) {
-                try {
-                    String cleanedBase64Image = base64Image.replaceAll("\\s", "");
-                    byte[] imageBytes = Base64.getDecoder().decode(cleanedBase64Image);
-                    Image image = new Image(new ByteArrayInputStream(imageBytes));
-
-                    if (image.isError() || image.getWidth() == 0 || image.getHeight() == 0) {
-                        throw new IllegalArgumentException("Decoded bytes do not form a valid image.");
-                    }
-
-                    profilePictureImageView.setImage(image);
-                    System.out.println("MainController: Profile image set from Base64.");
-                } catch (Exception e) {
-                    System.err.println("Failed to set profile image (invalid Base64 or image data): " + e.getMessage());
-                    profilePictureImageView.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/com/aut/shoomal/images/default_profile.png"))));
-                }
-            } else {
-                profilePictureImageView.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/com/aut/shoomal/images/default_profile.png"))));
-            }
+            super.setProfileImage(profilePictureImageView, null);
         }
     }
 

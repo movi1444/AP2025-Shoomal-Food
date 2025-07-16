@@ -9,18 +9,14 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import com.aut.shoomal.dto.response.UserResponse;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
 import javafx.scene.Node;
-import java.io.IOException;
 import java.net.URL;
-import java.util.Objects;
 import java.util.ResourceBundle;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Button;
 import com.aut.shoomal.utils.PreferencesManager;
+import javafx.scene.image.ImageView;
+import javafx.scene.shape.Circle;
 
 public class UserProfileController extends AbstractBaseController {
 
@@ -33,6 +29,7 @@ public class UserProfileController extends AbstractBaseController {
     @FXML private Hyperlink updateProfileLink;
     @FXML private Hyperlink transactionHistoryLink;
     @FXML private Button signOutButton;
+    @FXML private ImageView profileImageView;
 
     private UserResponse loggedInUser;
     private String token;
@@ -55,6 +52,23 @@ public class UserProfileController extends AbstractBaseController {
         if (signOutButton != null) {
             signOutButton.setOnAction(this::handleSignOut);
         }
+
+        if (profileImageView != null) {
+            final double imageSize = 250.0;
+            profileImageView.setFitWidth(imageSize);
+            profileImageView.setFitHeight(imageSize);
+            profileImageView.setPreserveRatio(true);
+
+            Circle clip = new Circle(imageSize / 2, imageSize / 2, imageSize / 2);
+            profileImageView.setClip(clip);
+
+            profileImageView.layoutBoundsProperty().addListener((obs, oldBounds, newBounds) -> {
+                clip.setCenterX(newBounds.getWidth() / 2.0);
+                clip.setCenterY(newBounds.getHeight() / 2.0);
+                clip.setRadius(Math.min(newBounds.getWidth(), newBounds.getHeight()) / 2.0);
+            });
+        }
+        super.setProfileImage(profileImageView, null);
     }
 
     public void setLoggedInUser() {
@@ -63,20 +77,27 @@ public class UserProfileController extends AbstractBaseController {
                     loggedInUser = userResponse;
                     Platform.runLater(() -> {
                         if (loggedInUser != null) {
-                            nameLabel.setText("Full Name: " + loggedInUser.getName());
-                            phoneLabel.setText("Phone: " + loggedInUser.getPhoneNumber());
-                            emailLabel.setText("Email: " + (loggedInUser.getEmail() != null ? loggedInUser.getEmail() : "N/A"));
-                            roleLabel.setText("Role: " + loggedInUser.getRole());
-                            addressLabel.setText("Address: " + (loggedInUser.getAddress() != null ? loggedInUser.getAddress() : "N/A"));
+                            nameLabel.setText("نام : " + loggedInUser.getName());
+                            nameLabel.getStyleClass().add("profile-info-label");
+                            phoneLabel.setText("شماره همراه : " + loggedInUser.getPhoneNumber());
+                            phoneLabel.getStyleClass().add("profile-info-label");
+                            emailLabel.setText("ایمیل: " + (loggedInUser.getEmail() != null ? loggedInUser.getEmail() : "N/A"));
+                            emailLabel.getStyleClass().add("profile-info-label");
+                            roleLabel.setText("نقش : " + loggedInUser.getRole());
+                            roleLabel.getStyleClass().add("profile-info-label");
+                            addressLabel.setText("آدرس : " + (loggedInUser.getAddress() != null ? loggedInUser.getAddress() : "N/A"));
+                            addressLabel.getStyleClass().add("profile-info-label");
                             if (loggedInUser.getRole().equalsIgnoreCase("buyer"))
                             {
                                 transactionHistoryLink.setVisible(true);
                                 transactionHistoryLink.setManaged(true);
                             }
                             if (loggedInUser.getBank() != null)
-                                bankInfoLabel.setText("Bank Info: " + loggedInUser.getBank().getBankName() + " - " + loggedInUser.getBank().getAccountNumber());
+                                bankInfoLabel.setText("اطلاعات بانکی : " + loggedInUser.getBank().getBankName() + " - " + loggedInUser.getBank().getAccountNumber());
                             else
-                                bankInfoLabel.setText("Bank Info: N/A");
+                                bankInfoLabel.setText("اطلاعات بانکی : N/A");
+                            bankInfoLabel.getStyleClass().add("profile-info-label");
+                            super.setProfileImage(profileImageView, loggedInUser.getProfileImageBase64());
                         }
                     });
                 })
@@ -93,7 +114,6 @@ public class UserProfileController extends AbstractBaseController {
 
     @FXML
     private void handleBackToMain(ActionEvent event) {
-        System.out.println("Back to Main button clicked!");
         navigateTo(
                 (Node) event.getSource(),
                 "/com/aut/shoomal/views/MainView.fxml",
@@ -107,13 +127,11 @@ public class UserProfileController extends AbstractBaseController {
 
     @FXML
     private void handleUpdateProfile(ActionEvent event) {
-        System.out.println("Update Profile link clicked!");
         navigateTo(updateProfileLink, "/com/aut/shoomal/views/UpdateProfileView.fxml", "/com/aut/shoomal/styles/SignInUpStyles.css", TransitionType.SLIDE_RIGHT);
     }
 
     @FXML
     private void handleSignOut(ActionEvent event) {
-        System.out.println("Sign Out button clicked!");
         logoutService.logout(token)
                 .thenAccept(response -> {
                     Platform.runLater(() -> {

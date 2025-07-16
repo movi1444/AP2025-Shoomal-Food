@@ -316,6 +316,31 @@ public abstract class AbstractBaseController implements Initializable {
             }
         }).start();
     }
+
+    protected void setProfileImage(ImageView imageView, String base64Image) {
+        if (imageView != null) {
+            if (base64Image != null && !base64Image.isEmpty()) {
+                try {
+                    String cleanedBase64Image = base64Image.replaceAll("\\s", "");
+                    byte[] imageBytes = Base64.getDecoder().decode(cleanedBase64Image);
+                    Image image = new Image(new ByteArrayInputStream(imageBytes));
+
+                    if (image.isError() || image.getWidth() == 0 || image.getHeight() == 0) {
+                        throw new IllegalArgumentException("Decoded bytes do not form a valid image.");
+                    }
+
+                    imageView.setImage(image);
+                    System.out.println("Profile image set from Base64.");
+                } catch (Exception e) {
+                    System.err.println("Failed to set profile image (invalid Base64 or image data): " + e.getMessage());
+                    imageView.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/com/aut/shoomal/images/default_profile.png"))));
+                }
+            } else {
+                imageView.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/com/aut/shoomal/images/default_profile.png"))));
+            }
+        }
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
     }
