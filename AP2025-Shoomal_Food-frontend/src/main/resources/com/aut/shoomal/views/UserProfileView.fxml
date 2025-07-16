@@ -26,6 +26,7 @@
     </VBox>
 
     <Hyperlink fx:id="updateProfileLink" text="Update Profile Information" onAction="#handleUpdateProfile" styleClass="primary-button" />
+    <Hyperlink fx:id="transactionHistoryLink" text="Transaction History" onAction="#handleTransactionHistory" styleClass="primary-button" />
 
     <Region VBox.vgrow="ALWAYS"/>
 

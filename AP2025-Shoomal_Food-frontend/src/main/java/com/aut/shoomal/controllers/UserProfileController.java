@@ -32,6 +32,7 @@ public class UserProfileController extends AbstractBaseController {
     @FXML private Label addressLabel;
     @FXML private Label bankInfoLabel;
     @FXML private Hyperlink updateProfileLink;
+    @FXML private Hyperlink transactionHistoryLink;
     @FXML private Button signOutButton;
 
     private UserResponse loggedInUser;
@@ -45,6 +46,8 @@ public class UserProfileController extends AbstractBaseController {
         this.token = PreferencesManager.getJwtToken();
         logoutService = new LogoutService();
         profileService = new ProfileService();
+        transactionHistoryLink.setVisible(false);
+        transactionHistoryLink.setManaged(false);
 
         if (updateProfileLink != null) {
             updateProfileLink.setOnAction(this::handleUpdateProfile);
@@ -66,11 +69,15 @@ public class UserProfileController extends AbstractBaseController {
                             emailLabel.setText("Email: " + (loggedInUser.getEmail() != null ? loggedInUser.getEmail() : "N/A"));
                             roleLabel.setText("Role: " + loggedInUser.getRole());
                             addressLabel.setText("Address: " + (loggedInUser.getAddress() != null ? loggedInUser.getAddress() : "N/A"));
-                            if (loggedInUser.getBank() != null) {
-                                bankInfoLabel.setText("Bank Info: " + loggedInUser.getBank().getBankName() + " - " + loggedInUser.getBank().getAccountNumber());
-                            } else {
-                                bankInfoLabel.setText("Bank Info: N/A");
+                            if (loggedInUser.getRole().equalsIgnoreCase("buyer"))
+                            {
+                                transactionHistoryLink.setVisible(true);
+                                transactionHistoryLink.setManaged(true);
                             }
+                            if (loggedInUser.getBank() != null)
+                                bankInfoLabel.setText("Bank Info: " + loggedInUser.getBank().getBankName() + " - " + loggedInUser.getBank().getAccountNumber());
+                            else
+                                bankInfoLabel.setText("Bank Info: N/A");
                         }
                     });
                 })
@@ -145,5 +152,11 @@ public class UserProfileController extends AbstractBaseController {
             e.printStackTrace();
             showAlert("Navigation Error", "Failed to load main page.", Alert.AlertType.ERROR, null);
         }
+    }
+
+    @FXML
+    public void handleTransactionHistory(ActionEvent actionEvent)
+    {
+        navigateTo(transactionHistoryLink, "/com/aut/shoomal/views/TransactionHistoryView.fxml", "/com/aut/shoomal/styles/MainView.css", TransitionType.SLIDE_LEFT);
     }
 }

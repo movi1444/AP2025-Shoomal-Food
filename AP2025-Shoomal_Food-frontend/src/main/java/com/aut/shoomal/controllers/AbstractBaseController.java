@@ -1,6 +1,7 @@
 package com.aut.shoomal.controllers;
 
 import com.aut.shoomal.exceptions.FrontendServiceException;
+import com.aut.shoomal.utils.PreferencesManager;
 import javafx.animation.TranslateTransition;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
@@ -155,6 +156,30 @@ public abstract class AbstractBaseController implements Initializable {
 
     protected void navigateToSignInView(Node currentNode) {
         navigateTo(currentNode, "/com/aut/shoomal/views/SignInView.fxml", "/com/aut/shoomal/styles/SignInUpStyles.css", TransitionType.SLIDE_LEFT);
+    }
+
+    protected void navigateToUserProfileView(Object sourceNode) {
+        Stage stage = (Stage) ((Node) sourceNode).getScene().getWindow();
+        try {
+            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/views/UserProfileView.fxml")));
+            Parent profileRoot = loader.load();
+
+            UserProfileController userProfileController = loader.getController();
+
+            PreferencesManager.attemptAutoLogin();
+            userProfileController.setLoggedInUser();
+
+            Scene newScene = new Scene(profileRoot, stage.getWidth() - 15, stage.getHeight() - 38);
+            newScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/styles/MainView.css")).toExternalForm());
+            stage.setScene(newScene);
+            stage.setTitle("User Profile");
+            stage.show();
+
+        } catch (IOException e) {
+            System.err.println("Failed to load UserProfileView.fxml: " + e.getMessage());
+            e.printStackTrace();
+            showAlert("Navigation Error", "Failed to load user profile page.", Alert.AlertType.ERROR, null);
+        }
     }
 
     protected String handleImageUploadAndConvert(Button uploadButton, ImageView imageView) {
