@@ -33,8 +33,6 @@ public class Restaurant {
     @Column(length = 1000)
     private String description;
 
-    private Boolean approved = false;
-
     @Column(name = "tax_fee", nullable = false)
     private Integer taxFee;
 
@@ -72,7 +70,6 @@ public class Restaurant {
         this.owner = owner;
     }
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -83,14 +80,6 @@ public class Restaurant {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public boolean isApproved() {
-        return approved;
-    }
-
-    public void setApproved(boolean approved) {
-        this.approved = approved;
     }
 
     public Seller getOwner() {

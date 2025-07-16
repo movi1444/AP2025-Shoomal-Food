@@ -2,6 +2,7 @@ package com.aut.shoomal.dto.handler;
 
 import com.aut.shoomal.entity.user.User;
 import com.aut.shoomal.entity.user.UserManager;
+import com.aut.shoomal.entity.user.Seller;
 import com.aut.shoomal.entity.food.FoodManager;
 import com.aut.shoomal.entity.menu.MenuManager;
 import com.aut.shoomal.entity.restaurant.RestaurantManager;
@@ -99,6 +100,10 @@ public class MenuHandler extends AbstractHttpHandler {
             sendResponse(exchange, HttpURLConnection.HTTP_FORBIDDEN, new ApiResponse(false, "Forbidden request: Not the owner of this restaurant."));
             return;
         }
+        if (!(authenticatedUser instanceof Seller) || !((Seller) authenticatedUser).isApproved()) {
+            sendResponse(exchange, HttpURLConnection.HTTP_FORBIDDEN, new ApiResponse(false, "Forbidden request: Seller is not yet approved to manage menus."));
+            return;
+        }
         AddMenuTitleRequest request = parseRequestBody(exchange, AddMenuTitleRequest.class);
         if (request == null || request.getTitle() == null || request.getTitle().trim().isEmpty()) {
             sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "Invalid input: 'title' is required."));
@@ -114,6 +119,10 @@ public class MenuHandler extends AbstractHttpHandler {
             sendResponse(exchange, HttpURLConnection.HTTP_FORBIDDEN, new ApiResponse(false, "Forbidden request: Not the owner of this restaurant."));
             return;
         }
+        if (!(authenticatedUser instanceof Seller) || !((Seller) authenticatedUser).isApproved()) {
+            sendResponse(exchange, HttpURLConnection.HTTP_FORBIDDEN, new ApiResponse(false, "Forbidden request: Seller is not yet approved to manage menus."));
+            return;
+        }
         menuManager.deleteMenuTitle(restaurantId, menuTitle, String.valueOf(authenticatedUser.getId()));
         sendResponse(exchange, HttpURLConnection.HTTP_OK, new ApiResponse(true, "Food menu removed from restaurant successfully"));
     }
@@ -122,6 +131,10 @@ public class MenuHandler extends AbstractHttpHandler {
         if (!checkHttpMethod(exchange, "PUT")) return;
         if (!restaurantManager.isOwner(restaurantId, String.valueOf(authenticatedUser.getId()))) {
             sendResponse(exchange, HttpURLConnection.HTTP_FORBIDDEN, new ApiResponse(false, "Forbidden request: Not the owner of this restaurant."));
+            return;
+        }
+        if (!(authenticatedUser instanceof Seller) || !((Seller) authenticatedUser).isApproved()) {
+            sendResponse(exchange, HttpURLConnection.HTTP_FORBIDDEN, new ApiResponse(false, "Forbidden request: Seller is not yet approved to manage menus."));
             return;
         }
         AddMenuItemRequest request = parseRequestBody(exchange, AddMenuItemRequest.class);
@@ -137,6 +150,10 @@ public class MenuHandler extends AbstractHttpHandler {
         if (!checkHttpMethod(exchange, "DELETE")) return;
         if (!restaurantManager.isOwner(restaurantId, String.valueOf(authenticatedUser.getId()))) {
             sendResponse(exchange, HttpURLConnection.HTTP_FORBIDDEN, new ApiResponse(false, "Forbidden request: Not the owner of this restaurant."));
+            return;
+        }
+        if (!(authenticatedUser instanceof Seller) || !((Seller) authenticatedUser).isApproved()) {
+            sendResponse(exchange, HttpURLConnection.HTTP_FORBIDDEN, new ApiResponse(false, "Forbidden request: Seller is not yet approved to manage menus."));
             return;
         }
         menuManager.deleteItemFromMenu(restaurantId, menuTitle, itemId, String.valueOf(authenticatedUser.getId()));

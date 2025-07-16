@@ -3,6 +3,7 @@
 <?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
@@ -47,6 +48,9 @@
             </columnConstraints>
             <rowConstraints>
                <RowConstraints maxHeight="55.505236053466795" minHeight="10.0" prefHeight="40.34734573364258" vgrow="SOMETIMES" />
+               <RowConstraints maxHeight="50.45265426635742" minHeight="10.0" prefHeight="50.45265426635742" vgrow="SOMETIMES" />
+               <RowConstraints maxHeight="50.45265426635742" minHeight="10.0" prefHeight="50.45265426635742" vgrow="SOMETIMES" />
+               <RowConstraints maxHeight="50.45265426635742" minHeight="10.0" prefHeight="50.45265426635742" vgrow="SOMETIMES" />
                <RowConstraints maxHeight="50.45265426635742" minHeight="10.0" prefHeight="50.45265426635742" vgrow="SOMETIMES" />
                <RowConstraints maxHeight="50.45265426635742" minHeight="10.0" prefHeight="50.45265426635742" vgrow="SOMETIMES" />
                <RowConstraints maxHeight="50.45265426635742" minHeight="10.0" prefHeight="50.45265426635742" vgrow="SOMETIMES" />
@@ -130,18 +134,24 @@
                      </Hyperlink>
                   </graphic>
                </Label>
+               <Button fx:id="enterButton" mnemonicParsing="false" onAction="#handleEnterButton" prefHeight="0.0" prefWidth="132.0" styleClass="my-button" text="ورود" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="4">
+                  <font>
+                     <Font name="Dubai Regular" size="14.0" />
+                  </font>
+                  <GridPane.margin>
+                     <Insets />
+                  </GridPane.margin>
+               </Button>
+               <ImageView fitHeight="100.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="5">
+                  <image>
+                     <Image url="@../images/ShoomalFoodMahi-removebg.png" />
+                  </image>
+                  <GridPane.margin>
+                     <Insets top="100.0" />
+                  </GridPane.margin>
+               </ImageView>
             </children>
          </GridPane>
       </center>
-      <bottom>
-         <Button fx:id="enterButton" mnemonicParsing="false" onAction="#handleEnterButton" prefHeight="0.0" prefWidth="132.0" styleClass="my-button" text="ورود" BorderPane.alignment="CENTER">
-            <font>
-               <Font name="Dubai Regular" size="14.0" />
-            </font>
-            <BorderPane.margin>
-               <Insets bottom="40.0" top="100.0" />
-            </BorderPane.margin>
-         </Button>
-      </bottom>
    </BorderPane>
 </VBox>

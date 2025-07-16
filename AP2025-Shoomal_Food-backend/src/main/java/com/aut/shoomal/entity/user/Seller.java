@@ -12,6 +12,8 @@ public class Seller extends User
     @OneToOne(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Restaurant restaurant;
 
+    private Boolean approved = false;
+
     public Seller() {}
     public Seller(String name, String phoneNumber, String password, String email, Role role)
     {
@@ -36,5 +38,12 @@ public class Seller extends User
     public void setRestaurant(Restaurant restaurant)
     {
         this.restaurant = restaurant;
+    }
+
+    public boolean isApproved() {
+        return approved;
+    }
+    public void setApproved(boolean approved) {
+        this.approved = approved;
     }
 }

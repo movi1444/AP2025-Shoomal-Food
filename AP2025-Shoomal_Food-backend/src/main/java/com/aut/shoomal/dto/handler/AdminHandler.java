@@ -127,8 +127,8 @@ public class AdminHandler extends AbstractHttpHandler {
                     yield "Courier status updated";
                 }
                 case "seller" -> {
-                    restaurantManager.setApprovalStatus(userId.get().toString(), request.getStatus());
-                    yield "Seller and restaurant status updated";
+                    userManager.setUserApprovalStatus(userId.get().toString(), request.getStatus());
+                    yield "Seller status updated";
                 }
                 default -> throw new InvalidInputException("Only sellers/couriers can be approved");
             };
@@ -253,7 +253,7 @@ public class AdminHandler extends AbstractHttpHandler {
                 Math.toIntExact(order.getRestaurant().getId()),
                 (order.getCourier() != null) ? Math.toIntExact(order.getCourier().getId()) : null,
                 (order.getCoupon() != null) ? order.getCoupon().getId() : null,
-                order.getOrderItems().stream().map(item -> Math.toIntExact(item.getFood().getId())).toList(),
+                order.getOrderItems().stream().map(item -> item.getFood().getId().intValue()).toList(),
                 order.getRawPrice(),
                 order.getAdditionalFee(),
                 order.getTaxFee(),
