@@ -1,12 +1,11 @@
 package com.aut.shoomal.controllers;
 
+import com.aut.shoomal.service.RestaurantService;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.StackPane;
-import javafx.scene.control.Button;
 import javafx.event.ActionEvent;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -26,7 +25,6 @@ import javafx.scene.control.Alert.AlertType;
 import java.io.IOException;
 import javafx.scene.Cursor;
 import javafx.scene.shape.Circle;
-import javafx.scene.control.Tooltip;
 import com.aut.shoomal.dto.response.ApiResponse;
 
 public class MainController extends AbstractBaseController {
@@ -41,11 +39,23 @@ public class MainController extends AbstractBaseController {
     @FXML private VBox defaultView;
     @FXML private ImageView profilePictureImageView;
 
+    //Seller
+    @FXML private VBox sellerLinksContainer;
+    @FXML private Button createRestaurantButton;
+    @FXML private Button showRestaurantButton;
+    @FXML private Button manageMenusButton;
+    @FXML private Button manageFoodsButton;
+    @FXML private Button manageOrdersButton;
+    private RestaurantService restaurantService;
+
     private UserResponse currentUser;
+    private String token;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         super.initialize(url, resourceBundle);
+        restaurantService = new RestaurantService();
+        token = PreferencesManager.getJwtToken();
         hideAllDashboards();
         if (defaultView != null) {
             defaultView.setVisible(true);
@@ -124,6 +134,11 @@ public class MainController extends AbstractBaseController {
                 break;
             case "seller":
                 targetPane = sellerDashboardScrollPane;
+                if (sellerLinksContainer != null)
+                {
+                    sellerLinksContainer.setVisible(true);
+                    sellerLinksContainer.setManaged(true);
+                }
                 break;
             case "courier":
                 targetPane = courierDashboardScrollPane;
@@ -160,5 +175,30 @@ public class MainController extends AbstractBaseController {
                     controller.setLoggedInUser();
                 }
         );
+    }
+
+    public void handleCreateRestaurant(ActionEvent actionEvent)
+    {
+
+    }
+
+    public void handleShowRestaurant(ActionEvent actionEvent)
+    {
+
+    }
+
+    public void handleManageMenus(ActionEvent actionEvent)
+    {
+
+    }
+
+    public void handleManageFoods(ActionEvent actionEvent)
+    {
+
+    }
+
+    public void handleManageOrders(ActionEvent actionEvent)
+    {
+
     }
 }
