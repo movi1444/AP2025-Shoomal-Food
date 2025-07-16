@@ -74,7 +74,7 @@ public class RestaurantDaoImpl extends GenericDaoImpl<Restaurant> implements Res
     public List<Restaurant> searchByName(String partialName) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Query<Restaurant> query = session.createQuery(
-                    "FROM Restaurant WHERE lower(name) LIKE :name AND approved = true", Restaurant.class);
+                    "FROM Restaurant WHERE lower(name) LIKE :name", Restaurant.class);
             query.setParameter("name", "%" + partialName.toLowerCase() + "%");
             return query.getResultList();
         } catch (Exception e) {
@@ -90,40 +90,6 @@ public class RestaurantDaoImpl extends GenericDaoImpl<Restaurant> implements Res
             return query.getResultList();
         } catch (Exception e) {
             throw new RuntimeException("Error finding restaurants by owner: " + owner.getId(), e);
-        }
-    }
-
-    @Override
-    public List<Restaurant> findAllApproved() {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Query<Restaurant> query = session.createQuery("FROM Restaurant WHERE approved = true", Restaurant.class);
-            return query.list();
-        } catch (Exception e) {
-            System.err.println("Error finding approved restaurants.");
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    @Override
-    public void updateApprovalStatus(Long restaurantId, boolean approved) {
-        Transaction transaction = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            transaction = session.beginTransaction();
-
-            Restaurant restaurant = session.get(Restaurant.class, restaurantId);
-            if (restaurant == null) {
-                throw new RuntimeException("Restaurant not found with ID: " + restaurantId);
-            }
-
-            restaurant.setApproved(approved);
-
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            throw new RuntimeException("Error updating approval status for restaurant with ID: " + restaurantId, e);
         }
     }
 }
