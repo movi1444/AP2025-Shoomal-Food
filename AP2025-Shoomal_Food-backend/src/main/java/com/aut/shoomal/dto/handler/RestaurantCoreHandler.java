@@ -115,7 +115,7 @@ public class RestaurantCoreHandler extends AbstractHttpHandler {
         List<RestaurantResponse> responseList = myRestaurants.stream()
                 .map(this::convertToRestaurantResponse)
                 .collect(Collectors.toList());
-        sendResponse(exchange, HttpURLConnection.HTTP_OK, new ApiResponse(true, "Successfully retrieved seller's restaurants", responseList));
+        sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, responseList);
     }
 
     private void handleUpdateRestaurant(HttpExchange exchange, User authenticatedUser, Integer restaurantId) throws IOException {
