@@ -84,7 +84,7 @@ public class WalletManager
                 throw new InvalidInputException("Order has a non-positive pay price.");
 
             PaymentTransaction paymentTransaction = this.withdrawWallet(session, userId, BigDecimal.valueOf(order.getPayPrice()));
-            order.setOrderStatus(OrderStatus.WAITING_VENDOR);
+            order.setOrderStatus(OrderStatus.SUBMITTED);
             order.addTransaction(paymentTransaction);
             orderManager.updateOrder(order, session);
         } catch (InvalidInputException | NotFoundException e) {
