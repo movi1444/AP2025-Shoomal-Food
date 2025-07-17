@@ -7,7 +7,6 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.control.Button?>
 
 <VBox stylesheets="@/com/aut/shoomal/styles/AdminDashboardStyles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.aut.shoomal.controllers.AdminDashboardContentController">
     <MenuBar nodeOrientation="RIGHT_TO_LEFT" styleClass="admin-menu-bar">
@@ -43,12 +42,12 @@
         <HBox alignment="TOP_CENTER" spacing="20" HBox.hgrow="ALWAYS">
             <VBox fx:id="userChartPane" styleClass="dashboard-card" HBox.hgrow="ALWAYS">
                 <padding>
-                    <Insets top="10" right="10" bottom="10" left="10"/>
+                    <Insets bottom="10" left="10" right="10" top="10" />
                 </padding>
             </VBox>
             <VBox fx:id="orderChartPane" styleClass="dashboard-card" HBox.hgrow="ALWAYS">
                 <padding>
-                    <Insets top="10" right="10" bottom="10" left="10"/>
+                    <Insets bottom="10" left="10" right="10" top="10" />
                 </padding>
             </VBox>
         </HBox>
@@ -56,10 +55,12 @@
         <HBox alignment="TOP_CENTER" spacing="20" HBox.hgrow="ALWAYS">
             <VBox fx:id="transactionChartPane" styleClass="dashboard-card" HBox.hgrow="ALWAYS">
                 <padding>
-                    <Insets top="10" right="10" bottom="10" left="10"/>
+                    <Insets bottom="10" left="10" right="10" top="10" />
                 </padding>
             </VBox>
+         <VBox.margin>
+            <Insets left="250.0" right="250.0" />
+         </VBox.margin>
         </HBox>
-        
     </VBox>
 </VBox>
