@@ -54,7 +54,7 @@ public class UserProfileController extends AbstractBaseController {
         }
 
         if (profileImageView != null) {
-            final double imageSize = 250.0;
+            final double imageSize = 300.0;
             profileImageView.setFitWidth(imageSize);
             profileImageView.setFitHeight(imageSize);
             profileImageView.setPreserveRatio(true);

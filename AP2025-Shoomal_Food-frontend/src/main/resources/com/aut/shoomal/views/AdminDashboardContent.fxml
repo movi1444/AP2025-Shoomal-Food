@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Label?>
+
+<VBox fx:controller="com.aut.shoomal.controllers.AdminDashboardContentController"
+      xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21">
+    <MenuBar nodeOrientation="RIGHT_TO_LEFT">
+        <menus>
+            <Menu text="کاربران">
+                <items>
+                    <MenuItem text="مشاهده همه کاربران" onAction="#handleViewAllUsers"/>
+                    <MenuItem text="مدیریت وضعیت کاربران" onAction="#handleManageUserStatus"/>
+                </items>
+            </Menu>
+            <Menu text="سفارشات">
+                <items>
+                    <MenuItem text="مشاهده همه سفارشات" onAction="#handleViewAllOrders"/>
+                </items>
+            </Menu>
+            <Menu text="مدیریت مالی">
+                <items>
+                    <MenuItem text="مشاهده همه تراکنش ها" onAction="#handleViewTransactions"/>
+                </items>
+            </Menu>
+            <Menu text="کوپن ها">
+                <items>
+                    <MenuItem text="لیست همه کوپن ها" onAction="#handleListAllCoupons"/>
+                    <MenuItem text="ایجاد کوپن" onAction="#handleCreateNewCoupon"/>
+                    <MenuItem text="مدیریت کوپن ها" onAction="#handleManageCoupons"/>
+                </items>
+            </Menu>
+        </menus>
+    </MenuBar>
+    <VBox alignment="CENTER" spacing="20" style="-fx-padding: 20;">
+        <Label text="داشبورد ادمین" styleClass="my-headlabel1"/>
+    </VBox>
+</VBox>

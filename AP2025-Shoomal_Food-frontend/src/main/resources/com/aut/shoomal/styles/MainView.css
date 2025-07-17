@@ -13,6 +13,17 @@
     src: url("/com/aut/shoomal/fonts/Sahel.ttf");
 }
 
+@font-face {
+    font-family: 'IranSans';
+    src: url("/com/aut/shoomal/fonts/irsans.ttf");
+}
+
+@font-face {
+    font-family: 'titr';
+    src: url("/com/aut/shoomal/fonts/titr.ttf");
+}
+
+
 .root {
     -fx-background-color: #2C3E50;
     -fx-font-family: "Vazirmatn";
@@ -38,6 +49,14 @@
     -fx-font-family: "VazirmatnB";
     -fx-font-size: 30px;
     -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 5px;
+}
+
+.my-headlabel1 {
+    -fx-font-family: "titr";
+    -fx-font-size: 30px;
+    -fx-text-fill: #2c3e50;
     -fx-font-weight: bold;
     -fx-padding: 5px;
 }
@@ -90,11 +109,11 @@
 
 .content-area {
     -fx-background-color: transparent;
-    -fx-padding: 30px 10px -13px 10px;
+    -fx-padding: 50px 30px -10px 30px;
 }
 
 .dashboard-scroll-pane {
-    -fx-background-color: transparent;
+    -fx-background-color: #f6f1f1;
     -fx-padding: 15px;
     -fx-background-radius: 8px;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.03), 8, 0, 0, 3);
@@ -109,7 +128,7 @@
 }
 
 .dashboard-card {
-    -fx-background-color: #ffffff;
+    -fx-background-color: #dfdfdf;
     -fx-padding: 20px;
     -fx-margin: 15px;
     -fx-background-radius: 8px;
@@ -167,6 +186,16 @@
     -fx-border-radius: 50%;
     -fx-background-radius: 50%;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10, 0, 0, 5);
+}
+
+.profile-info-grid {
+    -fx-background-color: #283647;
+    -fx-spacing: 15px;
+    -fx-background-radius: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 5);
+    -fx-border-color: #445070;
+    -fx-border-width: 1px;
+    -fx-border-radius: 10px;
 }
 
 .profile-info-label {
@@ -295,4 +324,86 @@
 .seller-menu-bar .menu-item:disabled {
     -fx-opacity: 0.6;
     -fx-text-fill: #cccccc;
+  
+.scroll-bar:horizontal, .scroll-bar:vertical {
+    -fx-background-color: transparent;
+    -fx-padding: 2px;
+}
+
+.scroll-bar:horizontal .track,
+.scroll-bar:vertical .track {
+    -fx-background-color: #c5c5c5;
+    -fx-background-radius: 5px;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+}
+
+.scroll-bar:horizontal .thumb,
+.scroll-bar:vertical .thumb {
+    -fx-background-color: #837e7e;
+    -fx-background-insets: 0;
+    -fx-background-radius: 5px;
+}
+
+.scroll-bar:horizontal .thumb:hover,
+.scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #6a6666;
+}
+
+.scroll-bar:horizontal .increment-button,
+.scroll-bar:vertical .increment-button,
+.scroll-bar:horizontal .decrement-button,
+.scroll-bar:vertical .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.scroll-bar:horizontal .increment-arrow,
+.scroll-bar:vertical .increment-arrow,
+.scroll-bar:horizontal .decrement-arrow,
+.scroll-bar:vertical .decrement-arrow {
+    -fx-shape: " ";
+    -fx-padding: 0;
+}
+
+.scroll-bar:vertical {
+    -fx-pref-width: 15px;
+}
+
+.scroll-bar:horizontal {
+    -fx-pref-height: 10px;
+}
+
+.menu-bar {
+    -fx-background-color: #445070;
+}
+
+.menu-bar .menu .label {
+    -fx-text-fill: #f4f4f4;
+    -fx-font-family: "Vazirmatn";
+    -fx-font-size: 14px;
+    -fx-padding: 8px 15px;
+}
+
+.context-menu {
+    -fx-background-color: #34495e;
+}
+
+.menu:showing {
+    -fx-background-color: #1abc9c;
+}
+.menu:showing .label {
+    -fx-text-fill: white;
+}
+
+.menu-item .label {
+    -fx-text-fill: #ecf0f1;
+    -fx-font-family: "Vazirmatn";
+    -fx-font-size: 14px;
+    -fx-padding: 8px 15px;
+}
+
+.menu-item:showing {
+    -fx-background-color: #1abc9c;
+    -fx-text-fill: white;
 }
