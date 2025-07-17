@@ -8,11 +8,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.net.UnknownHostException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public abstract class AbstractService
@@ -95,6 +98,36 @@ public abstract class AbstractService
                     handleCompletableFutureException(e);
                     return null;
                 });
+    }
+
+    protected String buildQueryString(Map<String, String> params)
+    {
+        if (params == null || params.isEmpty())
+            return "";
+
+        StringBuilder queryString = new StringBuilder();
+        boolean firstParam = true;
+
+        for (Map.Entry<String, String> entry : params.entrySet())
+        {
+            String paramName = entry.getKey();
+            String paramValue = entry.getValue();
+
+            if (paramName != null && !paramName.isEmpty() && paramValue != null && !paramValue.isEmpty())
+            {
+                if (firstParam)
+                {
+                    queryString.append("?");
+                    firstParam = false;
+                }
+                else
+                    queryString.append("&");
+                queryString.append(URLEncoder.encode(paramName, StandardCharsets.UTF_8))
+                        .append("=")
+                        .append(URLEncoder.encode(paramValue, StandardCharsets.UTF_8));
+            }
+        }
+        return queryString.toString();
     }
 
     private void handleHttpErrorResponse(int code, String responseBody) throws FrontendServiceException

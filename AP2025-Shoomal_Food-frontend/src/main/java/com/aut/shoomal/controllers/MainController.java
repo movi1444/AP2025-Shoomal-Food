@@ -32,12 +32,7 @@ public class MainController extends AbstractBaseController {
     @FXML private VBox defaultView;
     @FXML private ImageView profilePictureImageView;
 
-    @FXML private VBox sellerLinksContainer;
-    @FXML private Button createRestaurantButton;
-    @FXML private Button showRestaurantButton;
-    @FXML private Button manageMenusButton;
-    @FXML private Button manageFoodsButton;
-    @FXML private Button manageOrdersButton;
+    @FXML private MenuBar sellerMenuBar;
     private RestaurantService restaurantService;
 
     private UserResponse currentUser;
@@ -126,10 +121,10 @@ public class MainController extends AbstractBaseController {
                 break;
             case "seller":
                 targetPane = sellerDashboardScrollPane;
-                if (sellerLinksContainer != null)
+                if (sellerMenuBar != null)
                 {
-                    sellerLinksContainer.setVisible(true);
-                    sellerLinksContainer.setManaged(true);
+                    sellerMenuBar.setVisible(true);
+                    sellerMenuBar.setManaged(true);
                 }
                 break;
             case "courier":
@@ -172,9 +167,7 @@ public class MainController extends AbstractBaseController {
                 "/com/aut/shoomal/views/UserProfileView.fxml",
                 "/com/aut/shoomal/styles/MainView.css",
                 TransitionType.SLIDE_RIGHT,
-                (UserProfileController controller) -> {
-                    controller.setLoggedInUser();
-                }
+                UserProfileController::setLoggedInUser
         );
     }
 
@@ -188,12 +181,27 @@ public class MainController extends AbstractBaseController {
 
     }
 
-    public void handleManageMenus(ActionEvent actionEvent)
+    public void handleAddFoodToRestaurant(ActionEvent actionEvent)
     {
 
     }
 
-    public void handleManageFoods(ActionEvent actionEvent)
+    public void handleEditFood(ActionEvent actionEvent)
+    {
+
+    }
+
+    public void handleDeleteFoodFromRestaurant(ActionEvent actionEvent)
+    {
+
+    }
+
+    public void handleCreateMenu(ActionEvent actionEvent)
+    {
+
+    }
+
+    public void handleShowMenus(ActionEvent actionEvent)
     {
 
     }
