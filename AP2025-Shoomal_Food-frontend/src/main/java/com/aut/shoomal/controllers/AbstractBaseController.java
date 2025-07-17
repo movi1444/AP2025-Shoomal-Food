@@ -5,23 +5,21 @@ import com.aut.shoomal.utils.PreferencesManager;
 import javafx.animation.TranslateTransition;
 import javafx.animation.ParallelTransition;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.geometry.NodeOrientation;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import javafx.util.Duration;
 
 import java.io.ByteArrayInputStream;
@@ -183,6 +181,76 @@ public abstract class AbstractBaseController implements Initializable {
         }
     }
 
+    protected void navigateTo(MenuItem menuItem, String fxmlPath, String stylesheetPath, TransitionType transitionType)
+    {
+        Stage stage = null;
+        Node currentRoot = null;
+
+        Menu parentMenu = menuItem.getParentMenu();
+        if (parentMenu != null)
+        {
+            MenuBar menuBar = findMenuBar(parentMenu);
+            if (menuBar != null)
+            {
+                stage = (Stage) menuBar.getScene().getWindow();
+                currentRoot = stage.getScene().getRoot();
+            }
+            else if (parentMenu.getParentPopup() != null)
+            {
+                ContextMenu contextMenu = parentMenu.getParentPopup();
+                if (contextMenu.getOwnerWindow() instanceof Stage)
+                {
+                    stage = (Stage) contextMenu.getOwnerWindow();
+                    currentRoot = stage.getScene().getRoot();
+                }
+            }
+        }
+
+        if (stage == null || currentRoot == null)
+        {
+            System.err.println("Could not reliably determine Stage from MenuItem hierarchy. Attempting fallback to any active window.");
+            if (!Stage.getWindows().isEmpty())
+                for (Window window : Stage.getWindows())
+                    if (window instanceof Stage && window.isShowing())
+                    {
+                        stage = (Stage) window;
+                        currentRoot = stage.getScene().getRoot();
+                        break;
+                    }
+        }
+
+        if (stage == null || currentRoot == null)
+        {
+            System.err.println("Navigation Error: Could not determine current Stage or Root Node for navigation from MenuItem.");
+            showAlert("Navigation Error", "Could not determine current window for navigation.", Alert.AlertType.ERROR, null);
+            return;
+        }
+
+        // Delegate to existing navigateTo(Node, String, String, TransitionType) method
+        navigateTo(currentRoot, fxmlPath, stylesheetPath, transitionType);
+    }
+
+    private MenuBar findMenuBar(MenuItem menuItem)
+    {
+        Menu parentMenu = menuItem.getParentMenu();
+        while (parentMenu != null)
+            parentMenu = parentMenu.getParentMenu();
+
+        if (menuItem.getParentPopup() != null)
+        {
+            ContextMenu contextMenu = menuItem.getParentPopup();
+            if (contextMenu.getOwnerNode() != null)
+            {
+                Node ownerNode = contextMenu.getOwnerNode();
+                if (ownerNode.getScene() != null)
+                    for (Node node : ownerNode.getScene().getRoot().lookupAll(".menu-bar"))
+                        if (node instanceof MenuBar)
+                            return (MenuBar) node;
+            }
+        }
+        return null;
+    }
+
     protected void navigateToSignInView(Node currentNode, TransitionType transitionType) {
         navigateTo(currentNode, "/com/aut/shoomal/views/SignInView.fxml", "/com/aut/shoomal/styles/SignInUpStyles.css", transitionType);
     }
@@ -197,9 +265,7 @@ public abstract class AbstractBaseController implements Initializable {
                 "/com/aut/shoomal/views/UserProfileView.fxml",
                 "/com/aut/shoomal/styles/MainView.css",
                 TransitionType.SLIDE_LEFT,
-                (UserProfileController controller) -> {
-                    controller.setLoggedInUser();
-                }
+                UserProfileController::setLoggedInUser
         );
     }
 
