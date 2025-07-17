@@ -178,7 +178,12 @@ public class MainController extends AbstractBaseController {
 
     public void handleShowRestaurant(ActionEvent actionEvent)
     {
-
+        navigateTo(
+                (MenuItem) actionEvent.getSource(),
+                "/com/aut/shoomal/views/ShowRestaurantView.fxml",
+                "/com/aut/shoomal/styles/MainView.css",
+                TransitionType.SLIDE_LEFT
+        );
     }
 
     public void handleAddFoodToRestaurant(ActionEvent actionEvent)
