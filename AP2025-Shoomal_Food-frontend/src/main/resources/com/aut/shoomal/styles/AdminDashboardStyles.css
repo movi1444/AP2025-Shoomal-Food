@@ -1,0 +1,105 @@
+.admin-menu-bar {
+    -fx-background-color: #445070;
+}
+
+.admin-menu-bar .menu-button .label {
+    -fx-text-fill: white !important;
+    -fx-font-family: "Vazirmatn" !important;
+    -fx-font-size: 18px !important;
+    -fx-padding: 8px 15px !important;
+}
+
+.admin-menu-bar .menu-button:showing {
+    -fx-background-color: #1abc9c;
+}
+.admin-menu-bar .menu-button:showing .label {
+    -fx-text-fill: white !important;
+}
+
+.admin-menu-bar .context-menu {
+    -fx-background-color: #34495e;
+    -fx-background-radius: 5px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 0);
+    -fx-padding: 5px 0;
+}
+
+.admin-menu-bar .context-menu .menu-item .label {
+    -fx-text-fill: white !important;
+    -fx-font-family: "Vazirmatn" !important;
+    -fx-font-size: 16px !important;
+    -fx-padding: 8px 15px !important;
+}
+
+.admin-menu-bar .context-menu .menu-item:hover,
+.admin-menu-bar .context-menu .menu-item:focused {
+    -fx-background-color: #1abc9c !important;
+}
+
+.admin-menu-bar .context-menu .menu-item:hover .label,
+.admin-menu-bar .context-menu .menu-item:focused .label {
+    -fx-text-fill: white !important;
+}
+
+@font-face {
+    font-family: 'Vazirmatn';
+    src: url("/com/aut/shoomal/fonts/Vazirmatn-Black.ttf");
+}
+
+@font-face {
+    font-family: 'VazirmatnB';
+    src: url("/com/aut/shoomal/fonts/Vazirmatn-Bold.ttf");
+}
+
+@font-face {
+    font-family: 'Beach';
+    src: url("/com/aut/shoomal/fonts/Sahel.ttf");
+}
+
+@font-face {
+    font-family: 'IranSans';
+    src: url("/com/aut/shoomal/fonts/irsans.ttf");
+}
+
+@font-face {
+    font-family: 'titr';
+    src: url("/com/aut/shoomal/fonts/titr.ttf");
+}
+
+/* New styles for charts */
+.chart-style {
+    -fx-background-color: #dfdfdf;
+    -fx-padding: 10px;
+    -fx-background-radius: 8px;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 5);
+}
+
+.chart-title {
+    -fx-font-family: "VazirmatnB";
+    -fx-font-size: 18px;
+    -fx-text-fill: #2c3e50;
+}
+
+.axis-label {
+    -fx-font-family: "Vazirmatn";
+    -fx-font-size: 14px;
+    -fx-text-fill: #555555;
+}
+
+.chart-bar {
+    -fx-bar-fill: #1abc9c;
+}
+
+.chart-pie {
+    -fx-pie-label-visible: true;
+    -fx-pie-label-font-family: "Vazirmatn";
+    -fx-pie-label-font-size: 12px;
+    -fx-pie-label-fill: #2c3e50;
+}
+
+.chart-pie-label {
+    -fx-font-family: "Vazirmatn";
+    -fx-text-fill: #2c3e50;
+}

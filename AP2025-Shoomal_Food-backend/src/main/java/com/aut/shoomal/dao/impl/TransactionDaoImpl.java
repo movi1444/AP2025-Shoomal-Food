@@ -14,6 +14,7 @@ import jakarta.persistence.criteria.Root;
 import jakarta.persistence.criteria.JoinType;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class TransactionDaoImpl extends GenericDaoImpl<PaymentTransaction> implements TransactionDao
@@ -28,7 +29,7 @@ public class TransactionDaoImpl extends GenericDaoImpl<PaymentTransaction> imple
         } catch (Exception e) {
             System.err.println("Error finding payment transaction by user id: " + e.getMessage());
             e.printStackTrace();
-            return null;
+            return Collections.emptyList();
         }
     }
 
@@ -53,7 +54,7 @@ public class TransactionDaoImpl extends GenericDaoImpl<PaymentTransaction> imple
         } catch (Exception e) {
             System.err.println("Error listing all payment transactions: " + e.getMessage());
             e.printStackTrace();
-            return null;
+            return Collections.emptyList();
         }
     }
 
@@ -92,7 +93,7 @@ public class TransactionDaoImpl extends GenericDaoImpl<PaymentTransaction> imple
         } catch (Exception e) {
             System.err.println("Error finding all transactions with filters: " + e.getMessage());
             e.printStackTrace();
-            return null;
+            return Collections.emptyList();
         }
     }
 }

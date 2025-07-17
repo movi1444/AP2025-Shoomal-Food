@@ -56,7 +56,7 @@
 .my-headlabel1 {
     -fx-font-family: "titr";
     -fx-font-size: 30px;
-    -fx-text-fill: #2c3e50;
+    -fx-text-fill: #445070;
     -fx-font-weight: bold;
     -fx-padding: 5px;
 }
@@ -324,7 +324,8 @@
 .seller-menu-bar .menu-item:disabled {
     -fx-opacity: 0.6;
     -fx-text-fill: #cccccc;
-  
+}
+
 .scroll-bar:horizontal, .scroll-bar:vertical {
     -fx-background-color: transparent;
     -fx-padding: 2px;
@@ -372,38 +373,4 @@
 
 .scroll-bar:horizontal {
     -fx-pref-height: 10px;
-}
-
-.menu-bar {
-    -fx-background-color: #445070;
-}
-
-.menu-bar .menu .label {
-    -fx-text-fill: #f4f4f4;
-    -fx-font-family: "Vazirmatn";
-    -fx-font-size: 14px;
-    -fx-padding: 8px 15px;
-}
-
-.context-menu {
-    -fx-background-color: #34495e;
-}
-
-.menu:showing {
-    -fx-background-color: #1abc9c;
-}
-.menu:showing .label {
-    -fx-text-fill: white;
-}
-
-.menu-item .label {
-    -fx-text-fill: #ecf0f1;
-    -fx-font-family: "Vazirmatn";
-    -fx-font-size: 14px;
-    -fx-padding: 8px 15px;
-}
-
-.menu-item:showing {
-    -fx-background-color: #1abc9c;
-    -fx-text-fill: white;
 }
