@@ -57,12 +57,15 @@
                     <children>
                         <ImageView fx:id="profileImageView" fitHeight="100" fitWidth="100" GridPane.halignment="CENTER">
                             <GridPane.margin>
-                                <Insets top="100.0" />
+                                <Insets top="50.0" />
                             </GridPane.margin>
                         </ImageView>
                     </children>
+               <VBox.margin>
+                  <Insets top="50.0" />
+               </VBox.margin>
                 </GridPane>
-                <Region prefHeight="150.0" prefWidth="674.0" />
+                <Region prefHeight="85.0" prefWidth="674.0" />
                 <GridPane prefHeight="270.0" prefWidth="674.0" styleClass="profile-info-grid">
                     <VBox.margin>
                         <Insets bottom="50.0" left="75.0" right="75.0" top="50.0" />
