@@ -11,21 +11,14 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import com.aut.shoomal.dto.response.UserResponse;
 import com.aut.shoomal.utils.PreferencesManager;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import java.io.ByteArrayInputStream;
-import java.util.Base64;
-import java.util.Objects;
 import javafx.scene.input.MouseEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
 import javafx.scene.control.Alert.AlertType;
 import java.io.IOException;
 import javafx.scene.Cursor;
 import javafx.scene.shape.Circle;
-import com.aut.shoomal.dto.response.ApiResponse;
 
 public class MainController extends AbstractBaseController {
 
@@ -39,7 +32,6 @@ public class MainController extends AbstractBaseController {
     @FXML private VBox defaultView;
     @FXML private ImageView profilePictureImageView;
 
-    //Seller
     @FXML private VBox sellerLinksContainer;
     @FXML private Button createRestaurantButton;
     @FXML private Button showRestaurantButton;
@@ -63,7 +55,7 @@ public class MainController extends AbstractBaseController {
         }
 
         if (profilePictureImageView != null) {
-            final double imageSize = 100.0;
+            final double imageSize = 110.0;
             profilePictureImageView.setFitWidth(imageSize);
             profilePictureImageView.setFitHeight(imageSize);
             profilePictureImageView.setPreserveRatio(true);
@@ -145,6 +137,15 @@ public class MainController extends AbstractBaseController {
                 break;
             case "admin":
                 targetPane = adminDashboardScrollPane;
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/aut/shoomal/views/AdminDashboardContent.fxml"));
+                    Parent adminContentRoot = loader.load();
+                    adminDashboardScrollPane.setContent(adminContentRoot);
+                } catch (IOException e) {
+                    System.err.println("Failed to load AdminDashboardContent.fxml: " + e.getMessage());
+                    e.printStackTrace();
+                    showAlert("Error", "Failed to load admin dashboard content.", AlertType.ERROR, null);
+                }
                 break;
             default:
                 if (defaultView != null) {
