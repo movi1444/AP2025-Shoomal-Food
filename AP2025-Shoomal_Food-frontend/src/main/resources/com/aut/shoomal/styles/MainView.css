@@ -222,3 +222,77 @@
     -fx-border-color: transparent;
     -fx-focus-color: transparent;
 }
+
+/* General styling for the MenuBar */
+.seller-menu-bar {
+    -fx-background-color: #4CAF50;
+    -fx-font-family: "Vazirmatn";
+    -fx-font-size: 24px;
+    -fx-padding: 5px 10px;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 0);
+}
+
+/* Styling for the individual Menu items (top-level items) */
+.seller-menu-bar .menu-button {
+    -fx-padding: 15px 160px; /* Padding around each top-level menu item (top/bottom, left/right) */
+    -fx-text-fill: white;
+    -fx-background-color: transparent;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+/* Hover effect for top-level menu items */
+.seller-menu-bar .menu-button:hover {
+    -fx-background-color: #66BB6A; /* Lighter green on hover */
+    -fx-text-fill: white;
+}
+
+/* When a menu is showing its submenu */
+.seller-menu-bar .menu-button:showing {
+    -fx-background-color: #388E3C; /* Darker green when active/showing */
+    -fx-text-fill: white;
+}
+
+/* Styling for the ContextMenu (the dropdown part of the menu) */
+.seller-menu-bar .context-menu {
+    -fx-background-color: #D2B48C; /* Background color for the dropdown menu */
+    -fx-background-radius: 5px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 0);
+    -fx-padding: 5px 0; /* Padding inside the dropdown */
+}
+
+/* Styling for individual MenuItem within the dropdown */
+.seller-menu-bar .menu-item {
+    -fx-padding: 8px 20px; /* Padding for each item in the dropdown (top/bottom, left/right) */
+    -fx-text-fill: black;
+    -fx-font-size: 17px;
+}
+
+/* Hover effect for MenuItem in the dropdown */
+.seller-menu-bar .menu-item:hover {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+}
+
+/* When a MenuItem is pressed */
+.seller-menu-bar .menu-item:pressed {
+    -fx-background-color: #388E3C; /* Darker green when pressed */
+}
+
+/* Styling for the text within MenuItems */
+.seller-menu-bar .menu-item .label {
+    -fx-text-fill: inherit;
+}
+
+/* If you want to change the text color of the top-level Menu items when they are disabled */
+.seller-menu-bar .menu-button:disabled {
+    -fx-opacity: 0.6; /* Make it slightly transparent */
+    -fx-text-fill: #cccccc;
+}
+
+/* If you want to change the text color of the dropdown MenuItems when they are disabled */
+.seller-menu-bar .menu-item:disabled {
+    -fx-opacity: 0.6;
+    -fx-text-fill: #cccccc;
+}
