@@ -119,19 +119,11 @@ public class CourierHandler extends AbstractHttpHandler {
         CourierDeliveryStatus courierStatus = requestBody.getStatus();
         OrderStatus newOrderStatus;
         try {
-            switch (courierStatus) {
-                case ACCEPTED:
-                    newOrderStatus = OrderStatus.ON_THE_WAY;
-                    break;
-                case RECEIVED:
-                    newOrderStatus = OrderStatus.ON_THE_WAY;
-                    break;
-                case DELIVERED:
-                    newOrderStatus = OrderStatus.COMPLETED;
-                    break;
-                default:
-                    throw new InvalidInputException("Invalid courier delivery status provided.");
-            }
+            newOrderStatus = switch (courierStatus) {
+                case ACCEPTED, RECEIVED -> OrderStatus.ON_THE_WAY;
+                case DELIVERED -> OrderStatus.COMPLETED;
+                default -> throw new InvalidInputException("Invalid courier delivery status provided.");
+            };
         } catch (IllegalArgumentException e) {
             sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid status value: " + courierStatus.getValue()));
             return;

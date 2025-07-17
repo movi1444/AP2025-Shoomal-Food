@@ -87,7 +87,7 @@ public class PaymentTransactionManager
 
             paymentTransaction.setStatus(PaymentTransactionStatus.COMPLETED);
             transactionDao.update(paymentTransaction, session);
-            order.setOrderStatus(OrderStatus.WAITING_VENDOR);
+            order.setOrderStatus(OrderStatus.SUBMITTED);
             order.addTransaction(paymentTransaction);
             orderManager.updateOrder(order, session);
             return externalGatewayRedirectUrl;

@@ -108,7 +108,7 @@ public class OrderManager
             order.setRestaurant(restaurant);
             order.setCustomer(customer);
             order.setDeliveryAddress(deliveryAddress);
-            order.setOrderStatus(OrderStatus.SUBMITTED);
+            order.setOrderStatus(OrderStatus.UNPAID_AND_CANCELLED);
 
             Coupon coupon;
             BigDecimal discountAmount = BigDecimal.ZERO;
