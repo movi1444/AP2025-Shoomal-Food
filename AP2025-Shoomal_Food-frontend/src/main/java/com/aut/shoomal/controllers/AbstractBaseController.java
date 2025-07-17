@@ -226,7 +226,6 @@ public abstract class AbstractBaseController implements Initializable {
             return;
         }
 
-        // Delegate to existing navigateTo(Node, String, String, TransitionType) method
         navigateTo(currentRoot, fxmlPath, stylesheetPath, transitionType);
     }
 

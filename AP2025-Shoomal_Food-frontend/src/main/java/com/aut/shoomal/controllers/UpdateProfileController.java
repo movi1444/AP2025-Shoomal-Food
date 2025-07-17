@@ -13,16 +13,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-import javafx.scene.Node;
+import javafx.scene.image.ImageView;
+import javafx.scene.shape.Circle;
+import java.lang.Math;
 
 import java.net.URL;
-import java.util.Objects;
 import java.util.ResourceBundle;
-import java.io.IOException;
 
 
 public class UpdateProfileController extends AbstractBaseController
@@ -40,9 +36,12 @@ public class UpdateProfileController extends AbstractBaseController
 
     @FXML private Button saveButton;
     @FXML private Button cancelButton;
+    @FXML private ImageView profileImageView;
+    @FXML private Button uploadImageButton;
 
     private String userType, token, firstPhoneNumber;
     private ProfileService profileService;
+    private String profileImageBase64String;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle)
@@ -58,6 +57,26 @@ public class UpdateProfileController extends AbstractBaseController
         addTextDirectionListener(brandNameField);
         addTextAreaDirectionListener(descriptionArea);
         loadUserProfile();
+
+        if (uploadImageButton != null) {
+            uploadImageButton.setOnAction(event -> handleUploadImageButton());
+        }
+
+        if (profileImageView != null) {
+            final double imageSize = 250.0;
+            profileImageView.setFitWidth(imageSize);
+            profileImageView.setFitHeight(imageSize);
+            profileImageView.setPreserveRatio(true);
+
+            Circle clip = new Circle(imageSize / 2, imageSize / 2, imageSize / 2);
+            profileImageView.setClip(clip);
+
+            profileImageView.layoutBoundsProperty().addListener((obs, oldBounds, newBounds) -> {
+                clip.setCenterX(newBounds.getWidth() / 2.0);
+                clip.setCenterY(newBounds.getHeight() / 2.0);
+                clip.setRadius(Math.min(newBounds.getWidth(), newBounds.getHeight()) / 2.0);
+            });
+        }
     }
 
     private void loadUserProfile()
@@ -84,6 +103,9 @@ public class UpdateProfileController extends AbstractBaseController
                             if (emailField != null) emailField.setText(userResponse.getEmail());
                             if (addressField != null) addressField.setText(userResponse.getAddress());
 
+                            super.setProfileImage(profileImageView, userResponse.getProfileImageBase64());
+                            this.profileImageBase64String = userResponse.getProfileImageBase64();
+
                             if (userResponse.getBank() != null)
                             {
                                 if (bankInfoSection != null) {
@@ -96,11 +118,11 @@ public class UpdateProfileController extends AbstractBaseController
                                     bankAccountField.setText(userResponse.getBank().getAccountNumber());
                             }
                             else
-                                if (bankInfoSection != null)
-                                {
-                                    bankNameField.setText("N/A");
-                                    bankAccountField.setText("N/A");
-                                }
+                            if (bankInfoSection != null)
+                            {
+                                bankNameField.setText("N/A");
+                                bankAccountField.setText("N/A");
+                            }
                         }
                     });
                 })
@@ -126,6 +148,7 @@ public class UpdateProfileController extends AbstractBaseController
         }
 
         UpdateProfileRequest request = getUpdateProfileRequest();
+        request.setProfileImageBase64(this.profileImageBase64String);
 
         profileService.updateProfile(request, token)
                 .thenAccept(apiResponse -> {
@@ -182,5 +205,10 @@ public class UpdateProfileController extends AbstractBaseController
     public void handleCancelChange(ActionEvent actionEvent)
     {
         navigateToUserProfileView(actionEvent.getSource());
+    }
+
+    @FXML
+    private void handleUploadImageButton() {
+        this.profileImageBase64String = super.handleImageUploadAndConvert(uploadImageButton, profileImageView);
     }
 }
