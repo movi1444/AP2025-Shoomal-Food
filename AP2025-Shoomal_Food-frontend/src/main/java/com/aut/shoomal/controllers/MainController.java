@@ -109,6 +109,10 @@ public class MainController extends AbstractBaseController {
             defaultView.setVisible(false);
             defaultView.setManaged(false);
         }
+        if (sellerMenuBar != null) {
+            sellerMenuBar.setVisible(false);
+            sellerMenuBar.setManaged(false);
+        }
     }
 
     private void displayDashboardForRole(String role) {
@@ -121,8 +125,7 @@ public class MainController extends AbstractBaseController {
                 break;
             case "seller":
                 targetPane = sellerDashboardScrollPane;
-                if (sellerMenuBar != null)
-                {
+                if (sellerMenuBar != null) {
                     sellerMenuBar.setVisible(true);
                     sellerMenuBar.setManaged(true);
                 }
@@ -171,8 +174,7 @@ public class MainController extends AbstractBaseController {
         );
     }
 
-    public void handleCreateRestaurant(ActionEvent actionEvent)
-    {
+    public void handleCreateRestaurant(ActionEvent actionEvent) {
 
     }
 
@@ -184,35 +186,30 @@ public class MainController extends AbstractBaseController {
                 "/com/aut/shoomal/styles/MainView.css",
                 TransitionType.SLIDE_LEFT
         );
-    }
-
-    public void handleAddFoodToRestaurant(ActionEvent actionEvent)
-    {
 
     }
 
-    public void handleEditFood(ActionEvent actionEvent)
-    {
+    public void handleAddFoodToRestaurant(ActionEvent actionEvent) {
 
     }
 
-    public void handleDeleteFoodFromRestaurant(ActionEvent actionEvent)
-    {
+    public void handleEditFood(ActionEvent actionEvent) {
 
     }
 
-    public void handleCreateMenu(ActionEvent actionEvent)
-    {
+    public void handleDeleteFoodFromRestaurant(ActionEvent actionEvent) {
 
     }
 
-    public void handleShowMenus(ActionEvent actionEvent)
-    {
+    public void handleCreateMenu(ActionEvent actionEvent) {
 
     }
 
-    public void handleManageOrders(ActionEvent actionEvent)
-    {
+    public void handleShowMenus(ActionEvent actionEvent) {
+
+    }
+
+    public void handleManageOrders(ActionEvent actionEvent) {
 
     }
 }

@@ -1,40 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.Label?>
 
-<VBox fx:controller="com.aut.shoomal.controllers.AdminDashboardContentController"
-      xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21">
-    <MenuBar nodeOrientation="RIGHT_TO_LEFT">
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Button?>
+
+<VBox stylesheets="@/com/aut/shoomal/styles/AdminDashboardStyles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.aut.shoomal.controllers.AdminDashboardContentController">
+    <MenuBar nodeOrientation="RIGHT_TO_LEFT" styleClass="admin-menu-bar">
         <menus>
-            <Menu text="کاربران">
+            <Menu styleClass="admin-menu" text="کاربران">
                 <items>
-                    <MenuItem text="مشاهده همه کاربران" onAction="#handleViewAllUsers"/>
-                    <MenuItem text="مدیریت وضعیت کاربران" onAction="#handleManageUserStatus"/>
+                    <MenuItem onAction="#handleViewAllUsers" styleClass="admin-menu-item" text="مشاهده همه کاربران" />
+                    <MenuItem onAction="#handleManageUserStatus" styleClass="admin-menu-item" text="مدیریت وضعیت کاربران" />
                 </items>
             </Menu>
-            <Menu text="سفارشات">
+            <Menu styleClass="admin-menu" text="سفارشات">
                 <items>
-                    <MenuItem text="مشاهده همه سفارشات" onAction="#handleViewAllOrders"/>
+                    <MenuItem onAction="#handleViewAllOrders" styleClass="admin-menu-item" text="مشاهده همه سفارشات" />
                 </items>
             </Menu>
-            <Menu text="مدیریت مالی">
+            <Menu styleClass="admin-menu" text="مدیریت مالی">
                 <items>
-                    <MenuItem text="مشاهده همه تراکنش ها" onAction="#handleViewTransactions"/>
+                    <MenuItem onAction="#handleViewTransactions" styleClass="admin-menu-item" text="مشاهده همه تراکنش ها" />
                 </items>
             </Menu>
-            <Menu text="کوپن ها">
+            <Menu styleClass="admin-menu" text="کوپن ها">
                 <items>
-                    <MenuItem text="لیست همه کوپن ها" onAction="#handleListAllCoupons"/>
-                    <MenuItem text="ایجاد کوپن" onAction="#handleCreateNewCoupon"/>
-                    <MenuItem text="مدیریت کوپن ها" onAction="#handleManageCoupons"/>
+                    <MenuItem onAction="#handleListAllCoupons" styleClass="admin-menu-item" text="لیست همه کوپن ها" />
+                    <MenuItem onAction="#handleCreateNewCoupon" styleClass="admin-menu-item" text="ایجاد کوپن" />
+                    <MenuItem onAction="#handleManageCoupons" styleClass="admin-menu-item" text="مدیریت کوپن ها" />
                 </items>
             </Menu>
         </menus>
     </MenuBar>
-    <VBox alignment="CENTER" spacing="20" style="-fx-padding: 20;">
-        <Label text="داشبورد ادمین" styleClass="my-headlabel1"/>
+    <VBox alignment="CENTER" spacing="20" style="-fx-padding: 20;" VBox.vgrow="ALWAYS">
+        <Label styleClass="my-headlabel1" text="داشبورد ادمین" />
+
+        <HBox alignment="TOP_CENTER" spacing="20" HBox.hgrow="ALWAYS">
+            <VBox fx:id="userChartPane" styleClass="dashboard-card" HBox.hgrow="ALWAYS">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10"/>
+                </padding>
+            </VBox>
+            <VBox fx:id="orderChartPane" styleClass="dashboard-card" HBox.hgrow="ALWAYS">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10"/>
+                </padding>
+            </VBox>
+        </HBox>
+
+        <HBox alignment="TOP_CENTER" spacing="20" HBox.hgrow="ALWAYS">
+            <VBox fx:id="transactionChartPane" styleClass="dashboard-card" HBox.hgrow="ALWAYS">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10"/>
+                </padding>
+            </VBox>
+        </HBox>
+        
     </VBox>
 </VBox>
