@@ -7,13 +7,19 @@ import com.aut.shoomal.utils.PreferencesManager;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class ShowRestaurantController extends AbstractBaseController
@@ -28,6 +34,7 @@ public class ShowRestaurantController extends AbstractBaseController
 
     private RestaurantService restaurantService;
     private String token;
+    private Integer restaurantId;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle)
@@ -38,7 +45,7 @@ public class ShowRestaurantController extends AbstractBaseController
         loadInfo();
     }
 
-    private void loadInfo()
+    public void loadInfo()
     {
         if (token == null || token.isEmpty())
         {
@@ -49,13 +56,18 @@ public class ShowRestaurantController extends AbstractBaseController
 
         restaurantService.getRestaurants(token)
                 .thenAccept(responses -> {
-                    RestaurantResponse restaurant = responses.getFirst();
                     Platform.runLater(() -> {
-                        nameLabel.setText("نام: " + restaurant.getName());
-                        addressLabel.setText("آدرس: " + restaurant.getAddress());
-                        phoneLabel.setText("شماره رستوران: " + restaurant.getPhone());
-                        taxFeeLabel.setText("هزینه بسته بندی: " + restaurant.getTaxFee());
-                        additionalFeeLabel.setText("هزینه اضافی: " + restaurant.getAdditionalFee());
+                        RestaurantResponse restaurant ;
+                        if (responses != null && !responses.isEmpty())
+                        {
+                            restaurant = responses.getFirst();
+                            restaurantId = restaurant.getId();
+                            nameLabel.setText("نام: " + restaurant.getName());
+                            addressLabel.setText("آدرس: " + restaurant.getAddress());
+                            phoneLabel.setText("شماره رستوران: " + restaurant.getPhone());
+                            taxFeeLabel.setText("هزینه بسته بندی: " + restaurant.getTaxFee());
+                            additionalFeeLabel.setText("هزینه اضافی: " + restaurant.getAdditionalFee());
+                        }
                     });
                 })
                 .exceptionally(e -> {
@@ -83,8 +95,33 @@ public class ShowRestaurantController extends AbstractBaseController
         );
     }
 
+    @FXML
     public void handleUpdateRestaurant(ActionEvent actionEvent)
     {
+        if (restaurantId == null)
+        {
+            showAlert("Error", "No restaurant found to update.", Alert.AlertType.ERROR, null);
+            return;
+        }
 
+        try {
+            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/views/UpdateRestaurantView.fxml")));
+            Parent root = loader.load();
+
+            UpdateRestaurantController updateController = loader.getController();
+            if (updateController != null)
+                updateController.setRestaurantId(restaurantId);
+
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root, stage.getWidth(), stage.getHeight());
+            stage.setScene(scene);
+            stage.setTitle("Update Restaurant");
+            stage.show();
+
+        } catch (IOException e) {
+            System.err.println("Failed to load UpdateRestaurantView.fxml: " + e.getMessage());
+            e.printStackTrace();
+            showAlert("Navigation Error", "Failed to load restaurant update page.", Alert.AlertType.ERROR, null);
+        }
     }
 }
