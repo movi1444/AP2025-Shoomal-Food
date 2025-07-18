@@ -98,7 +98,7 @@ public class RestaurantCoreHandler extends AbstractHttpHandler {
             throw new InvalidInputException("Phone number must be exactly 8 digits.");
         }
         Restaurant newRestaurant = restaurantManager.createRestaurant(request, String.valueOf(authenticatedUser.getId()));
-        sendResponse(exchange, HttpURLConnection.HTTP_CREATED, new ApiResponse(true, "Restaurant created successfully", convertToRestaurantResponse(newRestaurant)));
+        sendRawJsonResponse(exchange, HttpURLConnection.HTTP_CREATED, convertToRestaurantResponse(newRestaurant));
     }
 
     private void handleGetMyRestaurants(HttpExchange exchange, User authenticatedUser) throws IOException {

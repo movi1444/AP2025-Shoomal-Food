@@ -8,6 +8,7 @@ import com.aut.shoomal.utils.PreferencesManager;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -104,7 +105,10 @@ public class UpdateRestaurantController extends AbstractBaseController
                 .thenAccept(restaurant -> {
                     Platform.runLater(() -> {
                         if (restaurant != null)
+                        {
                             showAlert("Success", "Restaurant updated successfully.", Alert.AlertType.INFORMATION, null);
+                            handleBackToPreviousPage(actionEvent);
+                        }
                         else
                             showAlert("Error", "Failed to update restaurant.", Alert.AlertType.ERROR, null);
                     });
@@ -139,6 +143,12 @@ public class UpdateRestaurantController extends AbstractBaseController
     @FXML
     public void handleBackToPreviousPage(ActionEvent actionEvent)
     {
-
+        navigateTo(
+                (Node) actionEvent.getSource(),
+                "/com/aut/shoomal/views/ShowRestaurantView.fxml",
+                "/com/aut/shoomal/styles/MainView.css",
+                TransitionType.SLIDE_LEFT,
+                ShowRestaurantController::loadInfo
+        );
     }
 }

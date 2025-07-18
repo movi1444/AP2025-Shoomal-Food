@@ -104,8 +104,16 @@ public class RestaurantManager {
         if (request.getAddress() != null) existingRestaurant.setAddress(request.getAddress());
         if (request.getPhone() != null) existingRestaurant.setPhone(request.getPhone());
         if (request.getLogoBase64() != null) existingRestaurant.setLogoBase64(request.getLogoBase64());
-        if (request.getTaxFee() != null) existingRestaurant.setTaxFee(request.getTaxFee());
-        if (request.getAdditionalFee() != null) existingRestaurant.setAdditionalFee(request.getAdditionalFee());
+        if (request.getTaxFee() != null) {
+            if (request.getTaxFee() < 0)
+                throw new InvalidInputException("Tax fee cannot be negative.");
+            existingRestaurant.setTaxFee(request.getTaxFee());
+        }
+        if (request.getAdditionalFee() != null) {
+            if (request.getAdditionalFee() < 0)
+                throw new InvalidInputException("Additional fee cannot be negative.");
+            existingRestaurant.setAdditionalFee(request.getAdditionalFee());
+        }
 
         restaurantDao.update(existingRestaurant);
         return existingRestaurant;
