@@ -9,7 +9,6 @@ import org.hibernate.query.Query;
 import java.util.List;
 
 public class FoodDaoImpl extends GenericDaoImpl<Food> implements FoodDao {
-
     @Override
     public List<Food> searchByName(String keyword) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -46,6 +45,19 @@ public class FoodDaoImpl extends GenericDaoImpl<Food> implements FoodDao {
             return query.list();
         } catch (Exception e) {
             System.err.println("Error finding food by keyword: " + e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public Food getFoodByIdAndRestaurantId(Session session, Long id, Long restaurantId) {
+        try {
+            Query<Food> query = session.createQuery("FROM Food WHERE id = :fid AND vendor.id = :rid", Food.class);
+            query.setParameter("fid", id);
+            query.setParameter("rid", restaurantId);
+            return query.uniqueResult();
+        } catch (Exception e) {
+            System.err.println("Error finding food by id and restaurant id: " + e.getMessage());
             return null;
         }
     }

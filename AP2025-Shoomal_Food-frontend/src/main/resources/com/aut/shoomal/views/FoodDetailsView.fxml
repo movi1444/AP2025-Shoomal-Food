@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<?import javafx.scene.control.TextArea?>
+<!-- fx:controller will be set in the FXMLLoader.load() call, not here directly -->
+<AnchorPane prefHeight="700.0" prefWidth="800.0" stylesheets="/com/aut/shoomal/styles/MainView.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+    <VBox alignment="TOP_CENTER" spacing="20.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+        <padding>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+        </padding>
+
+        <Label fx:id="titleLabel" alignment="CENTER" maxWidth="Infinity" styleClass="header-label" text="اطلاعات غذا" textFill="WHITE">
+            <font>
+                <Font size="28.0" />
+            </font>
+        </Label>
+
+        <VBox alignment="CENTER" spacing="10.0" styleClass="section-panel">
+            <Label styleClass="section-title" text="تصویر غذا" textFill="WHITE" />
+            <ImageView fx:id="foodImageView" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" styleClass="profile-image-view">
+                <image>
+                    <Image url="@/com/aut/shoomal/images/ShoomalFoodMahi.png" />
+                </image>
+            </ImageView>
+            <Button fx:id="uploadImageButton" onAction="#handleUploadImage" styleClass="my-button" text="آپلود تصویر غذا">
+                <cursor>
+                    <Cursor fx:constant="HAND" />
+                </cursor>
+            </Button>
+        </VBox>
+
+        <VBox alignment="TOP_CENTER" spacing="15.0" styleClass="section-panel">
+            <GridPane hgap="15.0" vgap="15.0">
+                <columnConstraints>
+                    <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="150.0" />
+                    <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="300.0" />
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="80.0" vgrow="SOMETIMES" />
+                </rowConstraints>
+
+                <Label text="نام غذا" textFill="WHITE" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                    <font>
+                        <Font size="14.0" />
+                    </font></Label>
+                <TextField fx:id="nameField" prefHeight="40.0" promptText="نام غذا" styleClass="input-field" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                <Label text="توضیحات" textFill="WHITE" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                    <font>
+                        <Font size="14.0" />
+                    </font></Label>
+                <TextField fx:id="descriptionField" prefHeight="40.0" promptText="توضیحات" styleClass="input-field" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                <Label text="قیمت غذا" textFill="WHITE" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                    <font>
+                        <Font size="14.0" />
+                    </font></Label>
+                <TextField fx:id="priceField" prefHeight="40.0" promptText="قیمت غذا" styleClass="input-field" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+                <Label text="تعداد غذا" textFill="WHITE" GridPane.columnIndex="0" GridPane.rowIndex="3">
+                    <font>
+                        <Font size="14.0" />
+                    </font></Label>
+                <TextField fx:id="supplyField" prefHeight="40.0" promptText="تعداد غذا" styleClass="input-field" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+                <Label text="کلمات کلیدی" textFill="WHITE" GridPane.columnIndex="0" GridPane.rowIndex="4">
+                    <font>
+                        <Font size="14.0" />
+                    </font></Label>
+                <TextArea fx:id="keywordsField" prefHeight="80.0" promptText="مثلا غذای دریایی-غذای ایرانی..." styleClass="input-field" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            </GridPane>
+        </VBox>
+
+        <HBox alignment="CENTER" spacing="20.0">
+            <Button fx:id="saveButton" onAction="#handleSaveChanges" styleClass="my-button" text="ذخیره تغییرات" />
+            <Button fx:id="backButton" onAction="#handleBackToPreviousPage" styleClass="my-button2" text="بازگشت به صفحه قبلی" />
+        </HBox>
+    </VBox>
+</AnchorPane>

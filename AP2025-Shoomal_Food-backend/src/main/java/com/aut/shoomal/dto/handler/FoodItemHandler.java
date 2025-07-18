@@ -1,5 +1,6 @@
 package com.aut.shoomal.dto.handler;
 
+import com.aut.shoomal.dto.response.ListItemResponse;
 import com.aut.shoomal.entity.user.User;
 import com.aut.shoomal.entity.user.UserManager;
 import com.aut.shoomal.entity.user.Seller;
@@ -11,10 +12,13 @@ import com.aut.shoomal.dto.request.AddFoodItemRequest;
 import com.aut.shoomal.dto.request.UpdateFoodItemRequest;
 import com.aut.shoomal.dto.response.ApiResponse;
 import com.aut.shoomal.exceptions.*;
+import com.aut.shoomal.util.HibernateUtil;
 import com.sun.net.httpserver.HttpExchange;
+import org.hibernate.Session;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -59,9 +63,13 @@ public class FoodItemHandler extends AbstractHttpHandler {
                     handleUpdateFoodItem(exchange, authenticatedUser, restaurantId, foodItemId);
                 } else if (method.equalsIgnoreCase("DELETE")) {
                     handleDeleteFoodItem(exchange, authenticatedUser, restaurantId, foodItemId);
+                } else if (method.equalsIgnoreCase("GET")) {
+                    getFoodByIdAndRestaurantId(exchange, (long) restaurantId, (long) foodItemId);
                 } else {
                     sendResponse(exchange, HttpURLConnection.HTTP_BAD_METHOD, new ApiResponse(false, "Method Not Allowed. Expected PUT or DELETE"));
                 }
+            } else if (requestPath.equals("/restaurants/" + restaurantId + "/items") && method.equalsIgnoreCase("GET") && restaurantId != -1) {
+                getFoodsByRestaurantId(exchange, (long) restaurantId);
             } else {
                 sendResponse(exchange, HttpURLConnection.HTTP_NOT_FOUND, new ApiResponse(false, "Resource not found"));
             }
@@ -81,6 +89,26 @@ public class FoodItemHandler extends AbstractHttpHandler {
         } finally {
             exchange.close();
         }
+    }
+
+    private void getFoodsByRestaurantId(HttpExchange exchange, Long restaurantId) throws IOException {
+        List<ListItemResponse> responses = foodManager.getFoodsByRestaurantId(restaurantId).stream()
+                .map(this::convertToFoodItemResponse)
+                .toList();
+        sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, responses);
+    }
+
+    private void getFoodByIdAndRestaurantId(HttpExchange exchange, Long restaurantId, Long foodItemId) throws IOException
+    {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Food food = foodManager.getByIdAndRestaurantId(session, restaurantId, foodItemId);
+        if (food == null)
+        {
+            session.close();
+            throw new NotFoundException("Food item not found.");
+        }
+        session.close();
+        sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, convertToFoodItemResponse(food));
     }
 
     private void handleAddFoodItem(HttpExchange exchange, User authenticatedUser, Integer restaurantIdFromPath) throws IOException {
@@ -142,13 +170,14 @@ public class FoodItemHandler extends AbstractHttpHandler {
         sendResponse(exchange, HttpURLConnection.HTTP_OK, new ApiResponse(true, "Food item removed successfully"));
     }
 
-    private com.aut.shoomal.dto.response.FoodItemResponse convertToFoodItemResponse(Food food) {
+    private com.aut.shoomal.dto.response.ListItemResponse convertToFoodItemResponse(Food food) {
         if (food == null) return null;
-        return new com.aut.shoomal.dto.response.FoodItemResponse(
+        return new com.aut.shoomal.dto.response.ListItemResponse(
                 food.getId(),
                 food.getName(),
                 food.getImageBase64(),
                 food.getDescription(),
+                food.getVendor().getId(),
                 (int) food.getPrice(),
                 food.getSupply(),
                 food.getKeywords()

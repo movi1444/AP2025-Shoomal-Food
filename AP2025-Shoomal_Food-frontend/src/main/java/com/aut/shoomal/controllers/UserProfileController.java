@@ -114,15 +114,7 @@ public class UserProfileController extends AbstractBaseController {
 
     @FXML
     private void handleBackToMain(ActionEvent event) {
-        navigateTo(
-                (Node) event.getSource(),
-                "/com/aut/shoomal/views/MainView.fxml",
-                "/com/aut/shoomal/styles/MainView.css",
-                TransitionType.SLIDE_LEFT,
-                (MainController controller) -> {
-                    controller.setLoggedInUser(loggedInUser);
-                }
-        );
+        navigateToMainView((Node) event.getSource());
     }
 
     @FXML
