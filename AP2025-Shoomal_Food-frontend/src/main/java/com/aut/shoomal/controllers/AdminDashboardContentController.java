@@ -9,14 +9,18 @@ import com.aut.shoomal.utils.PreferencesManager;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
+
+import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -30,6 +34,7 @@ public class AdminDashboardContentController extends AbstractBaseController {
 
     private AdminDataService adminDataService;
     private String token;
+    private UserResponse loggedInUser;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -38,6 +43,10 @@ public class AdminDashboardContentController extends AbstractBaseController {
         adminDataService = new AdminDataService();
         token = PreferencesManager.getJwtToken();
         loadDashboardCharts();
+    }
+
+    public void setLoggedInUser(UserResponse user) {
+        this.loggedInUser = user;
     }
 
     private void loadDashboardCharts() {
@@ -187,16 +196,6 @@ public class AdminDashboardContentController extends AbstractBaseController {
     }
 
     @FXML
-    private void handleViewAllUsers() {
-        showAlert("Admin Action", "Displaying all users. (Implementation needed)", Alert.AlertType.INFORMATION, null);
-    }
-
-    @FXML
-    private void handleManageUserStatus() {
-        showAlert("Admin Action", "Managing user approval status. (Implementation needed)", Alert.AlertType.INFORMATION, null);
-    }
-
-    @FXML
     private void handleViewAllOrders() {
         showAlert("Admin Action", "Displaying all orders. (Implementation needed)", Alert.AlertType.INFORMATION, null);
     }
@@ -219,5 +218,17 @@ public class AdminDashboardContentController extends AbstractBaseController {
     @FXML
     private void handleManageCoupons() {
         showAlert("Admin Action", "Managing existing coupons (update/delete). (Implementation needed)", Alert.AlertType.INFORMATION, null);
+    }
+
+    public void handleManageUserStatus(javafx.event.ActionEvent actionEvent) {
+        navigateTo(
+                (MenuItem) actionEvent.getSource(),
+                "/com/aut/shoomal/views/UserManagementView.fxml",
+                "/com/aut/shoomal/styles/AdminDashboardStyles.css",
+                TransitionType.SLIDE_RIGHT,
+                (UserManagementController controller) -> {
+                    controller.setLoggedInUser(this.loggedInUser);
+                }
+        );
     }
 }
