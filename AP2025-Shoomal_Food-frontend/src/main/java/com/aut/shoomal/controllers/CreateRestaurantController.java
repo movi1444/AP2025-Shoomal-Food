@@ -53,15 +53,7 @@ public class CreateRestaurantController extends AbstractBaseController
     @FXML
     public void handleBackToPreviousPage(ActionEvent actionEvent)
     {
-        navigateTo(
-                (Node) actionEvent.getSource(),
-                "/com/aut/shoomal/views/MainView.fxml",
-                "/com/aut/shoomal/styles/MainView.css",
-                TransitionType.SLIDE_LEFT,
-                (MainController controller) -> {
-                    controller.setLoggedInUser(PreferencesManager.getUserData());
-                }
-        );
+        navigateToMainView((Node) actionEvent.getSource());
     }
 
     @FXML

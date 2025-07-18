@@ -186,6 +186,19 @@ public abstract class AbstractBaseController implements Initializable {
         navigateTo(menuItem, fxmlPath, stylesheetPath, transitionType, null);
     }
 
+    protected void navigateToMainView(Node node)
+    {
+        navigateTo(
+                node,
+                "/com/aut/shoomal/views/MainView.fxml",
+                "/com/aut/shoomal/styles/MainView.css",
+                TransitionType.SLIDE_LEFT,
+                (MainController controller) -> {
+                    controller.setLoggedInUser(PreferencesManager.getUserData());
+                }
+        );
+    }
+
     protected <C extends AbstractBaseController> void navigateTo(MenuItem menuItem, String fxmlPath, String stylesheetPath, TransitionType transitionType, Consumer<C> controllerSetupCallback)
     {
         Stage stage = null;
