@@ -1,3 +1,4 @@
+/* AP2025-Shoomal-Food/AP2025-Shoomal_Food-frontend/src/main/resources/com/aut/shoomal/styles/AdminDashboardStyles.css */
 .root {
     -fx-background-color: #2C3E50;
     -fx-font-family: "Vazirmatn";
@@ -130,7 +131,7 @@
 
 .table-view {
     -fx-background-color: transparent;
-    -fx-border-color: #e0e0e0;
+    -fx-border-color: #d3c8c8;
     -fx-border-radius: 5px;
     -fx-border-width: 1px;
 }
@@ -143,7 +144,7 @@
 .table-view .filler {
     -fx-size: 40px;
     -fx-border-width: 0 0 1px 0;
-    -fx-border-color: #e0e0e0;
+    -fx-border-color: #d3c8c8;
     -fx-background-color: #f2f2f2;
 }
 
@@ -220,4 +221,57 @@
 .my-button2:pressed {
     -fx-background-color: #737373;
     -fx-translate-y: 1px;
+}
+
+.filter-sidebar {
+    -fx-background-color: #34495e;
+    -fx-padding: 15px;
+    -fx-spacing: 15px;
+    -fx-background-radius: 5px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 0);
+}
+
+.filter-sidebar .label {
+    -fx-text-fill: white;
+    -fx-font-family: "Vazirmatn";
+    -fx-font-size: 16px;
+}
+
+.filter-sidebar .text-field,
+.filter-sidebar .combo-box {
+    -fx-background-color: #fbdede;
+    -fx-border-color: #ced4da;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-font-family: "Vazirmatn";
+    -fx-font-size: 14px;
+    -fx-padding: 8px 10px;
+    -fx-prompt-text-fill: #6c757d;
+}
+
+.filter-sidebar .text-field:focused,
+.filter-sidebar .combo-box:focused {
+    -fx-border-color: #007bff;
+    -fx-border-width: 2px;
+    -fx-background-insets: 0;
+}
+
+.filter-sidebar .combo-box .list-cell {
+    -fx-alignment: center-right;
+}
+
+.filter-sidebar .button {
+    -fx-background-color: #1abc9c;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 8px 15px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 0);
+}
+
+.filter-sidebar .button:hover {
+    -fx-background-color: #16a085;
 }
