@@ -138,6 +138,11 @@ public class MainController extends AbstractBaseController {
                 try {
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/aut/shoomal/views/AdminDashboardContent.fxml"));
                     Parent adminContentRoot = loader.load();
+
+                    AdminDashboardContentController adminController = loader.getController();
+                    if (adminController != null) {
+                        adminController.setLoggedInUser(this.currentUser);
+                    }
                     adminDashboardScrollPane.setContent(adminContentRoot);
                 } catch (IOException e) {
                     System.err.println("Failed to load AdminDashboardContent.fxml: " + e.getMessage());
@@ -158,7 +163,6 @@ public class MainController extends AbstractBaseController {
             targetPane.setManaged(true);
         }
     }
-
     private void handleProfilePictureClick(MouseEvent event) {
         System.out.println("Profile picture clicked! Navigating to user profile.");
         navigateToProfileView(profilePictureImageView);

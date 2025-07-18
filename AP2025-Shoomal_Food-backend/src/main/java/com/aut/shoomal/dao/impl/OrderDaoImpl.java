@@ -42,8 +42,6 @@ public class OrderDaoImpl extends GenericDaoImpl<Order> implements OrderDao
 
             List<Predicate> predicates = new ArrayList<>();
 
-            if(search == null||search.isEmpty())
-                System.out.println("nigger");
 
             if (search != null && !search.trim().isEmpty()) {
                 String likePattern = "%" + search.toLowerCase() + "%";
@@ -62,8 +60,6 @@ public class OrderDaoImpl extends GenericDaoImpl<Order> implements OrderDao
             if (status != null) {
                 predicates.add(cb.equal(orderRoot.get("orderStatus"), status));
             }
-            else
-                System.out.println("null");
 
             cq.where(predicates.toArray(new Predicate[0]));
             cq.select(orderRoot).distinct(true);

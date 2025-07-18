@@ -13,8 +13,7 @@
         <menus>
             <Menu styleClass="admin-menu" text="کاربران">
                 <items>
-                    <MenuItem onAction="#handleViewAllUsers" styleClass="admin-menu-item" text="مشاهده همه کاربران" />
-                    <MenuItem onAction="#handleManageUserStatus" styleClass="admin-menu-item" text="مدیریت وضعیت کاربران" />
+                    <MenuItem onAction="#handleManageUserStatus" styleClass="admin-menu-item" text="مشاهده و مدیریت کاربران" />
                 </items>
             </Menu>
             <Menu styleClass="admin-menu" text="سفارشات">
