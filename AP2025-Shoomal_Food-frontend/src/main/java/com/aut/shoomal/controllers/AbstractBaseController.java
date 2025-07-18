@@ -183,6 +183,11 @@ public abstract class AbstractBaseController implements Initializable {
 
     protected void navigateTo(MenuItem menuItem, String fxmlPath, String stylesheetPath, TransitionType transitionType)
     {
+        navigateTo(menuItem, fxmlPath, stylesheetPath, transitionType, null);
+    }
+
+    protected <C extends AbstractBaseController> void navigateTo(MenuItem menuItem, String fxmlPath, String stylesheetPath, TransitionType transitionType, Consumer<C> controllerSetupCallback)
+    {
         Stage stage = null;
         Node currentRoot = null;
 
@@ -226,8 +231,9 @@ public abstract class AbstractBaseController implements Initializable {
             return;
         }
 
-        navigateTo(currentRoot, fxmlPath, stylesheetPath, transitionType);
+        navigateTo(currentRoot, fxmlPath, stylesheetPath, transitionType, controllerSetupCallback);
     }
+
 
     private MenuBar findMenuBar(MenuItem menuItem)
     {
