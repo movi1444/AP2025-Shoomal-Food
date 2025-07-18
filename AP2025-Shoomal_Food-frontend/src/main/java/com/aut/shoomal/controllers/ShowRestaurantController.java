@@ -45,7 +45,7 @@ public class ShowRestaurantController extends AbstractBaseController
         loadInfo();
     }
 
-    private void loadInfo()
+    public void loadInfo()
     {
         if (token == null || token.isEmpty())
         {

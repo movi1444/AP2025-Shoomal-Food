@@ -110,7 +110,7 @@ public class MenuHandler extends AbstractHttpHandler {
             return;
         }
         menuManager.addMenuTitle(restaurantId, request.getTitle(), String.valueOf(authenticatedUser.getId()));
-        sendResponse(exchange, HttpURLConnection.HTTP_OK, new ApiResponse(true, "Menu title added successfully", new MenuTitleResponse(request.getTitle())));
+        sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, new MenuTitleResponse(request.getTitle()));
     }
 
     private void handleDeleteMenuTitle(HttpExchange exchange, User authenticatedUser, Integer restaurantId, String menuTitle) throws IOException {

@@ -103,7 +103,7 @@ public class FoodItemHandler extends AbstractHttpHandler {
         }
 
         Food newFoodItem = foodManager.addFoodItem(restaurantIdFromPath, request, String.valueOf(authenticatedUser.getId()));
-        sendResponse(exchange, HttpURLConnection.HTTP_OK, new ApiResponse(true, "Food item added successfully", convertToFoodItemResponse(newFoodItem)));
+        sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, convertToFoodItemResponse(newFoodItem));
     }
 
     private void handleUpdateFoodItem(HttpExchange exchange, User authenticatedUser, Integer restaurantIdFromPath, Integer itemId) throws IOException {
@@ -125,7 +125,7 @@ public class FoodItemHandler extends AbstractHttpHandler {
             throw new InvalidInputException("Vendor ID in request body must match restaurant ID in path.");
         }
         Food updatedFoodItem = foodManager.updateFoodItem(restaurantIdFromPath, itemId, request, String.valueOf(authenticatedUser.getId()));
-        sendResponse(exchange, HttpURLConnection.HTTP_OK, new ApiResponse(true, "Food item updated successfully", convertToFoodItemResponse(updatedFoodItem)));
+        sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, convertToFoodItemResponse(updatedFoodItem));
     }
 
     private void handleDeleteFoodItem(HttpExchange exchange, User authenticatedUser, Integer restaurantId, Integer itemId) throws IOException {

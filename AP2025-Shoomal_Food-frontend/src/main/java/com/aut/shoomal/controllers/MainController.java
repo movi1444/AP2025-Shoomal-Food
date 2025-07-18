@@ -174,8 +174,14 @@ public class MainController extends AbstractBaseController {
         );
     }
 
-    public void handleCreateRestaurant(ActionEvent actionEvent) {
-
+    public void handleCreateRestaurant(ActionEvent actionEvent)
+    {
+        navigateTo(
+                (MenuItem) actionEvent.getSource(),
+                "/com/aut/shoomal/views/CreateRestaurantView.fxml",
+                "/com/aut/shoomal/styles/MainView.css",
+                TransitionType.SLIDE_LEFT
+        );
     }
 
     public void handleShowRestaurant(ActionEvent actionEvent)
