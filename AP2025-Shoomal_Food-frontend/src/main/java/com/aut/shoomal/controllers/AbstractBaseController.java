@@ -80,6 +80,10 @@ public abstract class AbstractBaseController implements Initializable {
         addDirectionListenerForObservableString(choiceBox.valueProperty(), choiceBox);
     }
 
+    protected void addComboBoxDirectionListener(ComboBox<String> comboBox) {
+        addDirectionListenerForObservableString(comboBox.getEditor().textProperty(), comboBox.getEditor());
+    }
+
     protected void showAlert(String title, String message) {
         showAlert(title, message, AlertType.INFORMATION, null);
     }

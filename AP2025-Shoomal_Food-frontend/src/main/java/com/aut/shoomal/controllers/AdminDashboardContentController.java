@@ -1,4 +1,3 @@
-// AP2025-Shoomal-Food/AP2025-Shoomal_Food-frontend/src/main/java/com/aut/shoomal/controllers/AdminDashboardContentController.java
 package com.aut.shoomal.controllers;
 
 import com.aut.shoomal.dto.response.OrderResponse;
@@ -208,22 +207,41 @@ public class AdminDashboardContentController extends AbstractBaseController {
 
     @FXML
     private void handleViewTransactions() {
-        showAlert("Admin Action", "Displaying financial transactions. (Implementation needed)", Alert.AlertType.INFORMATION, null);
+        navigateTo(
+                transactionChartPane,
+                "/com/aut/shoomal/views/AdminTransactionsView.fxml",
+                "/com/aut/shoomal/styles/AdminDashboardStyles.css",
+                TransitionType.SLIDE_RIGHT,
+                (AdminTransactionsController controller) -> {
+                    controller.setLoggedInUser(loggedInUser);
+                }
+        );
     }
 
     @FXML
-    private void handleListAllCoupons() {
-        showAlert("Admin Action", "Displaying all coupons. (Implementation needed)", Alert.AlertType.INFORMATION, null);
+    public void handleListAllCoupons(javafx.event.ActionEvent actionEvent) {
+        navigateTo(
+                (MenuItem) actionEvent.getSource(),
+                "/com/aut/shoomal/views/CouponListView.fxml",
+                "/com/aut/shoomal/styles/AdminDashboardStyles.css",
+                TransitionType.SLIDE_RIGHT,
+                (CouponListController controller) -> {
+                    controller.setLoggedInUser(this.loggedInUser);
+                }
+        );
     }
 
     @FXML
-    private void handleCreateNewCoupon() {
-        showAlert("Admin Action", "Form for creating a new coupon. (Implementation needed)", Alert.AlertType.INFORMATION, null);
-    }
-
-    @FXML
-    private void handleManageCoupons() {
-        showAlert("Admin Action", "Managing existing coupons (update/delete). (Implementation needed)", Alert.AlertType.INFORMATION, null);
+    public void handleCreateNewCoupon(javafx.event.ActionEvent actionEvent) {
+        navigateTo(
+                (MenuItem) actionEvent.getSource(),
+                "/com/aut/shoomal/views/CreateEditCouponView.fxml",
+                "/com/aut/shoomal/styles/AdminDashboardStyles.css",
+                TransitionType.SLIDE_RIGHT,
+                (CreateEditCouponController controller) -> {
+                    controller.setLoggedInUser(this.loggedInUser);
+                }
+        );
     }
 
     public void handleManageUserStatus(javafx.event.ActionEvent actionEvent) {

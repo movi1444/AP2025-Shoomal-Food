@@ -8,9 +8,9 @@ import org.hibernate.Session;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.time.format.DateTimeParseException;
-import java.util.UUID;
 
 public class CouponManager
 {
@@ -55,7 +55,7 @@ public class CouponManager
         if (coupon == null)
             throw new InvalidCouponException("Coupon is null or does not exist.");
         LocalDateTime now = LocalDateTime.now();
-        if (now.isBefore(coupon.getStartDate()) || now.isAfter(coupon.getEndDate()))
+        if (now.isBefore(coupon.getStartDate().atStartOfDay()) || now.isAfter(coupon.getEndDate().atTime(LocalTime.MAX)))
             throw new InvalidCouponException("Coupon has expired.");
     }
 
@@ -94,20 +94,20 @@ public class CouponManager
         else if (value.compareTo(BigDecimal.ZERO) <= 0)
             errors.append(" 'value' must be positive.");
 
-        LocalDateTime start;
+        LocalDate start;
         if (startDate == null || startDate.trim().isEmpty())
             errors.append(" 'startDate' is required.");
         try {
-            start = LocalDateTime.parse(startDate);
+            start = LocalDate.parse(startDate);
         } catch (DateTimeParseException e) {
             throw new InvalidCouponException("Invalid start date.");
         }
 
-        LocalDateTime end;
+        LocalDate end;
         if (endDate == null || endDate.trim().isEmpty())
             errors.append(" 'endDate' is required.");
         try {
-            end = LocalDateTime.parse(endDate);
+            end = LocalDate.parse(endDate);
         } catch (DateTimeParseException e) {
             throw new InvalidCouponException("Invalid end date.");
         }
