@@ -6,7 +6,6 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
@@ -46,19 +45,19 @@
         </Label>
         <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0">
             <Label alignment="TOP_RIGHT" text="جستجوی عمومی" textFill="WHITE" />
-            <TextField fx:id="searchTextField" promptText="جستجو در نام کاربر/پیک/فروشنده" styleClass="my-text-field" />
+            <TextField fx:id="searchTextField" promptText="جستجو در نام کاربر/پیک/رستوران" styleClass="my-text-field" />
         </VBox>
         <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0">
             <Label alignment="TOP_RIGHT" text="فیلتر بر اساس مشتری" textFill="WHITE" />
-            <TextField fx:id="customerSearchField" promptText="شناسه مشتری" styleClass="my-text-field" />
+            <ComboBox fx:id="customerComboBox" prefWidth="280.0" promptText="انتخاب مشتری" styleClass="my-choice-box" />
         </VBox>
         <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0">
-            <Label alignment="TOP_RIGHT" text="فیلتر بر اساس فروشنده" textFill="WHITE" />
-            <TextField fx:id="vendorSearchField" promptText="شناسه فروشنده" styleClass="my-text-field" />
+            <Label alignment="TOP_RIGHT" text="فیلتر بر اساس رستوران" textFill="WHITE" />
+            <ComboBox fx:id="restaurantComboBox" prefWidth="280.0" promptText="انتخاب رستوران" styleClass="my-choice-box" />
         </VBox>
         <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0">
             <Label alignment="TOP_RIGHT" text="فیلتر بر اساس پیک" textFill="WHITE" />
-            <TextField fx:id="courierSearchField" promptText="شناسه پیک" styleClass="my-text-field" />
+            <ComboBox fx:id="courierComboBox" prefWidth="280.0" promptText="انتخاب پیک" styleClass="my-choice-box" />
         </VBox>
         <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0">
             <Label alignment="TOP_RIGHT" text="فیلتر بر اساس وضعیت" textFill="WHITE" />

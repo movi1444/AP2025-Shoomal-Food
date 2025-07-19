@@ -2,9 +2,10 @@ package com.aut.shoomal.service;
 
 import com.aut.shoomal.dto.response.OrderResponse;
 import com.aut.shoomal.dto.response.TransactionResponse;
-import com.aut.shoomal.dto.response.UserResponse;
+import com.aut.shoomal.dto.response.AdminUserResponse;
 import com.aut.shoomal.dto.request.UpdateApprovalRequest;
 import com.aut.shoomal.dto.response.ApiResponse;
+import com.aut.shoomal.dto.response.RestaurantResponse;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import java.net.http.HttpRequest;
@@ -15,12 +16,12 @@ import java.util.concurrent.CompletableFuture;
 
 public class AdminDataService extends AbstractService {
 
-    public CompletableFuture<List<UserResponse>> getAllUsers(String token) {
+    public CompletableFuture<List<AdminUserResponse>> getAllUsers(String token) {
         try {
             HttpRequest request = createAuthenticatedRequestBuilder("admin/users", token)
                     .GET()
                     .build();
-            return sendListRequest(request, new TypeReference<>() {});
+            return sendListRequest(request, new TypeReference<List<AdminUserResponse>>() {});
         } catch (Exception e) {
             System.err.println("Error creating getAllUsers request: " + e.getMessage());
             throw new RuntimeException("Client error creating getAllUsers request: " + e.getMessage(), e);
@@ -31,11 +32,11 @@ public class AdminDataService extends AbstractService {
         return getAllOrders(token, null, null, null, null, null);
     }
 
-    public CompletableFuture<List<OrderResponse>> getAllOrders(String token, String search, String vendor, String customer, String courier, String status) {
+    public CompletableFuture<List<OrderResponse>> getAllOrders(String token, String search, String restaurant, String customer, String courier, String status) {
         try {
             Map<String, String> params = new HashMap<>();
             if (search != null) params.put("search", search);
-            if (vendor != null) params.put("vendor", vendor);
+            if (restaurant != null) params.put("restaurant", restaurant);
             if (customer != null) params.put("customer", customer);
             if (courier != null) params.put("courier", courier);
             if (status != null) params.put("status", status);
@@ -75,6 +76,18 @@ public class AdminDataService extends AbstractService {
         } catch (Exception e) {
             System.err.println("Error creating updateUserApprovalStatus request: " + e.getMessage());
             throw new RuntimeException("Client error creating updateUserApprovalStatus request: " + e.getMessage(), e);
+        }
+    }
+
+    public CompletableFuture<List<RestaurantResponse>> getAllRestaurants(String token) {
+        try {
+            HttpRequest request = createAuthenticatedRequestBuilder("admin/restaurants", token)
+                    .GET()
+                    .build();
+            return sendListRequest(request, new TypeReference<List<RestaurantResponse>>() {});
+        } catch (Exception e) {
+            System.err.println("Error creating getAllRestaurants request: " + e.getMessage());
+            throw new RuntimeException("Client error creating getAllRestaurants request: " + e.getMessage(), e);
         }
     }
 }

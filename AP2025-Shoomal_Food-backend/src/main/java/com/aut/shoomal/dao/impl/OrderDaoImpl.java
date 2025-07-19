@@ -1,17 +1,19 @@
 package com.aut.shoomal.dao.impl;
 
 import com.aut.shoomal.dao.OrderDao;
+import com.aut.shoomal.entity.restaurant.Restaurant;
+import com.aut.shoomal.entity.user.User;
 import com.aut.shoomal.payment.order.Order;
 import com.aut.shoomal.payment.order.OrderStatus;
 import com.aut.shoomal.util.HibernateUtil;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
-import jakarta.persistence.criteria.JoinType;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,31 +33,39 @@ public class OrderDaoImpl extends GenericDaoImpl<Order> implements OrderDao
         }
     }
 
-    @Override
-    public List<Order> findAllWithFilters(String search, Long vendorId, Long customerId, Long courierId, OrderStatus status) {
+    public List<Order> findOrdersWithFilters(Long customerId, String search, String vendorName, String customerName, String courierName, OrderStatus status) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             CriteriaBuilder cb = session.getCriteriaBuilder();
             CriteriaQuery<Order> cq = cb.createQuery(Order.class);
             Root<Order> orderRoot = cq.from(Order.class);
 
             orderRoot.fetch("orderItems", JoinType.LEFT);
+            orderRoot.fetch("restaurant", JoinType.LEFT);
+            orderRoot.fetch("customer", JoinType.LEFT);
+            orderRoot.fetch("courier", JoinType.LEFT);
 
             List<Predicate> predicates = new ArrayList<>();
 
+            if (customerId != null) {
+                predicates.add(cb.equal(orderRoot.get("customer").get("id"), customerId));
+            }
 
             if (search != null && !search.trim().isEmpty()) {
                 String likePattern = "%" + search.toLowerCase() + "%";
                 predicates.add(cb.like(cb.lower(orderRoot.join("orderItems").get("food").get("name")), likePattern));
-                System.out.println(likePattern);
             }
-            if (vendorId != null) {
-                predicates.add(cb.equal(orderRoot.get("restaurant").get("id"), vendorId));
+
+            if (vendorName != null && !vendorName.trim().isEmpty()) {
+                String likePattern = "%" + vendorName.toLowerCase() + "%";
+                predicates.add(cb.like(cb.lower(orderRoot.get("restaurant").get("name")), likePattern));
             }
-            if (customerId != null) {
-                predicates.add(cb.equal(orderRoot.get("customer").get("id"), customerId));
+            if (customerName != null && !customerName.trim().isEmpty()) {
+                String likePattern = "%" + customerName.toLowerCase() + "%";
+                predicates.add(cb.like(cb.lower(orderRoot.get("customer").get("name")), likePattern));
             }
-            if (courierId != null) {
-                predicates.add(cb.equal(orderRoot.get("courier").get("id"), courierId));
+            if (courierName != null && !courierName.trim().isEmpty()) {
+                String likePattern = "%" + courierName.toLowerCase() + "%";
+                predicates.add(cb.like(cb.lower(orderRoot.get("courier").get("name")), likePattern));
             }
             if (status != null) {
                 predicates.add(cb.equal(orderRoot.get("orderStatus"), status));
@@ -63,10 +73,11 @@ public class OrderDaoImpl extends GenericDaoImpl<Order> implements OrderDao
 
             cq.where(predicates.toArray(new Predicate[0]));
             cq.select(orderRoot).distinct(true);
+            cq.orderBy(cb.desc(orderRoot.get("createdAt")));
 
             return session.createQuery(cq).getResultList();
         } catch (Exception e) {
-            System.err.println("Error finding all orders with filters: " + e.getMessage());
+            System.err.println("Error finding orders with filters: " + e.getMessage());
             e.printStackTrace();
             return null;
         }

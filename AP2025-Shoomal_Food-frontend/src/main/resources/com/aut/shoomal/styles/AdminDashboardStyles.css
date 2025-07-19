@@ -1,4 +1,3 @@
-/* AP2025-Shoomal-Food/AP2025-Shoomal_Food-frontend/src/main/resources/com/aut/shoomal/styles/AdminDashboardStyles.css */
 .root {
     -fx-background-color: #2C3E50;
     -fx-font-family: "Vazirmatn";
@@ -274,4 +273,56 @@
 
 .filter-sidebar .button:hover {
     -fx-background-color: #16a085;
+}
+
+.my-choice-box .arrow-button {
+    -fx-background-color: #f0f0f0;
+}
+
+.my-choice-box .arrow {
+    -fx-background-color: #34495e;
+}
+
+.my-choice-box .label {
+    -fx-text-fill: #333333;
+    -fx-font-family: "Vazirmatn";
+    -fx-font-size: 14px;
+}
+
+.my-choice-box .context-menu {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 5px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 0);
+    -fx-padding: 0;
+}
+
+.my-choice-box .context-menu .menu-item {
+    -fx-padding: 8px 10px;
+}
+
+.my-choice-box .context-menu .menu-item:hover,
+.my-choice-box .context-menu .menu-item:focused {
+    -fx-background-color: #e0e0e0;
+}
+
+.my-choice-box .context-menu .menu-item .label {
+    -fx-text-fill: #333333;
+}
+
+.my-text-field {
+    -fx-background-color: #fbdede;
+    -fx-border-color: #ced4da;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-font-family: "Vazirmatn";
+    -fx-font-size: 14px;
+    -fx-padding: 8px 10px;
+    -fx-prompt-text-fill: #6c757d;
+}
+
+.my-text-field:focused {
+    -fx-border-color: #007bff;
+    -fx-border-width: 2px;
+    -fx-background-insets: 0;
 }

@@ -197,7 +197,7 @@ public class AdminDashboardContentController extends AbstractBaseController {
     private void handleViewAllOrders() {
         navigateTo(
                 orderChartPane,
-                "/com/aut/shoomal/views/OrdersView.fxml",
+                "/com/aut/shoomal/views/AdminOrdersView.fxml",
                 "/com/aut/shoomal/styles/AdminDashboardStyles.css",
                 TransitionType.SLIDE_RIGHT,
                 (AdminOrdersController controller) -> {

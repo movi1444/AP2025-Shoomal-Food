@@ -1,17 +1,20 @@
 package com.aut.shoomal.dto.handler;
 
-import com.aut.shoomal.entity.restaurant.Restaurant;
-import com.aut.shoomal.entity.user.User;
-import com.aut.shoomal.entity.user.UserManager;
-import com.aut.shoomal.entity.restaurant.RestaurantManager;
 import com.aut.shoomal.dao.BlacklistedTokenDao;
 import com.aut.shoomal.dto.request.UpdateApprovalRequest;
 import com.aut.shoomal.dto.response.ApiResponse;
 import com.aut.shoomal.dto.response.BankInfoResponse;
 import com.aut.shoomal.dto.response.OrderResponse;
 import com.aut.shoomal.dto.response.RestaurantResponse;
-import com.aut.shoomal.dto.response.UserResponse;
 import com.aut.shoomal.dto.response.TransactionResponse;
+import com.aut.shoomal.dto.response.UserResponse;
+import com.aut.shoomal.dto.response.AdminUserResponse;
+import com.aut.shoomal.entity.restaurant.Restaurant;
+import com.aut.shoomal.entity.restaurant.RestaurantManager;
+import com.aut.shoomal.entity.user.User;
+import com.aut.shoomal.entity.user.UserManager;
+import com.aut.shoomal.entity.user.Seller;
+import com.aut.shoomal.entity.user.Courier;
 import com.aut.shoomal.exceptions.ConflictException;
 import com.aut.shoomal.exceptions.InvalidInputException;
 import com.aut.shoomal.exceptions.NotFoundException;
@@ -75,6 +78,9 @@ public class AdminHandler extends AbstractHttpHandler {
             }
             else if (path.equals("/admin/transactions") && method.equalsIgnoreCase("GET")) {
                 handleListAllTransactions(exchange);
+            }
+            else if (path.equals("/admin/restaurants") && method.equalsIgnoreCase("GET")) {
+                handleListAllRestaurants(exchange);
             }
             else {
                 sendResponse(exchange, HttpURLConnection.HTTP_NOT_FOUND,
@@ -143,8 +149,8 @@ public class AdminHandler extends AbstractHttpHandler {
 
     private void handleListAllUsers(HttpExchange exchange) throws IOException {
         List<User> users = userManager.getAllUsers();
-        List<UserResponse> responses = users.stream()
-                .map(this::convertToUserResponse)
+        List<AdminUserResponse> responses = users.stream()
+                .map(this::convertToAdminUserResponse)
                 .collect(Collectors.toList());
         sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, responses);
     }
@@ -153,20 +159,20 @@ public class AdminHandler extends AbstractHttpHandler {
         Map<String, String> queryParams = parseQueryParams(exchange);
 
         String search = queryParams.get("search");
-        String vendorId = queryParams.get("vendor");
-        String customerId = queryParams.get("customer");
-        String courierId = queryParams.get("courier");
+        String vendorName = queryParams.get("vendor");
+        String customerName = queryParams.get("customer");
+        String courierName = queryParams.get("courier");
         String statusString = queryParams.get("status");
 
         try {
-            List<Order> orders = orderManager.getAllOrders(search, vendorId, customerId, courierId, statusString);
+            List<Order> orders = orderManager.getAllOrders(search, vendorName, customerName, courierName, statusString);
 
             List<OrderResponse> orderResponses = orders.stream()
                     .map(this::convertToOrderResponse)
                     .collect(Collectors.toList());
             sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, orderResponses);
         } catch (IllegalArgumentException e) {
-            sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid input: Invalid 'status' value or ids are not number."));
+            sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid input: Invalid 'status' value or names/ids are not correctly formatted."));
         }
     }
 
@@ -215,6 +221,43 @@ public class AdminHandler extends AbstractHttpHandler {
         }
     }
 
+    private void handleListAllRestaurants(HttpExchange exchange) throws IOException {
+        try {
+            List<Restaurant> restaurants = restaurantManager.getAllApprovedRestaurants();
+            List<RestaurantResponse> responses = restaurants.stream()
+                    .map(this::convertToRestaurantResponse)
+                    .collect(Collectors.toList());
+            sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, responses);
+        } catch (Exception e) {
+            System.err.println("An unexpected error occurred during GET /admin/restaurants: " + e.getMessage());
+            e.printStackTrace();
+            sendResponse(exchange, HttpURLConnection.HTTP_INTERNAL_ERROR, new ApiResponse(false, "500 Internal Server Error: An unexpected error occurred."));
+        }
+    }
+
+    private AdminUserResponse convertToAdminUserResponse(User user) {
+        if (user == null) return null;
+        BankInfoResponse bankInfo = (user.getBank() != null) ? new BankInfoResponse(user.getBank().getName(), user.getBank().getAccountNumber()) : null;
+
+        String status = "N/A";
+        if (user instanceof Seller seller) {
+            status = seller.isApproved() ? "approved" : "rejected";
+        } else if (user instanceof Courier courier) {
+            status = courier.isApproved() ? "approved" : "rejected";
+        }
+
+        return new AdminUserResponse(
+                user.getId(),
+                user.getName(),
+                user.getPhoneNumber(),
+                user.getEmail(),
+                user.getRole().getName(),
+                user.getAddress(),
+                user.getProfileImageBase64(),
+                bankInfo,
+                status
+        );
+    }
 
     private UserResponse convertToUserResponse(User user) {
         if (user == null) return null;

@@ -41,7 +41,7 @@ public class Seller extends User
     }
 
     public boolean isApproved() {
-        return approved;
+        return approved != null ? approved : false;
     }
     public void setApproved(boolean approved) {
         this.approved = approved;

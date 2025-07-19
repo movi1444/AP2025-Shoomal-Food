@@ -9,6 +9,6 @@ import java.util.List;
 public interface OrderDao extends GenericDao<Order>
 {
     List<Order> findByVendorId(Integer vendorId);
-    List<Order> findAllWithFilters(String search, Long vendorId, Long customerId, Long courierId, OrderStatus status);
+    List<Order> findOrdersWithFilters(Long customerId, String search, String vendorName, String customerName, String courierName, OrderStatus status);
     List<Order> findWithFilters(Session session, Long customerId, String search, String vendorName);
 }
