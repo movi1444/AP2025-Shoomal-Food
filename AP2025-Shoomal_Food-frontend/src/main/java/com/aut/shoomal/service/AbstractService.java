@@ -48,7 +48,7 @@ public abstract class AbstractService
                 .thenApply(httpResponse -> {
                     String responseBody = httpResponse.body();
                     int code = httpResponse.statusCode();
-                    System.out.println("HTTP Response Status: " + code + ", Body: " + responseBody);
+                    System.out.println("HTTP Response Status: " + code);
 
                     if (code >= 200 && code < 300)
                     {
@@ -77,7 +77,7 @@ public abstract class AbstractService
                 .thenApply(httpResponse -> {
                     String responseBody = httpResponse.body();
                     int statusCode = httpResponse.statusCode();
-                    System.out.println("HTTP Response Status: " + statusCode + ", Body: " + responseBody);
+                    System.out.println("HTTP Response Status: " + statusCode);
 
                     if (statusCode >= 200 && statusCode < 300)
                     {

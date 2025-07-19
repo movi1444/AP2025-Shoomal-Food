@@ -20,10 +20,12 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.BorderPane;
 import javafx.util.Duration;
+import javafx.util.StringConverter;
 
 import java.net.URL;
+import java.util.Comparator;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -44,7 +46,7 @@ public class AdminOrdersController extends AbstractBaseController {
     @FXML private ComboBox<RestaurantResponse> restaurantComboBox;
     @FXML private ComboBox<UserResponse> courierComboBox;
     @FXML private ComboBox<String> statusFilterComboBox;
-    @FXML private VBox filterSidebar;
+    @FXML private BorderPane filterSidebar;
     @FXML private Button filterButton;
     @FXML private Button backButton;
 
@@ -68,7 +70,6 @@ public class AdminOrdersController extends AbstractBaseController {
         loadOrders(null, null, null, null, null);
 
         if (filterSidebar != null) {
-            filterSidebar.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
             filterSidebar.setVisible(false);
             filterSidebar.setManaged(false);
         }
@@ -91,6 +92,10 @@ public class AdminOrdersController extends AbstractBaseController {
         orderRawPriceColumn.setCellValueFactory(new PropertyValueFactory<>("rawPrice"));
         orderPayPriceColumn.setCellValueFactory(new PropertyValueFactory<>("payPrice"));
         orderCreatedAtColumn.setCellValueFactory(new PropertyValueFactory<>("createdAt"));
+
+        ordersTableView.getSortOrder().clear();
+        ordersTableView.getSortOrder().add(orderIdColumn);
+        orderIdColumn.setSortType(TableColumn.SortType.ASCENDING);
     }
 
     private void setupStatusFilterComboBox() {
@@ -113,14 +118,48 @@ public class AdminOrdersController extends AbstractBaseController {
             @Override
             protected void updateItem(UserResponse item, boolean empty) {
                 super.updateItem(item, empty);
-                setText(empty ? "" : item.getName() + " (" + item.getId() + ")");
+                setText(empty ? "" : item.getName());
             }
         });
         customerComboBox.setButtonCell(new ListCell<UserResponse>() {
             @Override
             protected void updateItem(UserResponse item, boolean empty) {
                 super.updateItem(item, empty);
-                setText(empty ? "انتخاب مشتری" : item.getName() + " (" + item.getId() + ")");
+                setText(empty ? "انتخاب مشتری" : item.getName());
+            }
+        });
+        customerComboBox.setConverter(new StringConverter<UserResponse>() {
+            @Override
+            public String toString(UserResponse user) {
+                return user == null ? "" : user.getName();
+            }
+
+            @Override
+            public UserResponse fromString(String string) {
+                if (string == null || string.trim().isEmpty()) {
+                    return null;
+                }
+                int lastParenIndex = string.lastIndexOf('(');
+                if (lastParenIndex > 0 && string.endsWith(")")) {
+                    String namePart = string.substring(0, lastParenIndex).trim();
+                    String idPart = string.substring(lastParenIndex + 1, string.length() - 1).trim();
+                    try {
+                        Long id = Long.parseLong(idPart);
+                        return allCustomers.stream()
+                                .filter(u -> u.getId().equals(id) && u.getName().equalsIgnoreCase(namePart))
+                                .findFirst()
+                                .orElse(null);
+                    } catch (NumberFormatException e) {
+                        return allCustomers.stream()
+                                .filter(user -> user.getName().equalsIgnoreCase(namePart))
+                                .findFirst()
+                                .orElse(null);
+                    }
+                }
+                return allCustomers.stream()
+                        .filter(user -> user.getName().equalsIgnoreCase(string))
+                        .findFirst()
+                        .orElse(null);
             }
         });
 
@@ -128,30 +167,81 @@ public class AdminOrdersController extends AbstractBaseController {
             @Override
             protected void updateItem(RestaurantResponse item, boolean empty) {
                 super.updateItem(item, empty);
-                setText(empty ? "" : item.getName() + " (" + item.getId() + ")");
+                setText(empty ? "" : item.getName());
             }
         });
         restaurantComboBox.setButtonCell(new ListCell<RestaurantResponse>() {
             @Override
             protected void updateItem(RestaurantResponse item, boolean empty) {
                 super.updateItem(item, empty);
-                setText(empty ? "انتخاب رستوران" : item.getName() + " (" + item.getId() + ")");
+                setText(empty ? "انتخاب رستوران" : item.getName());
+            }
+        });
+        restaurantComboBox.setConverter(new StringConverter<RestaurantResponse>() {
+            @Override
+            public String toString(RestaurantResponse restaurant) {
+                return restaurant == null ? "" : restaurant.getName();
+            }
+
+            @Override
+            public RestaurantResponse fromString(String string) {
+                if (string == null || string.trim().isEmpty()) {
+                    return null;
+                }
+                int lastParenIndex = string.lastIndexOf('(');
+                if (lastParenIndex > 0 && string.endsWith(")")) {
+                    String namePart = string.substring(0, lastParenIndex).trim();
+                    String idPart = string.substring(lastParenIndex + 1, string.length() - 1).trim();
+                    try {
+                        Integer id = Integer.parseInt(idPart);
+                        return allRestaurants.stream()
+                                .filter(r -> r.getId().equals(id) && r.getName().equalsIgnoreCase(namePart))
+                                .findFirst()
+                                .orElse(null);
+                    } catch (NumberFormatException e) {
+                        return allRestaurants.stream()
+                                .filter(restaurant -> restaurant.getName().equalsIgnoreCase(namePart))
+                                .findFirst()
+                                .orElse(null);
+                    }
+                }
+                return allRestaurants.stream()
+                        .filter(restaurant -> restaurant.getName().equalsIgnoreCase(string))
+                        .findFirst()
+                        .orElse(null);
             }
         });
 
-        courierComboBox.setCellFactory(lv -> new ListCell<>() {
+        courierComboBox.setCellFactory(lv -> new ListCell<UserResponse>() {
             @Override
             protected void updateItem(UserResponse item, boolean empty) {
                 super.updateItem(item, empty);
-                setText(empty || item == null ? null : item.getName());
+                setText(empty || item == null ? "" : item.getName());
             }
         });
 
-        courierComboBox.setButtonCell(new ListCell<>() {
+        courierComboBox.setButtonCell(new ListCell<UserResponse>() {
             @Override
             protected void updateItem(UserResponse item, boolean empty) {
                 super.updateItem(item, empty);
-                setText(empty || item == null ? null : item.getName());
+                setText(empty || item == null ? "" : item.getName());
+            }
+        });
+        courierComboBox.setConverter(new StringConverter<UserResponse>() {
+            @Override
+            public String toString(UserResponse user) {
+                return user == null ? "" : user.getName();
+            }
+
+            @Override
+            public UserResponse fromString(String string) {
+                if (string == null || string.trim().isEmpty()) {
+                    return null;
+                }
+                return allCouriers.stream()
+                        .filter(user -> user.getName().equalsIgnoreCase(string))
+                        .findFirst()
+                        .orElse(null);
             }
         });
 
@@ -212,39 +302,56 @@ public class AdminOrdersController extends AbstractBaseController {
 
     private void addAutoCompleteForUsers(ComboBox<UserResponse> comboBox, ObservableList<UserResponse> originalItems) {
         comboBox.getEditor().textProperty().addListener((obs, oldValue, newValue) -> {
+            UserResponse selected = comboBox.getSelectionModel().getSelectedItem();
+            if (selected != null && selected.getName().equalsIgnoreCase(newValue)) {
+                return;
+            }
+
             if (newValue == null || newValue.isEmpty()) {
                 comboBox.setItems(originalItems);
+                comboBox.getSelectionModel().clearSelection();
                 return;
             }
 
             comboBox.hide();
-            comboBox.setItems(originalItems.stream()
+            ObservableList<UserResponse> filteredItems = originalItems.stream()
                     .filter(user -> user.getName().toLowerCase().contains(newValue.toLowerCase()) ||
                             String.valueOf(user.getId()).contains(newValue))
-                    .collect(Collectors.toCollection(FXCollections::observableArrayList)));
+                    .collect(Collectors.toCollection(FXCollections::observableArrayList));
+
+            comboBox.setItems(filteredItems);
+
             comboBox.show();
         });
 
-        comboBox.setPromptText(comboBox.getPromptText());
+        comboBox.setPromptText("انتخاب مشتری یا پیک");
         comboBox.setEditable(true);
     }
 
     private void addAutoCompleteForRestaurants(ComboBox<RestaurantResponse> comboBox, ObservableList<RestaurantResponse> originalItems) {
         comboBox.getEditor().textProperty().addListener((obs, oldValue, newValue) -> {
+            RestaurantResponse selected = comboBox.getSelectionModel().getSelectedItem();
+            if (selected != null && selected.getName().equalsIgnoreCase(newValue)) {
+                return;
+            }
+
             if (newValue == null || newValue.isEmpty()) {
                 comboBox.setItems(originalItems);
+                comboBox.getSelectionModel().clearSelection();
                 return;
             }
 
             comboBox.hide();
-            comboBox.setItems(originalItems.stream()
+            ObservableList<RestaurantResponse> filteredItems = originalItems.stream()
                     .filter(restaurant -> restaurant.getName().toLowerCase().contains(newValue.toLowerCase()) ||
                             String.valueOf(restaurant.getId()).contains(newValue))
-                    .collect(Collectors.toCollection(FXCollections::observableArrayList)));
+                    .collect(Collectors.toCollection(FXCollections::observableArrayList));
+
+            comboBox.setItems(filteredItems);
             comboBox.show();
         });
 
-        comboBox.setPromptText(comboBox.getPromptText());
+        comboBox.setPromptText("انتخاب رستوران");
         comboBox.setEditable(true);
     }
 
@@ -258,7 +365,10 @@ public class AdminOrdersController extends AbstractBaseController {
         adminDataService.getAllOrders(token, search, restaurant, customer, courier, status)
                 .thenAccept(orders -> Platform.runLater(() -> {
                     if (orders != null && !orders.isEmpty()) {
+                        orders.sort(Comparator.comparing(OrderResponse::getId));
+
                         ordersTableView.setItems(FXCollections.observableArrayList(orders));
+                        ordersTableView.sort();
                     } else {
                         ordersTableView.setItems(FXCollections.emptyObservableList());
                         showAlert("اطلاعات", "سفارشی با این فیلترها یافت نشد.", Alert.AlertType.INFORMATION, null);
@@ -277,7 +387,7 @@ public class AdminOrdersController extends AbstractBaseController {
 
     @FXML
     private void handleFilterOrders() {
-        TranslateTransition transition = new TranslateTransition(Duration.millis(300), filterSidebar);
+        TranslateTransition transition = new TranslateTransition(Duration.millis(500), filterSidebar);
         if (isFilterSidebarVisible) {
             transition.setToX(filterSidebar.getWidth());
             transition.setOnFinished(event -> {
@@ -297,9 +407,15 @@ public class AdminOrdersController extends AbstractBaseController {
     @FXML
     private void applyOrderFilters() {
         String search = searchTextField.getText();
-        String customerName = customerComboBox.getSelectionModel().getSelectedItem() != null ? customerComboBox.getSelectionModel().getSelectedItem().getName() : null;
-        String restaurantName = restaurantComboBox.getSelectionModel().getSelectedItem() != null ? restaurantComboBox.getSelectionModel().getSelectedItem().getName() : null;
-        String courierName = courierComboBox.getSelectionModel().getSelectedItem() != null ? courierComboBox.getSelectionModel().getSelectedItem().getName() : null;
+        UserResponse selectedCustomer = customerComboBox.getSelectionModel().getSelectedItem();
+        String customerName = selectedCustomer != null ? selectedCustomer.getName() : null;
+
+        RestaurantResponse selectedRestaurant = restaurantComboBox.getSelectionModel().getSelectedItem();
+        String restaurantName = selectedRestaurant != null ? selectedRestaurant.getName() : null;
+
+        UserResponse selectedCourier = courierComboBox.getSelectionModel().getSelectedItem();
+        String courierName = selectedCourier != null ? selectedCourier.getName() : null;
+
         String status = statusFilterComboBox.getValue();
 
         loadOrders(
@@ -338,10 +454,10 @@ public class AdminOrdersController extends AbstractBaseController {
     private void handleBackToAdminDashboard() {
         navigateTo(
                 backButton,
-                "/com/aut/shoomal/views/AdminDashboardContent.fxml",
-                "/com/aut/shoomal/styles/AdminDashboardStyles.css",
+                "/com/aut/shoomal/views/MainView.fxml",
+                "/com/aut/shoomal/styles/MainView.css",
                 TransitionType.SLIDE_LEFT,
-                (AdminDashboardContentController controller) -> {
+                (MainController controller) -> {
                     controller.setLoggedInUser(loggedInUser);
                 }
         );

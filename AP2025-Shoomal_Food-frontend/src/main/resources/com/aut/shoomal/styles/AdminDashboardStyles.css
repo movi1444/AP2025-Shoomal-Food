@@ -236,16 +236,21 @@
     -fx-font-size: 16px;
 }
 
+.filter-sidebar .head-label {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #FFFFFF;
+    -fx-padding: 10px 0;
+    -fx-alignment: CENTER;
+}
+
 .filter-sidebar .text-field,
 .filter-sidebar .combo-box {
-    -fx-background-color: #fbdede;
-    -fx-border-color: #ced4da;
+    -fx-border-color: #7ec8fd;
     -fx-border-width: 1px;
     -fx-border-radius: 5px;
-    -fx-background-radius: 5px;
     -fx-font-family: "Vazirmatn";
     -fx-font-size: 14px;
-    -fx-padding: 8px 10px;
     -fx-prompt-text-fill: #6c757d;
 }
 
@@ -325,4 +330,55 @@
     -fx-border-color: #007bff;
     -fx-border-width: 2px;
     -fx-background-insets: 0;
+}
+
+.my-label {
+    -fx-font-size: 17px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #E0E0E0;
+    -fx-padding: 5px 0;
+}
+
+.head-label {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #FFFFFF;
+    -fx-padding: 10px 0;
+    -fx-alignment: CENTER;
+}
+.filter-sidebar .primary-button {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-padding: 10px 20px;
+    -fx-background-radius: 5px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);
+    -fx-alignment: center;
+    -fx-pref-width: 150px;
+}
+
+.filter-sidebar .primary-button:hover {
+    -fx-background-color: #45a049;
+}
+
+.filter-sidebar .my-button2 {
+    -fx-background-color: #9a9a9a;
+    -fx-text-fill: #020101;
+    -fx-font-family: "Beach";
+    -fx-font-size: 16px;
+    -fx-padding: 10px 25px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 0);
+}
+
+.filter-sidebar .my-button2:hover {
+    -fx-background-color: #888787;
+}
+
+.filter-sidebar .my-button2:pressed {
+    -fx-background-color: #737373;
+    -fx-translate-y: 1px;
 }

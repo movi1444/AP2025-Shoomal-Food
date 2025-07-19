@@ -36,7 +36,7 @@ public class AdminDataService extends AbstractService {
         try {
             Map<String, String> params = new HashMap<>();
             if (search != null) params.put("search", search);
-            if (restaurant != null) params.put("restaurant", restaurant);
+            if (restaurant != null) params.put("vendor", restaurant);
             if (customer != null) params.put("customer", customer);
             if (courier != null) params.put("courier", courier);
             if (status != null) params.put("status", status);
