@@ -9,5 +9,6 @@ public interface FoodDao extends GenericDao<Food> {
     List<Food> searchByName(String keyword);
     List<Food> findByRestaurantId(Long restaurantId);
     List<Food> findByKeyword(String keyword);
+    List<Food> getFoodsByMenuTitle(Session session, Long restaurantId, String title);
     Food getFoodByIdAndRestaurantId(Session session, Long id, Long restaurantId);
 }

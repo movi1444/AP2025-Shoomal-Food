@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class FoodItemHandler extends AbstractHttpHandler {
@@ -31,6 +32,7 @@ public class FoodItemHandler extends AbstractHttpHandler {
 
     private static final Pattern FOOD_ITEM_ID_PATH_PATTERN = Pattern.compile("/restaurants/\\d+/item/(\\d+).*");
     private static final Pattern RESTAURANT_ID_FROM_ITEM_PATH_PATTERN = Pattern.compile("/restaurants/(\\d+)/item.*");
+    private static final Pattern GET_FOODS_TITLE_PATH_PATTERN = Pattern.compile("/restaurants/(\\d+)/items(?:/[^/]+(?:/\\d+)?)?/?$");
 
     public FoodItemHandler(RestaurantManager restaurantManager, FoodManager foodManager, UserManager userManager, BlacklistedTokenDao blacklistedTokenDao) {
         this.restaurantManager = restaurantManager;
@@ -56,6 +58,9 @@ public class FoodItemHandler extends AbstractHttpHandler {
             Optional<Integer> foodItemIdOptional = extractIdFromPath(requestPath, FOOD_ITEM_ID_PATH_PATTERN);
             int foodItemId = foodItemIdOptional.orElse(-1);
 
+            Optional<String> titleOp = extractMenuTitleFromPath(requestPath, GET_FOODS_TITLE_PATH_PATTERN);
+            String menuTitle = titleOp.orElse(null);
+
             if (requestPath.equals("/restaurants/" + restaurantId + "/item") && method.equalsIgnoreCase("POST") && restaurantId != -1) {
                 handleAddFoodItem(exchange, authenticatedUser, restaurantId);
             } else if (requestPath.equals("/restaurants/" + restaurantId + "/item/" + foodItemId) && foodItemId != -1 && restaurantId != -1) {
@@ -70,6 +75,8 @@ public class FoodItemHandler extends AbstractHttpHandler {
                 }
             } else if (requestPath.equals("/restaurants/" + restaurantId + "/items") && method.equalsIgnoreCase("GET") && restaurantId != -1) {
                 getFoodsByRestaurantId(exchange, (long) restaurantId);
+            } else if (requestPath.equals("/restaurants/" + restaurantId + "/items/" + menuTitle) && method.equalsIgnoreCase("GET") && restaurantId != -1 && menuTitle != null) {
+                getFoodsByMenuTitle(exchange, (long) restaurantId, menuTitle);
             } else {
                 sendResponse(exchange, HttpURLConnection.HTTP_NOT_FOUND, new ApiResponse(false, "Resource not found"));
             }
@@ -89,6 +96,20 @@ public class FoodItemHandler extends AbstractHttpHandler {
         } finally {
             exchange.close();
         }
+    }
+
+    private void getFoodsByMenuTitle(HttpExchange exchange, Long restaurantId, String menuTitle) throws IOException {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        List<Food> foods = foodManager.getFoodsByMenuTitle(session, restaurantId, menuTitle);
+        if (foods == null)
+        {
+            session.close();
+            throw new NotFoundException("Foods not found");
+        }
+        List<ListItemResponse> responses = foods.stream()
+                .map(this::convertToFoodItemResponse)
+                .toList();
+        sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, responses);
     }
 
     private void getFoodsByRestaurantId(HttpExchange exchange, Long restaurantId) throws IOException {
@@ -182,5 +203,13 @@ public class FoodItemHandler extends AbstractHttpHandler {
                 food.getSupply(),
                 food.getKeywords()
         );
+    }
+
+    private Optional<String> extractMenuTitleFromPath(String path, Pattern pattern) {
+        Matcher matcher = pattern.matcher(path);
+        if (matcher.matches() && matcher.groupCount() >= 1) {
+            return Optional.ofNullable(matcher.group(1));
+        }
+        return Optional.empty();
     }
 }

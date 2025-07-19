@@ -309,9 +309,9 @@ public class ShowListFoodController extends AbstractBaseController
             stage.setTitle("Add food");
             stage.show();
         } catch (Exception e) {
-            System.err.println("Failed to load FoodDetailsView.fxml for Edit Food: " + e.getMessage());
+            System.err.println("Failed to load FoodDetailsView.fxml for Add Food: " + e.getMessage());
             e.printStackTrace();
-            showAlert("Navigation Error", "Failed to load edit food page.", Alert.AlertType.ERROR, null);
+            showAlert("Navigation Error", "Failed to load add food page.", Alert.AlertType.ERROR, null);
         }
     }
 

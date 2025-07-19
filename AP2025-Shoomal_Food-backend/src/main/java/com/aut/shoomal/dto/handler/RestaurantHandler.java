@@ -26,7 +26,9 @@ public class RestaurantHandler extends AbstractHttpHandler {
     private static final Pattern MENU_PATH_PATTERN = Pattern.compile("/restaurants/\\d+/menu(?:/[^/]+(?:/\\d+)?)?/?$");
     private static final Pattern RESTAURANT_ORDERS_PATH_PATTERN = Pattern.compile("/restaurants/(\\d+)/orders/?$|/restaurants/orders/(\\d+)$");
     private static final Pattern GET_FOODS_PATH_PATTERN = Pattern.compile("/restaurants/(\\d+)/items");
+    private static final Pattern GET_FOODS_TITLE_PATH_PATTERN = Pattern.compile("/restaurants/(\\d+)/items(?:/[^/]+(?:/\\d+)?)?/?$");
     private static final Pattern GET_MENUS_FROM_ID_PATTERN = Pattern.compile("/restaurants/\\d+/menus");
+    private static final Pattern EDIT_MENU_PATH_PATTERN = Pattern.compile("/restaurants/\\d+/menu/edit(?:/[^/]+(?:/\\d+)?)?/?$");
 
 
     public RestaurantHandler(RestaurantManager restaurantManager, FoodManager foodManager, MenuManager menuManager,
@@ -50,9 +52,9 @@ public class RestaurantHandler extends AbstractHttpHandler {
         try {
             if (RESTAURANT_CORE_PATH_PATTERN.matcher(requestPath).matches()) {
                 restaurantCoreHandler.handle(exchange);
-            } else if (FOOD_ITEM_PATH_PATTERN.matcher(requestPath).matches() || GET_FOODS_PATH_PATTERN.matcher(requestPath).matches()) {
+            } else if (FOOD_ITEM_PATH_PATTERN.matcher(requestPath).matches() || GET_FOODS_PATH_PATTERN.matcher(requestPath).matches() || GET_FOODS_TITLE_PATH_PATTERN.matcher(requestPath).matches()) {
                 foodItemHandler.handle(exchange);
-            } else if (MENU_PATH_PATTERN.matcher(requestPath).matches() || GET_MENUS_FROM_ID_PATTERN.matcher(requestPath).matches()) {
+            } else if (MENU_PATH_PATTERN.matcher(requestPath).matches() || GET_MENUS_FROM_ID_PATTERN.matcher(requestPath).matches() || EDIT_MENU_PATH_PATTERN.matcher(requestPath).matches()) {
                 menuHandler.handle(exchange);
             } else if (RESTAURANT_ORDERS_PATH_PATTERN.matcher(requestPath).matches()) {
                 restaurantOrderHandler.handle(exchange);

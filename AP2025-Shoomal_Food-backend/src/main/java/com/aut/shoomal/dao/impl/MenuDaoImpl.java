@@ -45,4 +45,17 @@ public class MenuDaoImpl extends GenericDaoImpl<Menu> implements MenuDao {
             throw new RuntimeException("Error finding menus containing food item ID: " + foodItemId, e);
         }
     }
+
+    @Override
+    public Menu findByTitle(Session session, Integer restaurantId, String title) {
+        try {
+            Query<Menu> query = session.createQuery("FROM Menu WHERE restaurant.id = :rid AND title = :title", Menu.class);
+            query.setParameter("title", title);
+            query.setParameter("rid", restaurantId);
+            return query.uniqueResult();
+        } catch (Exception e) {
+            System.out.println("Error finding menu by title: " + title);
+            return null;
+        }
+    }
 }

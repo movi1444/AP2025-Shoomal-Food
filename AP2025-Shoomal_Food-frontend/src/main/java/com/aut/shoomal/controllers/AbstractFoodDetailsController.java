@@ -94,17 +94,15 @@ public abstract class AbstractFoodDetailsController extends AbstractBaseControll
         request.setKeywords(convertToList(keywordsField.getText()));
 
         saveFoodDetails(request)
-                .thenAccept(response -> {
-                    Platform.runLater(() -> {
-                        if (response != null)
-                        {
-                            showAlert("Success", "Food details saved successfully!", Alert.AlertType.INFORMATION, null);
-                            handleBackToPreviousPage(actionEvent);
-                        }
-                        else
-                            showAlert("Error", "Failed to save food details.", Alert.AlertType.ERROR, null);
-                    });
-                })
+                .thenAccept(response -> Platform.runLater(() -> {
+                    if (response != null)
+                    {
+                        showAlert("Success", "Food details saved successfully!", Alert.AlertType.INFORMATION, null);
+                        handleBackToPreviousPage(actionEvent);
+                    }
+                    else
+                        showAlert("Error", "Failed to save food details.", Alert.AlertType.ERROR, null);
+                }))
                 .exceptionally(e -> {
                     Platform.runLater(() -> {
                         if (e.getCause() instanceof FrontendServiceException fsException) {

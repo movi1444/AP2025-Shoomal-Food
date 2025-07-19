@@ -9,10 +9,14 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.Objects;
@@ -66,7 +70,26 @@ public class ShowListMenuController extends AbstractBaseController
 
             private void handleEditMenu(String title, Node source)
             {
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/aut/shoomal/views/MenuDetailsView.fxml"));
+                    EditMenuController editMenuController = new EditMenuController();
+                    loader.setController(editMenuController);
+                    Parent root = loader.load();
 
+                    editMenuController.setRestaurantId(restaurantId);
+                    editMenuController.setTitle(title);
+
+                    Stage stage = (Stage) source.getScene().getWindow();
+                    Scene scene = new Scene(root, stage.getWidth(), stage.getHeight());
+                    scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/styles/MainView.css")).toExternalForm());
+                    stage.setScene(scene);
+                    stage.setTitle("Add menu");
+                    stage.show();
+                } catch (Exception e) {
+                    System.err.println("Failed to load MenuDetailsView.fxml for Edit Food: " + e.getMessage());
+                    e.printStackTrace();
+                    showAlert("Navigation Error", "Failed to load edit menu page.", Alert.AlertType.ERROR, null);
+                }
             }
 
             private void handleDeleteMenu(String title)
@@ -138,7 +161,7 @@ public class ShowListMenuController extends AbstractBaseController
         });
     }
 
-    private void loadMenus()
+    public void loadMenus()
     {
         if (token == null || token.isEmpty())
         {
@@ -185,8 +208,27 @@ public class ShowListMenuController extends AbstractBaseController
         loadMenus();
     }
 
+    @FXML
     public void handleAddMenu(ActionEvent actionEvent)
     {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/aut/shoomal/views/MenuDetailsView.fxml"));
+            AddMenuController addMenuController = new AddMenuController();
+            loader.setController(addMenuController);
+            Parent root = loader.load();
 
+            addMenuController.setRestaurantId(restaurantId);
+
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root, stage.getWidth(), stage.getHeight());
+            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/styles/MainView.css")).toExternalForm());
+            stage.setScene(scene);
+            stage.setTitle("Add menu");
+            stage.show();
+        } catch (Exception e) {
+            System.err.println("Failed to load MenuDetailsView.fxml for Add Food: " + e.getMessage());
+            e.printStackTrace();
+            showAlert("Navigation Error", "Failed to load add menu page.", Alert.AlertType.ERROR, null);
+        }
     }
 }
