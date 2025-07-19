@@ -1,4 +1,3 @@
-// AP2025-Shoomal-Food/AP2025-Shoomal_Food-frontend/src/main/java/com/aut/shoomal/controllers/AdminDashboardContentController.java
 package com.aut.shoomal.controllers;
 
 import com.aut.shoomal.dto.response.OrderResponse;
@@ -208,7 +207,15 @@ public class AdminDashboardContentController extends AbstractBaseController {
 
     @FXML
     private void handleViewTransactions() {
-        showAlert("Admin Action", "Displaying financial transactions. (Implementation needed)", Alert.AlertType.INFORMATION, null);
+        navigateTo(
+                transactionChartPane,
+                "/com/aut/shoomal/views/AdminTransactionsView.fxml",
+                "/com/aut/shoomal/styles/AdminDashboardStyles.css",
+                TransitionType.SLIDE_RIGHT,
+                (AdminTransactionsController controller) -> {
+                    controller.setLoggedInUser(loggedInUser);
+                }
+        );
     }
 
     @FXML
