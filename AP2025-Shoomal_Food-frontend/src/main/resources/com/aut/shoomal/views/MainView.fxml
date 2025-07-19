@@ -35,8 +35,7 @@
                             </Menu>
                             <Menu text="منو">
                                 <items>
-                                    <MenuItem text="ایجاد منوی جدید" onAction="#handleCreateMenu" />
-                                    <MenuItem text="لیست منو ها" onAction="#handleShowMenus" />
+                                    <MenuItem text="مدیریت و مشاهده لیست منو ها" onAction="#handleManageMenus" />
                                 </items>
                             </Menu>
                             <Menu text="سفارش">

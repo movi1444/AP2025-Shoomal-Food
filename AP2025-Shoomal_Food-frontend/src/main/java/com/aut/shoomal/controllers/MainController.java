@@ -235,18 +235,6 @@ public class MainController extends AbstractBaseController {
     }
 
     @FXML
-    public void handleCreateMenu(ActionEvent actionEvent)
-    {
-
-    }
-
-    @FXML
-    public void handleShowMenus(ActionEvent actionEvent)
-    {
-
-    }
-
-    @FXML
     public void handleListFoods(ActionEvent actionEvent)
     {
         if (restaurantId == null)
@@ -263,6 +251,33 @@ public class MainController extends AbstractBaseController {
                 controller -> {
                     if (controller instanceof ShowListFoodController showListFoodController)
                         showListFoodController.setRestaurantId(restaurantId);
+                }
+        );
+    }
+
+    @FXML
+    public void handleManageMenus(ActionEvent actionEvent)
+    {
+        if (token == null || token.isEmpty())
+        {
+            showAlert("Authentication Error", "User not logged in. Please log in first.", Alert.AlertType.ERROR, null);
+            return;
+        }
+
+        if (restaurantId == null)
+        {
+            showAlert("Error", "Please create a restaurant first to manage food items.", Alert.AlertType.WARNING, null);
+            return;
+        }
+
+        navigateTo(
+                (MenuItem) actionEvent.getSource(),
+                "/com/aut/shoomal/views/ListMenuView.fxml",
+                "",
+                TransitionType.SLIDE_LEFT,
+                controller -> {
+                    if (controller instanceof ShowListMenuController showListMenuController)
+                        showListMenuController.setRestaurantId(restaurantId);
                 }
         );
     }

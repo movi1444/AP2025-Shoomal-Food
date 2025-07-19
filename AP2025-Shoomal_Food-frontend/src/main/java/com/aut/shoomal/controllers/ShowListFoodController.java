@@ -58,11 +58,13 @@ public class ShowListFoodController extends AbstractBaseController
 
         actionsColumn.setCellFactory(param -> new TableCell<>() {
             private final Button editButton = new Button("ویرایش");
+            private final Button deleteButton = new Button("حذف غذا");
             private final ChoiceBox<String> menuChoiceBox = new ChoiceBox<>();
             private final Button addToMenuButton = new Button("افزودن به منو");
-            private final HBox pane = new HBox(5, editButton, menuChoiceBox, addToMenuButton);
+            private final HBox pane = new HBox(5, editButton, deleteButton, menuChoiceBox, addToMenuButton);
             {
                 editButton.getStyleClass().add("table-cell-button");
+                deleteButton.getStyleClass().add("delete-button");
                 addToMenuButton.getStyleClass().add("table-cell-button");
                 menuChoiceBox.getStyleClass().add("table-cell-choice-box");
 
@@ -72,6 +74,11 @@ public class ShowListFoodController extends AbstractBaseController
                 editButton.setOnAction((ActionEvent event) -> {
                     ListItemResponse food = getTableView().getItems().get(getIndex());
                     handleEditFood(food.getId(), (Node) event.getSource());
+                });
+
+                deleteButton.setOnAction((ActionEvent event) -> {
+                    ListItemResponse food = getTableView().getItems().get(getIndex());
+                    handleDeleteFood(food.getId());
                 });
 
                 addToMenuButton.setOnAction((ActionEvent event) -> {
@@ -84,6 +91,114 @@ public class ShowListFoodController extends AbstractBaseController
                     }
                     handleAddFoodToMenu(food.getId(), selectedMenuTitle);
                 });
+            }
+
+            private void handleDeleteFood(Integer foodId)
+            {
+                handleError();
+                if (foodId == null)
+                {
+                    showAlert("Error", "Cannot delete food.", Alert.AlertType.ERROR, null);
+                    return;
+                }
+
+                Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
+                confirmationAlert.setTitle("تایید حذف");
+                confirmationAlert.setHeaderText(null);
+                confirmationAlert.setContentText("آیا مطمئن هستید که می‌خواهید این غذا را حذف کنید؟");
+                confirmationAlert.getDialogPane().getStylesheets().add(
+                        Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/styles/AlertStyles.css")).toExternalForm()
+                );
+                confirmationAlert.getDialogPane().getStyleClass().add("custom-alert");
+                confirmationAlert.getDialogPane().getStyleClass().add("confirmation");
+
+                confirmationAlert.showAndWait().ifPresent(response -> {
+                    if (response == ButtonType.OK)
+                    {
+                        restaurantService.deleteFoodFromRestaurant(token, restaurantId, foodId)
+                                .thenAccept(apiResponse -> Platform.runLater(() -> {
+                                    if (apiResponse.isSuccess())
+                                    {
+                                        showAlert("موفقیت", "غذا با موفقیت حذف شد.", Alert.AlertType.INFORMATION, null);
+                                        loadFoods();
+                                    }
+                                    else
+                                        showAlert("خطا", "خطا در حذف غذا: " + apiResponse.getMessage(), Alert.AlertType.ERROR, null);
+                                }))
+                                .exceptionally(e -> {
+                                    Platform.runLater(() -> {
+                                        if (e.getCause() instanceof FrontendServiceException fsException)
+                                            showAlert(fsException);
+                                        else
+                                            showAlert("خطا", "خطای غیرمنتظره در حذف غذا: " + e.getMessage(), Alert.AlertType.ERROR, null);
+                                    });
+                                    return null;
+                                });
+                    }
+                });
+            }
+
+            private void handleAddFoodToMenu(Integer foodId, String title)
+            {
+                handleError();
+                if (foodId == null || title == null || title.isEmpty())
+                {
+                    showAlert("Error", "Cannot add food to the menu.", Alert.AlertType.ERROR, null);
+                    return;
+                }
+
+                AddMenuItemRequest request = new AddMenuItemRequest();
+                request.setItemId(foodId);
+                restaurantService.addItemToMenu(request, token, restaurantId, title)
+                        .thenAccept(response -> Platform.runLater(() -> {
+                            if (response.isSuccess())
+                            {
+                                showAlert("Success", "Food added to the menu.", Alert.AlertType.INFORMATION, null);
+                            }
+                            else
+                                showAlert("Error", "failed to add food to menu titles.", Alert.AlertType.ERROR, null);
+                        }))
+                        .exceptionally(e -> {
+                            Platform.runLater(() -> {
+                                if (e.getCause() instanceof FrontendServiceException fsException)
+                                    showAlert(fsException);
+                                else
+                                    showAlert("Error", "Failed to add food to menu: " + e.getMessage(), Alert.AlertType.ERROR, null);
+                            });
+                            menuTitles = FXCollections.emptyObservableList();
+                            return null;
+                        });
+            }
+
+            private void handleEditFood(Integer foodId, Node editButton)
+            {
+                handleError();
+                if (foodId == null)
+                {
+                    showAlert("Error", "Food id missing.", Alert.AlertType.ERROR, null);
+                    return;
+                }
+
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/aut/shoomal/views/FoodDetailsView.fxml"));
+                    EditFoodController editFoodController = new EditFoodController();
+                    loader.setController(editFoodController);
+                    Parent root = loader.load();
+
+                    editFoodController.setRestaurantId(restaurantId);
+                    editFoodController.setFoodId(foodId);
+
+                    Stage stage = (Stage) editButton.getScene().getWindow();
+                    Scene scene = new Scene(root, stage.getWidth(), stage.getHeight());
+                    scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/styles/MainView.css")).toExternalForm());
+                    stage.setScene(scene);
+                    stage.setTitle("Edit food");
+                    stage.show();
+                } catch (Exception e) {
+                    System.err.println("Failed to load FoodDetailsView.fxml for Edit Food: " + e.getMessage());
+                    e.printStackTrace();
+                    showAlert("Navigation Error", "Failed to load edit food page.", Alert.AlertType.ERROR, null);
+                }
             }
 
             @Override
@@ -108,38 +223,6 @@ public class ShowListFoodController extends AbstractBaseController
                 }
             }
         });
-    }
-
-    private void handleAddFoodToMenu(Integer foodId, String title)
-    {
-        handleError();
-        if (foodId == null || title == null || title.isEmpty())
-        {
-            showAlert("Error", "Cannot add food to the menu.", Alert.AlertType.ERROR, null);
-            return;
-        }
-
-        AddMenuItemRequest request = new AddMenuItemRequest();
-        request.setItemId(foodId);
-        restaurantService.addItemToMenu(request, token, restaurantId, title)
-                .thenAccept(response -> Platform.runLater(() -> {
-                    if (response.isSuccess())
-                    {
-                        showAlert("Success", "Food added to the menu.", Alert.AlertType.INFORMATION, null);
-                    }
-                    else
-                        showAlert("Error", "failed to add food to menu titles.", Alert.AlertType.ERROR, null);
-                }))
-                .exceptionally(e -> {
-                    Platform.runLater(() -> {
-                        if (e.getCause() instanceof FrontendServiceException fsException)
-                            showAlert(fsException);
-                        else
-                            showAlert("Error", "Failed to add food to menu: " + e.getMessage(), Alert.AlertType.ERROR, null);
-                    });
-                    this.menuTitles = FXCollections.emptyObservableList();
-                    return null;
-                });
     }
 
     public void setRestaurantId(Integer restaurantId)
@@ -206,37 +289,6 @@ public class ShowListFoodController extends AbstractBaseController
         navigateToMainView((Node) actionEvent.getSource());
     }
 
-    public void handleEditFood(Integer foodId, Node editButton)
-    {
-        handleError();
-        if (foodId == null)
-        {
-            showAlert("Error", "Food id missing.", Alert.AlertType.ERROR, null);
-            return;
-        }
-
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/aut/shoomal/views/FoodDetailsView.fxml"));
-            EditFoodController editFoodController = new EditFoodController();
-            loader.setController(editFoodController);
-            Parent root = loader.load();
-
-            editFoodController.setRestaurantId(restaurantId);
-            editFoodController.setFoodId(foodId);
-
-            Stage stage = (Stage) editButton.getScene().getWindow();
-            Scene scene = new Scene(root, stage.getWidth(), stage.getHeight());
-            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/styles/MainView.css")).toExternalForm());
-            stage.setScene(scene);
-            stage.setTitle("Edit food");
-            stage.show();
-        } catch (Exception e) {
-            System.err.println("Failed to load FoodDetailsView.fxml for Edit Food: " + e.getMessage());
-            e.printStackTrace();
-            showAlert("Navigation Error", "Failed to load edit food page.", Alert.AlertType.ERROR, null);
-        }
-    }
-
     @FXML
     public void handleAddFood(ActionEvent actionEvent)
     {
@@ -254,7 +306,7 @@ public class ShowListFoodController extends AbstractBaseController
             Scene scene = new Scene(root, stage.getWidth(), stage.getHeight());
             scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/styles/MainView.css")).toExternalForm());
             stage.setScene(scene);
-            stage.setTitle("Edit food");
+            stage.setTitle("Add food");
             stage.show();
         } catch (Exception e) {
             System.err.println("Failed to load FoodDetailsView.fxml for Edit Food: " + e.getMessage());
