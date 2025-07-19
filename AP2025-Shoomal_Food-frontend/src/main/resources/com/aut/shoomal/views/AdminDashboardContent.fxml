@@ -30,7 +30,6 @@
                 <items>
                     <MenuItem onAction="#handleListAllCoupons" styleClass="admin-menu-item" text="لیست همه کوپن ها" />
                     <MenuItem onAction="#handleCreateNewCoupon" styleClass="admin-menu-item" text="ایجاد کوپن" />
-                    <MenuItem onAction="#handleManageCoupons" styleClass="admin-menu-item" text="مدیریت کوپن ها" />
                 </items>
             </Menu>
         </menus>

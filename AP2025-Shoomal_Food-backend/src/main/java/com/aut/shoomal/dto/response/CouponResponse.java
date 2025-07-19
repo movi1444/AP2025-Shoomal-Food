@@ -3,7 +3,7 @@ package com.aut.shoomal.dto.response;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public class CouponResponse
 {
@@ -24,7 +24,7 @@ public class CouponResponse
     public CouponResponse() {}
 
     public CouponResponse(Integer id, String couponCode, String type, BigDecimal value, Integer minPrice, Integer userCount,
-                          LocalDateTime startDate, LocalDateTime endDate)
+                          LocalDate startDate, LocalDate endDate)
     {
         this.id = id;
         this.couponCode = couponCode;

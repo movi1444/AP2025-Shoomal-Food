@@ -4,7 +4,7 @@ import com.aut.shoomal.payment.order.Order;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Set;
 
@@ -31,14 +31,14 @@ public class Coupon
     @Column(name = "user_count", nullable = false)
     private Integer userCount;
     @Column(name = "start_date", nullable = false)
-    private LocalDateTime startDate;
+    private LocalDate startDate;
     @Column(name = "end_date", nullable = false)
-    private LocalDateTime endDate;
+    private LocalDate endDate;
 
     public Coupon() {}
 
     public Coupon(String couponCode, CouponType couponType, BigDecimal value, Integer minPrice, Integer userCount,
-                  LocalDateTime startDate, LocalDateTime endDate)
+                  LocalDate startDate, LocalDate endDate)
     {
         this.couponCode = couponCode;
         this.couponType = couponType;
@@ -59,22 +59,22 @@ public class Coupon
         this.id = id;
     }
 
-    public LocalDateTime getEndDate()
+    public LocalDate getEndDate()
     {
         return endDate;
     }
 
-    public void setEndDate(LocalDateTime endDate)
+    public void setEndDate(LocalDate endDate)
     {
         this.endDate = endDate;
     }
 
-    public LocalDateTime getStartDate()
+    public LocalDate getStartDate()
     {
         return startDate;
     }
 
-    public void setStartDate(LocalDateTime startDate)
+    public void setStartDate(LocalDate startDate)
     {
         this.startDate = startDate;
     }
