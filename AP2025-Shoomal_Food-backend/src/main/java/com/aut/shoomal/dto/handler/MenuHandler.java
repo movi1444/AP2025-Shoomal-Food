@@ -1,5 +1,6 @@
 package com.aut.shoomal.dto.handler;
 
+import com.aut.shoomal.entity.menu.Menu;
 import com.aut.shoomal.entity.user.User;
 import com.aut.shoomal.entity.user.UserManager;
 import com.aut.shoomal.entity.user.Seller;
@@ -16,6 +17,7 @@ import com.sun.net.httpserver.HttpExchange;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -73,6 +75,8 @@ public class MenuHandler extends AbstractHttpHandler {
                 }
             } else if (requestPath.equals("/restaurants/" + restaurantId + "/menu/" + menuTitle + "/" + menuItemId) && method.equalsIgnoreCase("DELETE") && restaurantId != -1 && menuTitle != null && menuItemId != -1) {
                 handleDeleteMenuItemFromMenu(exchange, authenticatedUser, restaurantId, menuTitle, menuItemId);
+            } else if (method.equalsIgnoreCase("GET") && requestPath.equals("/restaurants/" + restaurantId + "/menus") && restaurantId != -1) {
+                getMenusByRestaurantId(exchange, (long) restaurantId);
             } else {
                 sendResponse(exchange, HttpURLConnection.HTTP_NOT_FOUND, new ApiResponse(false, "Resource not found"));
             }
@@ -92,6 +96,17 @@ public class MenuHandler extends AbstractHttpHandler {
         } finally {
             exchange.close();
         }
+    }
+
+    private void getMenusByRestaurantId(HttpExchange exchange, Long restaurantId) throws IOException
+    {
+        List<Menu> menus = menuManager.findMenusByRestaurantId(restaurantId);
+        if (menus == null)
+            throw new NotFoundException("No menu found for restaurant id " + restaurantId);
+        List<MenuTitleResponse> responses = menus.stream()
+                .map(menu -> new MenuTitleResponse(menu.getTitle()))
+                .toList();
+        sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, responses);
     }
 
     private void handleAddMenuTitle(HttpExchange exchange, User authenticatedUser, Integer restaurantId) throws IOException {

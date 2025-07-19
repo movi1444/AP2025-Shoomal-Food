@@ -6,7 +6,7 @@ public class AddMenuItemRequest {
     @JsonProperty(value = "item_id", required = true)
     private Integer itemId;
 
-    public AddMenuItemRequest(){}
+    public AddMenuItemRequest() {}
 
     public Integer getItemId() {
         return itemId;

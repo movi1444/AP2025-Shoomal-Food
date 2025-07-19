@@ -30,7 +30,6 @@
                                 <items>
                                     <MenuItem text="ایجاد رستوران جدید" onAction="#handleCreateRestaurant" />
                                     <MenuItem text="لیست رستوران ها" onAction="#handleShowRestaurant" />
-                                    <MenuItem text="اضافه کردن غذا به رستوران" onAction="#handleAddFoodToRestaurant" />
                                     <MenuItem text="غذا های موجود در رستوران" onAction="#handleListFoods" />
                                 </items>
                             </Menu>

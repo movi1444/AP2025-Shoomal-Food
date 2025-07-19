@@ -101,7 +101,7 @@ public class FoodItemHandler extends AbstractHttpHandler {
     private void getFoodByIdAndRestaurantId(HttpExchange exchange, Long restaurantId, Long foodItemId) throws IOException
     {
         Session session = HibernateUtil.getSessionFactory().openSession();
-        Food food = foodManager.getByIdAndRestaurantId(session, restaurantId, foodItemId);
+        Food food = foodManager.getByIdAndRestaurantId(session, foodItemId, restaurantId);
         if (food == null)
         {
             session.close();

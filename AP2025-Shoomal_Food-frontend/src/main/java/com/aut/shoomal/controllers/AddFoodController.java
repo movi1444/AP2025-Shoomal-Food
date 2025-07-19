@@ -13,7 +13,7 @@ public class AddFoodController extends AbstractFoodDetailsController
     public void initialize(URL url, ResourceBundle resourceBundle)
     {
         super.initialize(url, resourceBundle);
-        titleLabel.setText("Add Food");
+        titleLabel.setText("ایجاد غذای جدید");
     }
 
     @Override

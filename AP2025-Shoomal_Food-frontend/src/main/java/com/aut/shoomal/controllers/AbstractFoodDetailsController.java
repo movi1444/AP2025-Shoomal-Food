@@ -120,7 +120,16 @@ public abstract class AbstractFoodDetailsController extends AbstractBaseControll
     @FXML
     public void handleBackToPreviousPage(ActionEvent actionEvent)
     {
-        navigateToMainView((Node) actionEvent.getSource());
+        navigateTo(
+                (Node) actionEvent.getSource(),
+                "/com/aut/shoomal/views/ListFoodView.fxml",
+                "/com/aut/shoomal/styles/ListFoodsView.css",
+                TransitionType.SLIDE_LEFT,
+                controller -> {
+                    if (controller instanceof ShowListFoodController showListFoodController)
+                        showListFoodController.setRestaurantId(restaurantId);
+                }
+        );
     }
 
     private List<String> convertToList(String keywords)

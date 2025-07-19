@@ -57,17 +57,15 @@ public class TransactionHistoryController extends AbstractBaseController
         }
 
         transactionService.getTransactions(token)
-                .thenAccept(transactions -> {
-                    Platform.runLater(() -> {
-                        if (transactions != null)
-                        {
-                            ObservableList<TransactionResponse> transactionList = FXCollections.observableArrayList(transactions);
-                            transactionTable.setItems(transactionList);
-                        }
-                        else
-                            showAlert("Error", "Failed to load transaction history.", Alert.AlertType.ERROR, null);
-                    });
-                })
+                .thenAccept(transactions -> Platform.runLater(() -> {
+                    if (transactions != null)
+                    {
+                        ObservableList<TransactionResponse> transactionList = FXCollections.observableArrayList(transactions);
+                        transactionTable.setItems(transactionList);
+                    }
+                    else
+                        showAlert("Error", "Failed to load transaction history.", Alert.AlertType.ERROR, null);
+                }))
                 .exceptionally(e -> {
                    Platform.runLater(() -> {
                        if (e.getCause() instanceof FrontendServiceException fsException)

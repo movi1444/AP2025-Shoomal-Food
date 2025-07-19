@@ -150,6 +150,20 @@ public class RestaurantService extends AbstractService
         }
     }
 
+    public CompletableFuture<List<MenuTitleResponse>> getMenusByRestaurantId(String token, Integer restaurantId)
+    {
+        String endpoint = "restaurants/" + restaurantId + "/menus";
+        try {
+            HttpRequest httpRequest = createAuthenticatedRequestBuilder(endpoint, token)
+                    .GET()
+                    .build();
+            return sendListRequest(httpRequest, new TypeReference<>() {});
+        } catch (Exception e) {
+            System.err.println("Error creating get menus by restaurant id request: " + e.getMessage());
+            throw new RuntimeException("Error creating get menus by restaurant id request: " + e.getMessage(), e);
+        }
+    }
+
     public  CompletableFuture<ApiResponse> addItemToMenu(AddMenuItemRequest request, String token, Integer restaurantId, String title)
     {
         String endpoint = "restaurants/" + restaurantId + "/menu/" + title;

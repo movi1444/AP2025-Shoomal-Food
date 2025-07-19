@@ -26,6 +26,7 @@ public class RestaurantHandler extends AbstractHttpHandler {
     private static final Pattern MENU_PATH_PATTERN = Pattern.compile("/restaurants/\\d+/menu(?:/[^/]+(?:/\\d+)?)?/?$");
     private static final Pattern RESTAURANT_ORDERS_PATH_PATTERN = Pattern.compile("/restaurants/(\\d+)/orders/?$|/restaurants/orders/(\\d+)$");
     private static final Pattern GET_FOODS_PATH_PATTERN = Pattern.compile("/restaurants/(\\d+)/items");
+    private static final Pattern GET_MENUS_FROM_ID_PATTERN = Pattern.compile("/restaurants/\\d+/menus");
 
 
     public RestaurantHandler(RestaurantManager restaurantManager, FoodManager foodManager, MenuManager menuManager,
@@ -51,7 +52,7 @@ public class RestaurantHandler extends AbstractHttpHandler {
                 restaurantCoreHandler.handle(exchange);
             } else if (FOOD_ITEM_PATH_PATTERN.matcher(requestPath).matches() || GET_FOODS_PATH_PATTERN.matcher(requestPath).matches()) {
                 foodItemHandler.handle(exchange);
-            } else if (MENU_PATH_PATTERN.matcher(requestPath).matches()) {
+            } else if (MENU_PATH_PATTERN.matcher(requestPath).matches() || GET_MENUS_FROM_ID_PATTERN.matcher(requestPath).matches()) {
                 menuHandler.handle(exchange);
             } else if (RESTAURANT_ORDERS_PATH_PATTERN.matcher(requestPath).matches()) {
                 restaurantOrderHandler.handle(exchange);

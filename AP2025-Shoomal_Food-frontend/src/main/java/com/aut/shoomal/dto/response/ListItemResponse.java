@@ -11,7 +11,6 @@ public class ListItemResponse
     @JsonProperty("vendor_id")
     private Integer vendorId;
     private Integer price, supply;
-    @JsonProperty("categories")
     private List<String> keywords;
 
     public ListItemResponse() {}
