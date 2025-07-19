@@ -55,21 +55,19 @@ public class ShowRestaurantController extends AbstractBaseController
         }
 
         restaurantService.getRestaurants(token)
-                .thenAccept(responses -> {
-                    Platform.runLater(() -> {
-                        RestaurantResponse restaurant ;
-                        if (responses != null && !responses.isEmpty())
-                        {
-                            restaurant = responses.getFirst();
-                            restaurantId = restaurant.getId();
-                            nameLabel.setText("نام: " + restaurant.getName());
-                            addressLabel.setText("آدرس: " + restaurant.getAddress());
-                            phoneLabel.setText("شماره رستوران: " + restaurant.getPhone());
-                            taxFeeLabel.setText("هزینه بسته بندی: " + restaurant.getTaxFee());
-                            additionalFeeLabel.setText("هزینه اضافی: " + restaurant.getAdditionalFee());
-                        }
-                    });
-                })
+                .thenAccept(responses -> Platform.runLater(() -> {
+                    RestaurantResponse restaurant;
+                    if (responses != null && !responses.isEmpty())
+                    {
+                        restaurant = responses.getFirst();
+                        restaurantId = restaurant.getId();
+                        nameLabel.setText("نام: " + restaurant.getName());
+                        addressLabel.setText("آدرس: " + restaurant.getAddress());
+                        phoneLabel.setText("شماره رستوران: " + restaurant.getPhone());
+                        taxFeeLabel.setText("هزینه بسته بندی: " + restaurant.getTaxFee());
+                        additionalFeeLabel.setText("هزینه اضافی: " + restaurant.getAdditionalFee());
+                    }
+                }))
                 .exceptionally(e -> {
                     Platform.runLater(() -> {
                        if (e.getCause() instanceof FrontendServiceException exception)
@@ -84,15 +82,7 @@ public class ShowRestaurantController extends AbstractBaseController
     @FXML
     private void handleBackToMain(ActionEvent event)
     {
-        navigateTo(
-                (Node) event.getSource(),
-                "/com/aut/shoomal/views/MainView.fxml",
-                "/com/aut/shoomal/styles/MainView.css",
-                TransitionType.SLIDE_LEFT,
-                (MainController controller) -> {
-                    controller.setLoggedInUser(PreferencesManager.getUserData());
-                }
-        );
+        navigateToMainView((Node) event.getSource());
     }
 
     @FXML

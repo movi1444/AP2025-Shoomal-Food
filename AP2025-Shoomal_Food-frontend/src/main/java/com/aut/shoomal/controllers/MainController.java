@@ -178,6 +178,7 @@ public class MainController extends AbstractBaseController {
         );
     }
 
+    @FXML
     public void handleCreateRestaurant(ActionEvent actionEvent)
     {
         navigateTo(
@@ -188,6 +189,7 @@ public class MainController extends AbstractBaseController {
         );
     }
 
+    @FXML
     public void handleShowRestaurant(ActionEvent actionEvent)
     {
         navigateTo(
@@ -199,27 +201,43 @@ public class MainController extends AbstractBaseController {
 
     }
 
-    public void handleAddFoodToRestaurant(ActionEvent actionEvent) {
+    @FXML
+    public void handleAddFoodToRestaurant(ActionEvent actionEvent)
+    {
+        navigateTo(
+                (MenuItem) actionEvent.getSource(),
+                "/com/aut/shoomal/views/FoodDetailsView.fxml",
+                "/com/aut/shoomal/styles/MainView.css",
+                TransitionType.SLIDE_LEFT
+        );
+    }
+
+    @FXML
+    public void handleCreateMenu(ActionEvent actionEvent)
+    {
 
     }
 
-    public void handleEditFood(ActionEvent actionEvent) {
+    @FXML
+    public void handleShowMenus(ActionEvent actionEvent)
+    {
 
     }
 
-    public void handleDeleteFoodFromRestaurant(ActionEvent actionEvent) {
-
+    @FXML
+    public void handleListFoods(ActionEvent actionEvent)
+    {
+        navigateTo(
+                (MenuItem) actionEvent.getSource(),
+                "/com/aut/shoomal/views/ListFoodView.fxml",
+                "", //"/com/aut/shoomal/styles/AdminDashboardStyles.css",
+                TransitionType.SLIDE_LEFT
+        );
     }
 
-    public void handleCreateMenu(ActionEvent actionEvent) {
-
-    }
-
-    public void handleShowMenus(ActionEvent actionEvent) {
-
-    }
-
-    public void handleManageOrders(ActionEvent actionEvent) {
+    @FXML
+    public void handleManageOrders(ActionEvent actionEvent)
+    {
 
     }
 }
