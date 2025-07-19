@@ -68,6 +68,10 @@ public class FoodManager {
         return foodDao.getFoodByIdAndRestaurantId(session, id, restaurantId);
     }
 
+    public List<Food> getFoodsByMenuTitle(Session session, Long restaurantId, String title) {
+        return foodDao.getFoodsByMenuTitle(session, restaurantId, title);
+    }
+
     public List<Food> searchByCategory(String category) {
         return this.foodDao.findByKeyword(category);
     }

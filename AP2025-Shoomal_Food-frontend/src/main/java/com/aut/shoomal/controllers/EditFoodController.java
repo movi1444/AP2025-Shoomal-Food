@@ -16,18 +16,35 @@ import java.util.concurrent.CompletableFuture;
 public class EditFoodController extends AbstractFoodDetailsController
 {
     private Integer foodId;
+    private boolean idsSetAndReady = false;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle)
     {
         super.initialize(url, resourceBundle);
-        titleLabel.setText("Edit Food");
+        titleLabel.setText("تغییر اطلاعات غذا");
+    }
+
+    @Override
+    public void setRestaurantId(Integer restaurantId)
+    {
+        super.setRestaurantId(restaurantId);
+        checkAndLoadFoodDetails();
     }
 
     public void setFoodId(Integer foodId)
     {
         this.foodId = foodId;
-        loadFoodDetails();
+        checkAndLoadFoodDetails();
+    }
+
+    private void checkAndLoadFoodDetails()
+    {
+        if (this.restaurantId != null && this.foodId != null && !idsSetAndReady)
+        {
+            idsSetAndReady = true;
+            loadFoodDetails();
+        }
     }
 
     private void loadFoodDetails()
@@ -45,20 +62,18 @@ public class EditFoodController extends AbstractFoodDetailsController
         }
 
         restaurantService.getFoodById(token, restaurantId, foodId)
-                .thenAccept(food -> {
-                    Platform.runLater(() -> {
-                        if (food != null)
-                        {
-                            nameField.setText(food.getName());
-                            descriptionField.setText(food.getDescription());
-                            priceField.setText(String.valueOf(food.getPrice()));
-                            supplyField.setText(String.valueOf(food.getSupply()));
-                            keywordsField.setText(convertToTextField(food.getKeywords()));
-                        }
-                        else
-                            showAlert("Error", "Failed to load food details.", Alert.AlertType.ERROR, null);
-                    });
-                })
+                .thenAccept(food -> Platform.runLater(() -> {
+                    if (food != null)
+                    {
+                        nameField.setText(food.getName());
+                        descriptionField.setText(food.getDescription());
+                        priceField.setText(String.valueOf(food.getPrice()));
+                        supplyField.setText(String.valueOf(food.getSupply()));
+                        keywordsField.setText(convertToTextField(food.getKeywords()));
+                    }
+                    else
+                        showAlert("Error", "Failed to load food details.", Alert.AlertType.ERROR, null);
+                }))
                 .exceptionally(e -> {
                     Platform.runLater(() -> {
                         if (e.getCause() instanceof FrontendServiceException fsException)

@@ -1,0 +1,120 @@
+/* Apply RTL to the root container of the FXML */
+.root {
+    -fx-node-orientation: right-to-left;
+    -fx-background-color: #f0f2f5; /* Light background for the page */
+}
+
+/* General styling for headers and titles */
+.header-label {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333; /* Dark text for headers */
+    -fx-padding: 10px 0;
+}
+
+/* Styling for TableView */
+.table-view {
+    -fx-background-color: #ffffff; /* White background for the table */
+    -fx-border-color: #cccccc;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-padding: 5px;
+    -fx-node-orientation: right-to-left; /* Ensure table itself is RTL */
+}
+
+/* TableView header row */
+.table-view .column-header-background {
+    -fx-background-color: #4CAF50; /* Green header background */
+    -fx-background-radius: 5px 5px 0 0;
+    -fx-padding: 5px 0;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: black;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-alignment: center; /* Center header text */
+    -fx-node-orientation: right-to-left; /* Ensure header text is RTL */
+}
+
+/* TableView cells */
+.table-view .table-cell {
+    -fx-alignment: center-right; /* Align cell content to the right */
+    -fx-padding: 5px 10px; /* Padding for cells */
+    -fx-border-color: #eeeeee; /* Light border between cells */
+    -fx-border-width: 0 0 1px 0; /* Only bottom border */
+    -fx-font-size: 13px;
+    -fx-node-orientation: right-to-left; /* Ensure cell content is RTL */
+}
+
+/* Alternating row colors */
+.table-row-cell:odd {
+    -fx-background-color: #f8f8f8; /* Very light grey */
+}
+
+.table-row-cell:even {
+    -fx-background-color: #ffffff; /* White */
+}
+
+/* Selected row */
+.table-row-cell:selected {
+    -fx-background-color: #b0e0e6;
+    -fx-text-fill: #333333;
+}
+
+/* Buttons in the table cells */
+.table-cell .button {
+    -fx-background-color: #2196F3; /* Blue for edit button */
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-padding: 4px 8px;
+    -fx-background-radius: 5px;
+    -fx-cursor: hand;
+}
+
+.table-cell .button:hover {
+    -fx-background-color: #1976D2;
+}
+
+/* Specific style for delete buttons if you add them later */
+.table-cell .delete-button {
+    -fx-background-color: #F44336; /* Red for delete button */
+}
+.table-cell .delete-button:hover {
+    -fx-background-color: #D32F2F;
+}
+
+/* Style for the HBox holding buttons in a cell */
+.table-cell .hbox {
+    -fx-alignment: center; /* Center buttons within the cell */
+    -fx-spacing: 5px; /* Space between buttons */
+    -fx-node-orientation: left-to-right; /* Keep buttons LTR within their HBox */
+}
+
+.primary-button {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 10px 20px;
+    -fx-background-radius: 8px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 0);
+}
+
+.primary-button:hover {
+    -fx-background-color: #66BB6A;
+}
+
+.secondary-button {
+    -fx-background-color: #9E9E9E;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 10px 20px;
+    -fx-background-radius: 8px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 0);
+}
+
+.secondary-button:hover {
+    -fx-background-color: #757575;
+}

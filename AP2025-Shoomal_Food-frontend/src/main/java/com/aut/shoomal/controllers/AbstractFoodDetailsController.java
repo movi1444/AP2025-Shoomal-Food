@@ -94,17 +94,15 @@ public abstract class AbstractFoodDetailsController extends AbstractBaseControll
         request.setKeywords(convertToList(keywordsField.getText()));
 
         saveFoodDetails(request)
-                .thenAccept(response -> {
-                    Platform.runLater(() -> {
-                        if (response != null)
-                        {
-                            showAlert("Success", "Food details saved successfully!", Alert.AlertType.INFORMATION, null);
-                            handleBackToPreviousPage(actionEvent);
-                        }
-                        else
-                            showAlert("Error", "Failed to save food details.", Alert.AlertType.ERROR, null);
-                    });
-                })
+                .thenAccept(response -> Platform.runLater(() -> {
+                    if (response != null)
+                    {
+                        showAlert("Success", "Food details saved successfully!", Alert.AlertType.INFORMATION, null);
+                        handleBackToPreviousPage(actionEvent);
+                    }
+                    else
+                        showAlert("Error", "Failed to save food details.", Alert.AlertType.ERROR, null);
+                }))
                 .exceptionally(e -> {
                     Platform.runLater(() -> {
                         if (e.getCause() instanceof FrontendServiceException fsException) {
@@ -120,7 +118,16 @@ public abstract class AbstractFoodDetailsController extends AbstractBaseControll
     @FXML
     public void handleBackToPreviousPage(ActionEvent actionEvent)
     {
-        navigateToMainView((Node) actionEvent.getSource());
+        navigateTo(
+                (Node) actionEvent.getSource(),
+                "/com/aut/shoomal/views/ListFoodView.fxml",
+                "/com/aut/shoomal/styles/ListFoodsView.css",
+                TransitionType.SLIDE_LEFT,
+                controller -> {
+                    if (controller instanceof ShowListFoodController showListFoodController)
+                        showListFoodController.setRestaurantId(restaurantId);
+                }
+        );
     }
 
     private List<String> convertToList(String keywords)

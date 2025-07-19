@@ -50,6 +50,21 @@ public class FoodDaoImpl extends GenericDaoImpl<Food> implements FoodDao {
     }
 
     @Override
+    public List<Food> getFoodsByMenuTitle(Session session, Long restaurantId, String title)
+    {
+        try {
+            Query<Food> query = session.createQuery
+                    ("select f FROM Food f WHERE f.vendor.id = :rid AND exists (select m from Menu m join m.foods where m.restaurant.id = vendor.id and m.title = :title)", Food.class);
+            query.setParameter("title", title);
+            query.setParameter("rid", restaurantId);
+            return query.list();
+        } catch (Exception e) {
+            System.err.println("Error getting food list: " + e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
     public Food getFoodByIdAndRestaurantId(Session session, Long id, Long restaurantId) {
         try {
             Query<Food> query = session.createQuery("FROM Food WHERE id = :fid AND vendor.id = :rid", Food.class);

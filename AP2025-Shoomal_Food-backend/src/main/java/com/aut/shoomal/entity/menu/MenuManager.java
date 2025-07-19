@@ -10,6 +10,7 @@ import com.aut.shoomal.exceptions.ConflictException;
 import com.aut.shoomal.exceptions.ForbiddenException;
 import com.aut.shoomal.exceptions.InvalidInputException;
 import com.aut.shoomal.exceptions.NotFoundException;
+import org.hibernate.Session;
 
 import java.util.List;
 import java.util.Optional;
@@ -50,6 +51,10 @@ public class MenuManager {
 
     public List<Menu> findMenusByRestaurantId(Long restaurantId) {
         return menuDao.findByRestaurantId(restaurantId);
+    }
+
+    public Menu findByTitle(Session session, Integer restaurantId, String title) {
+        return menuDao.findByTitle(session, restaurantId, title);
     }
 
     public void addMenuTitle(int restaurantId, String title, String userId) throws NotFoundException, ConflictException, ForbiddenException {
