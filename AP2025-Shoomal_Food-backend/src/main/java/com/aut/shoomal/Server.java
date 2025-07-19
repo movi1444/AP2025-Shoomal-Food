@@ -68,7 +68,6 @@ public class Server
         CourierHandler courierHandler = new CourierHandler(userManager,orderManager,blacklistedTokenDao);
 
         try {
-            //signupManager.ensureAdminUserExists();
             final HttpServer finalServer = HttpServer.create(new InetSocketAddress(port), 0);
             server = finalServer;
 
@@ -102,6 +101,8 @@ public class Server
             finalServer.createContext("/admin/orders", adminHandler);
             finalServer.createContext("/admin/transactions", adminHandler);
             finalServer.createContext("/admin/coupons", adminCouponHandler);
+            finalServer.createContext("/admin/restaurants", adminHandler);
+            finalServer.createContext("/admin/userStatus", adminHandler);
 
             finalServer.setExecutor(Executors.newFixedThreadPool(numberOfThreads));
             finalServer.start();

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane styleClass="root" stylesheets="@/com/aut/shoomal/styles/AdminDashboardStyles.css"
+            xmlns="http://javafx.com/javafx.21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.aut.shoomal.controllers.CreateEditCouponController">
+    <top>
+        <VBox alignment="CENTER" spacing="10" style="-fx-background-color: #34495e; -fx-padding: 10;">
+            <Label fx:id="titleLabel" text="ساخت/ویرایش کوپن" styleClass="head-label" />
+        </VBox>
+    </top>
+    <center>
+        <VBox alignment="CENTER" spacing="20" style="-fx-padding: 20;" BorderPane.alignment="CENTER">
+            <GridPane hgap="15" vgap="15" alignment="CENTER">
+                <Label text="کد کوپن:" GridPane.rowIndex="0" GridPane.columnIndex="1" styleClass="my-label" />
+                <TextField fx:id="couponCodeField" promptText="مثال: SUMMER2024" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="my-text-field" />
+
+                <Label text="نوع:" GridPane.rowIndex="1" GridPane.columnIndex="1" styleClass="my-label" />
+                <ComboBox fx:id="typeComboBox" promptText="fixed/percent" GridPane.rowIndex="1" GridPane.columnIndex="0" styleClass="my-choice-box" />
+
+                <Label text="مقدار:" GridPane.rowIndex="2" GridPane.columnIndex="1" styleClass="my-label" />
+                <TextField fx:id="valueField" promptText="مثال: 10.0" GridPane.rowIndex="2" GridPane.columnIndex="0" styleClass="my-text-field" />
+
+                <Label text="حداقل قیمت:" GridPane.rowIndex="3" GridPane.columnIndex="1" styleClass="my-label" />
+                <TextField fx:id="minPriceField" promptText="مثال: 50000" GridPane.rowIndex="3" GridPane.columnIndex="0" styleClass="my-text-field" />
+
+                <Label text="تعداد کاربر:" GridPane.rowIndex="4" GridPane.columnIndex="1" styleClass="my-label" />
+                <TextField fx:id="userCountField" promptText="مثال: 100" GridPane.rowIndex="4" GridPane.columnIndex="0" styleClass="my-text-field" />
+
+                <Label text="تاریخ شروع:" GridPane.rowIndex="5" GridPane.columnIndex="1" styleClass="my-label" />
+                <DatePicker fx:id="startDatePicker" promptText="YYYY-MM-DD" GridPane.rowIndex="5" GridPane.columnIndex="0" styleClass="my-text-field" />
+
+                <Label text="تاریخ پایان:" GridPane.rowIndex="6" GridPane.columnIndex="1" styleClass="my-label" />
+                <DatePicker fx:id="endDatePicker" promptText="YYYY-MM-DD" GridPane.rowIndex="6" GridPane.columnIndex="0" styleClass="my-text-field" />
+            </GridPane>
+
+            <HBox alignment="CENTER" spacing="10">
+                <Button fx:id="saveButton" text="ذخیره" onAction="#handleSaveCoupon" styleClass="primary-button" />
+                <Button fx:id="cancelButton" text="انصراف" onAction="#handleCancel" styleClass="my-button2" />
+            </HBox>
+        </VBox>
+    </center>
+</BorderPane>

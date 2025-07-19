@@ -1,13 +1,13 @@
 package com.aut.shoomal.payment.order;
 
-import com.aut.shoomal.entity.user.User;
-import com.aut.shoomal.entity.user.UserManager;
+import com.aut.shoomal.dao.OrderDao;
+import com.aut.shoomal.dto.request.OrderItemRequest;
 import com.aut.shoomal.entity.food.Food;
 import com.aut.shoomal.entity.food.FoodManager;
 import com.aut.shoomal.entity.restaurant.Restaurant;
 import com.aut.shoomal.entity.restaurant.RestaurantManager;
-import com.aut.shoomal.dao.OrderDao;
-import com.aut.shoomal.dto.request.OrderItemRequest;
+import com.aut.shoomal.entity.user.User;
+import com.aut.shoomal.entity.user.UserManager;
 import com.aut.shoomal.exceptions.InvalidCouponException;
 import com.aut.shoomal.exceptions.InvalidInputException;
 import com.aut.shoomal.exceptions.NotFoundException;
@@ -70,20 +70,18 @@ public class OrderManager
 
     public List<Order> getOrdersByVendor(Integer vendorId)
     {
-        return orderDao.findByVendorId(vendorId);
+        return orderDao.findOrdersWithFilters(null, null, null, null, null, null); // Adjust if vendor filtering is needed here
     }
 
     public List<Order> getOrderHistory(Session session, Long customerId, String search, String vendorName)
     {
-        return orderDao.findWithFilters(session, customerId, search, vendorName);
+
+        return orderDao.findOrdersWithFilters(customerId, search, vendorName, null, null, null);
     }
 
-    public List<Order> getAllOrders(String search, String vendorIdStr, String customerIdStr, String courierIdStr, String statusString) {
-        Long vendorId = (vendorIdStr != null && !vendorIdStr.isEmpty()) ? Long.parseLong(vendorIdStr) : null;
-        Long customerId = (customerIdStr != null && !customerIdStr.isEmpty()) ? Long.parseLong(customerIdStr) : null;
-        Long courierId = (courierIdStr != null && !courierIdStr.isEmpty()) ? Long.parseLong(courierIdStr) : null;
+    public List<Order> getAllOrders(String search, String vendorName, String customerName, String courierName, String statusString) {
         OrderStatus status = (statusString != null && !statusString.isEmpty()) ? OrderStatus.fromName(statusString) : null;
-        return orderDao.findAllWithFilters(search, vendorId, customerId, courierId, status);
+        return orderDao.findOrdersWithFilters(null, search, vendorName, customerName, courierName, status);
     }
 
     public Order submitOrder(Long customerId, Long vendorId, Integer couponId,

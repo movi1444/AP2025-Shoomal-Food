@@ -3,7 +3,7 @@ package com.aut.shoomal.dto.request;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public class CreateCouponRequest
 {
@@ -23,7 +23,7 @@ public class CreateCouponRequest
     public CreateCouponRequest() {}
 
     public CreateCouponRequest(String couponCode, String type, BigDecimal value, Integer minPrice, Integer userCount,
-                          LocalDateTime startDate, LocalDateTime endDate)
+                               LocalDate startDate, LocalDate endDate) // Changed from LocalDateTime
     {
         this.couponCode = couponCode;
         this.type = type;

@@ -17,7 +17,7 @@ import com.sun.net.httpserver.HttpExchange;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
@@ -236,10 +236,10 @@ public class AdminCouponHandler extends AbstractHttpHandler {
                 existingCoupon.setUserCount(requestBody.getUserCount());
             }
             if (requestBody.getStartDate() != null) {
-                existingCoupon.setStartDate(LocalDateTime.parse(requestBody.getStartDate()));
+                existingCoupon.setStartDate(LocalDate.parse(requestBody.getStartDate()));
             }
             if (requestBody.getEndDate() != null) {
-                existingCoupon.setEndDate(LocalDateTime.parse(requestBody.getEndDate()));
+                existingCoupon.setEndDate(LocalDate.parse(requestBody.getEndDate()));
             }
 
             couponManager.updateCoupon(existingCoupon);
