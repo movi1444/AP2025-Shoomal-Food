@@ -1,3 +1,4 @@
+// AP2025-Shoomal-Food/AP2025-Shoomal_Food-frontend/src/main/java/com/aut/shoomal/controllers/AdminDashboardContentController.java
 package com.aut.shoomal.controllers;
 
 import com.aut.shoomal.dto.response.OrderResponse;
@@ -9,7 +10,6 @@ import com.aut.shoomal.utils.PreferencesManager;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
@@ -20,11 +20,11 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 
-import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
+
 
 public class AdminDashboardContentController extends AbstractBaseController {
 
@@ -39,7 +39,6 @@ public class AdminDashboardContentController extends AbstractBaseController {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         super.initialize(url, resourceBundle);
-        System.out.println("AdminDashboardContentController initialized.");
         adminDataService = new AdminDataService();
         token = PreferencesManager.getJwtToken();
         loadDashboardCharts();
@@ -60,7 +59,6 @@ public class AdminDashboardContentController extends AbstractBaseController {
                     if (users != null && !users.isEmpty()) {
                         Map<String, Long> userCounts = users.stream()
                                 .collect(Collectors.groupingBy(UserResponse::getRole, Collectors.counting()));
-                        System.out.println("User Counts: " + userCounts);
                         PieChart userRoleChart = new PieChart();
                         userRoleChart.setTitle("تعداد کاربران بر اساس نقش");
                         userCounts.forEach((role, count) -> {
@@ -197,7 +195,15 @@ public class AdminDashboardContentController extends AbstractBaseController {
 
     @FXML
     private void handleViewAllOrders() {
-        showAlert("Admin Action", "Displaying all orders. (Implementation needed)", Alert.AlertType.INFORMATION, null);
+        navigateTo(
+                orderChartPane,
+                "/com/aut/shoomal/views/AdminOrdersView.fxml",
+                "/com/aut/shoomal/styles/AdminDashboardStyles.css",
+                TransitionType.SLIDE_RIGHT,
+                (AdminOrdersController controller) -> {
+                    controller.setLoggedInUser(loggedInUser);
+                }
+        );
     }
 
     @FXML

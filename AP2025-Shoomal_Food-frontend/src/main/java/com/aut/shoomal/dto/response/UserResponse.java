@@ -115,4 +115,8 @@ public class UserResponse
     {
         this.bank = bank;
     }
+
+    public String toString() {
+        return this.getName();
+    }
 }
