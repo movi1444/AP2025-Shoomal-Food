@@ -1,5 +1,6 @@
 package com.aut.shoomal.entity.food;
 
+import com.aut.shoomal.entity.menu.Menu;
 import com.aut.shoomal.entity.restaurant.Restaurant;
 import com.aut.shoomal.payment.order.OrderItem;
 import com.aut.shoomal.rating.Rating;
@@ -47,6 +48,10 @@ public class Food {
 
     @OneToMany(mappedBy = "food", fetch = FetchType.LAZY)
     private List<Rating> ratings = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "foods")
+    private List<Menu> menus = new ArrayList<>();
+
     public Food() {}
 
     public Food(String name, String description, double price, int supply,
@@ -138,6 +143,16 @@ public class Food {
 
     public void setOrderItems(List<OrderItem> orderItems) {
         this.orderItems = orderItems;
+    }
+
+    public List<Menu> getMenus()
+    {
+        return menus;
+    }
+
+    public void setMenus(List<Menu> menus)
+    {
+        this.menus = menus;
     }
 
     public List<Rating> getRatings()
