@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="600.0" prefWidth="800.0" styleClass="root" stylesheets="/com/aut/shoomal/styles/ListFoodsView.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.aut.shoomal.controllers.TransactionHistoryController">
+<AnchorPane prefHeight="600.0" prefWidth="800.0" styleClass="root" stylesheets="/com/aut/shoomal/styles/AdminDashboardStyles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.aut.shoomal.controllers.TransactionHistoryController">
     <VBox alignment="TOP_CENTER" spacing="20" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
         <padding>
             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
