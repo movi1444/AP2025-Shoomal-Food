@@ -10,6 +10,8 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
+import java.util.List;
+
 public class UserDaoImpl extends GenericDaoImpl<User> implements UserDao
 {
     @Override
@@ -74,22 +76,47 @@ public class UserDaoImpl extends GenericDaoImpl<User> implements UserDao
     }
 
     @Override
+    public List<User> findCustomersWithOrder(Session session, Long restaurantId)
+    {
+        try {
+            Query<User> query = session.createQuery
+                    ("select u from User u join u.customerOrders co join co.restaurant r where r.id = :rid", User.class);
+            query.setParameter("rid", restaurantId);
+            return query.list();
+        } catch (Exception e) {
+            System.err.println("Error finding users with order " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public List<User> findCouriersWithOrder(Session session, Long restaurantId)
+    {
+        try {
+            Query<User> query = session.createQuery
+                    ("select u from User u join u.courierOrders co join co.restaurant r where r.id = :rid", User.class);
+            query.setParameter("rid", restaurantId);
+            return query.list();
+        } catch (Exception e) {
+            System.err.println("Error finding users with order " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
     public void updateApprovalStatus(Long id, boolean approved) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
 
             User user = session.get(User.class, id);
-            if (user == null) {
-                throw new RuntimeException("User not found with ID: " + id);
-            }
-
-            if (user instanceof Courier) {
-                ((Courier) user).setApproved(approved);
-            } else if (user instanceof Seller) {
-                ((Seller) user).setApproved(approved);
-            } else {
-                throw new RuntimeException("Approval status update not applicable for this user type.");
+            switch (user) {
+                case null -> throw new RuntimeException("User not found with ID: " + id);
+                case Courier courier -> courier.setApproved(approved);
+                case Seller seller -> seller.setApproved(approved);
+                default -> throw new RuntimeException("Approval status update not applicable for this user type.");
             }
 
             transaction.commit();

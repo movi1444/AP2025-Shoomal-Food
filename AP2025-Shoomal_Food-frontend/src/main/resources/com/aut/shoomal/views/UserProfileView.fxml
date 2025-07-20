@@ -31,6 +31,7 @@
             </padding>
             <Hyperlink fx:id="updateProfileLink" styleClass="sidebar-hyperlink" text="بروزرسانی پروفایل" />
             <Hyperlink fx:id="transactionHistoryLink" onAction="#handleTransactionHistory" styleClass="sidebar-hyperlink" text="سابقه تراکنش" />
+            <Hyperlink fx:id="walletLink" onAction="#handleWallet" styleClass="sidebar-hyperlink" text="کیف پول" />
             <Region VBox.vgrow="ALWAYS" />
             <Button onAction="#handleBackToMain" styleClass="my-button2" text="برگشت به منو" />
         </VBox>

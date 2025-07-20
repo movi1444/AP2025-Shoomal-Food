@@ -10,16 +10,21 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class ShowListOrderController extends AbstractBaseController
+public class ShowListOrderController extends AbstractBaseController implements OrderFilterController.FilterCallback
 {
     @FXML private TableView<OrderResponse> orderTable;
     @FXML private TableColumn<OrderResponse, String> deliveryColumn;
@@ -44,6 +49,11 @@ public class ShowListOrderController extends AbstractBaseController
     private RestaurantService restaurantService;
     private String token;
     private Integer restaurantId;
+
+    private String currentSearch = null;
+    private String currentUser = null;
+    private String currentCourier = null;
+    private String currentStatus = null;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle)
@@ -162,7 +172,23 @@ public class ShowListOrderController extends AbstractBaseController
     @FXML
     public void handleAddFilter(ActionEvent actionEvent)
     {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/aut/shoomal/views/OrderFilterView.fxml"));
+            Parent root = loader.load();
 
+            OrderFilterController filterController = loader.getController();
+            filterController.setFilterCallback(this);
+            filterController.setInitialFilters(currentSearch, currentUser, currentCourier, currentStatus, restaurantId);
+
+            Stage filterStage = new Stage();
+            filterStage.initModality(Modality.APPLICATION_MODAL);
+            filterStage.setTitle("فیلتر سفارشات");
+            filterStage.setScene(new Scene(root));
+            filterStage.showAndWait();
+        } catch (Exception e) {
+            showAlert("خطا در باز کردن فیلتر", "مشکلی در بارگذاری صفحه فیلتر پیش آمد: " + e.getMessage(), Alert.AlertType.ERROR, null);
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -208,6 +234,17 @@ public class ShowListOrderController extends AbstractBaseController
     public void setRestaurantId(Integer restaurantId)
     {
         this.restaurantId = restaurantId;
-        loadOrders(null, null, null, null);
+        loadOrders(currentStatus, currentSearch, currentUser, currentCourier);
+    }
+
+    @Override
+    public void onFilterApplied(String search, String user, String courier, String status)
+    {
+        this.currentSearch = search;
+        this.currentUser = user;
+        this.currentCourier = courier;
+        this.currentStatus = status;
+
+        loadOrders(this.currentStatus, this.currentSearch, this.currentUser, this.currentCourier);
     }
 }

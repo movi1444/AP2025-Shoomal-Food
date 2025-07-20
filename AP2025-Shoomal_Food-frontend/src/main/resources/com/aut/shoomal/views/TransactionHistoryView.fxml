@@ -32,6 +32,6 @@
             </columnResizePolicy>
         </TableView>
 
-        <Button fx:id="backButton" onAction="#handleBackButton" styleClass="my-button2" text="Back" />
+        <Button fx:id="backButton" onAction="#handleBackButton" styleClass="secondary-button" text="Back" />
     </VBox>
 </AnchorPane>
