@@ -1,5 +1,6 @@
 package com.aut.shoomal.dto.handler;
 
+import com.aut.shoomal.dto.response.UpdateDeliveryStatusResponse;
 import com.aut.shoomal.entity.user.User;
 import com.aut.shoomal.entity.user.UserManager;
 import com.aut.shoomal.entity.user.CourierDeliveryStatus;
@@ -105,7 +106,7 @@ public class CourierHandler extends AbstractHttpHandler {
         UpdateDeliveryStatusRequest requestBody;
         try {
             requestBody = parseRequestBody(exchange, UpdateDeliveryStatusRequest.class);
-            if (requestBody == null || requestBody.getStatus() == null) {
+            if (requestBody == null || requestBody.getStatus() == null || requestBody.getStatus().isEmpty()) {
                 sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid input: 'status' is required in request body."));
                 return;
             }
@@ -116,7 +117,7 @@ public class CourierHandler extends AbstractHttpHandler {
             return;
         }
 
-        CourierDeliveryStatus courierStatus = requestBody.getStatus();
+        CourierDeliveryStatus courierStatus = CourierDeliveryStatus.fromValue(requestBody.getStatus());
         OrderStatus newOrderStatus;
         try {
             newOrderStatus = switch (courierStatus) {
@@ -151,18 +152,16 @@ public class CourierHandler extends AbstractHttpHandler {
         order.setOrderStatus(newOrderStatus);
         orderManager.updateOrder(order);
 
-        sendResponse(exchange, HttpURLConnection.HTTP_OK, new ApiResponse(true, "Order status updated successfully."));
+        UpdateDeliveryStatusResponse response = new UpdateDeliveryStatusResponse("Order status updated successfully.", this.convertToOrderResponse(order));
+        sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, response);
     }
 
     private boolean isValidStatusTransition(OrderStatus currentStatus, OrderStatus newStatus) {
-        switch (currentStatus) {
-            case FINDING_COURIER:
-                return newStatus == OrderStatus.ON_THE_WAY;
-            case ON_THE_WAY:
-                return newStatus == OrderStatus.COMPLETED;
-            default:
-                return false;
-        }
+        return switch (currentStatus) {
+            case FINDING_COURIER -> newStatus == OrderStatus.ON_THE_WAY;
+            case ON_THE_WAY -> newStatus == OrderStatus.COMPLETED;
+            default -> false;
+        };
     }
 
     private void handleGetDeliveryHistory(HttpExchange exchange, User authenticatedUser) throws IOException {
