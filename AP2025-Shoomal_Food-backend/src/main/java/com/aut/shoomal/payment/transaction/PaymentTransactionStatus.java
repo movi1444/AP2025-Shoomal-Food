@@ -22,7 +22,7 @@ public enum PaymentTransactionStatus
         return switch (this) {
             case COMPLETED -> "success";
             case FAILED -> "failed";
-            case PENDING, REFUNDED -> this.status.toLowerCase();
+            default -> throw new IllegalArgumentException("Unsupported transaction status for API representation: " + this.name());
         };
     }
 
@@ -31,18 +31,10 @@ public enum PaymentTransactionStatus
             if (statusName.equalsIgnoreCase("success")) {
                 return COMPLETED;
             }
-            if (statusName.equalsIgnoreCase("pending")) {
-                return PENDING;
-            }
-            if (statusName.equalsIgnoreCase("refunded")) {
-                return REFUNDED;
-            }
-            for (PaymentTransactionStatus s : PaymentTransactionStatus.values()) {
-                if (s.status.equalsIgnoreCase(statusName)) {
-                    return s;
-                }
+            if (statusName.equalsIgnoreCase("failed")) {
+                return FAILED;
             }
         }
-        throw new IllegalArgumentException("Unknown payment transaction status: " + statusName);
+        throw new IllegalArgumentException("Unknown or unsupported payment transaction API status: " + statusName);
     }
 }

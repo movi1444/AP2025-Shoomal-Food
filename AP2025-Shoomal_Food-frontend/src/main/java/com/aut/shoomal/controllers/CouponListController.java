@@ -73,8 +73,8 @@ public class CouponListController extends AbstractBaseController {
 
             {
                 ImageView editIcon = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/com/aut/shoomal/images/edit_icon.png"))));
-                editIcon.setFitHeight(16);
-                editIcon.setFitWidth(16);
+                editIcon.setFitHeight(20);
+                editIcon.setFitWidth(20);
                 editLink = new Hyperlink();
                 editLink.setGraphic(editIcon);
                 editLink.setTooltip(new Tooltip("ویرایش کوپن"));
@@ -84,8 +84,8 @@ public class CouponListController extends AbstractBaseController {
                 });
 
                 ImageView deleteIcon = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/com/aut/shoomal/images/delete_icon.png"))));
-                deleteIcon.setFitHeight(16);
-                deleteIcon.setFitWidth(16);
+                deleteIcon.setFitHeight(20);
+                deleteIcon.setFitWidth(20);
                 deleteLink = new Hyperlink();
                 deleteLink.setGraphic(deleteIcon);
                 deleteLink.setTooltip(new Tooltip("حذف کوپن"));

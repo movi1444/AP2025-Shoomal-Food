@@ -151,6 +151,6 @@ public class UserProfileController extends AbstractBaseController {
     @FXML
     public void handleTransactionHistory(ActionEvent actionEvent)
     {
-        navigateTo(transactionHistoryLink, "/com/aut/shoomal/views/TransactionHistoryView.fxml", "/com/aut/shoomal/styles/MainView.css", TransitionType.SLIDE_RIGHT);
+        navigateTo(transactionHistoryLink, "/com/aut/shoomal/views/TransactionHistoryView.fxml", "/com/aut/shoomal/styles/AdminDashboardStyles.css", TransitionType.SLIDE_RIGHT);
     }
 }
