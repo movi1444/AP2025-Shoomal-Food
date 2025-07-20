@@ -3,6 +3,9 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -14,9 +17,6 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.MenuBar?>
 <BorderPane prefHeight="729.0" prefWidth="693.0" stylesheets="@/com/aut/shoomal/styles/MainView.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.aut.shoomal.controllers.MainController">
 
     <center>
@@ -28,19 +28,19 @@
                         <menus>
                             <Menu text="رستوران">
                                 <items>
-                                    <MenuItem text="ایجاد رستوران جدید" onAction="#handleCreateRestaurant" />
-                                    <MenuItem text="لیست رستوران ها" onAction="#handleShowRestaurant" />
-                                    <MenuItem text="غذا های موجود در رستوران" onAction="#handleListFoods" />
+                                    <MenuItem onAction="#handleCreateRestaurant" text="ایجاد رستوران جدید" />
+                                    <MenuItem onAction="#handleShowRestaurant" text="لیست رستوران ها" />
+                                    <MenuItem onAction="#handleListFoods" text="غذا های موجود در رستوران" />
                                 </items>
                             </Menu>
                             <Menu text="منو">
                                 <items>
-                                    <MenuItem text="مدیریت و مشاهده لیست منو ها" onAction="#handleManageMenus" />
+                                    <MenuItem onAction="#handleManageMenus" text="مدیریت و مشاهده لیست منو ها" />
                                 </items>
                             </Menu>
                             <Menu text="سفارش">
                                 <items>
-                                    <MenuItem text="مدیریت لیست سفارش ها" onAction="#handleManageOrders" />
+                                    <MenuItem onAction="#handleManageOrders" text="مدیریت لیست سفارش ها" />
                                 </items>
                             </Menu>
                         </menus>
@@ -106,30 +106,6 @@
             <ScrollPane fx:id="adminDashboardScrollPane" fitToWidth="true" styleClass="dashboard-scroll-pane">
             </ScrollPane>
             <ScrollPane fx:id="buyerDashboardScrollPane" fitToWidth="true" styleClass="dashboard-scroll-pane">
-                <VBox alignment="CENTER" prefHeight="720.0" prefWidth="678.0" styleClass="dashboard-card">
-                    <GridPane alignment="CENTER" prefHeight="532.0" prefWidth="680.0">
-                        <columnConstraints>
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                        </columnConstraints>
-                        <rowConstraints>
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        </rowConstraints>
-                        <children>
-                            <ImageView fitHeight="300.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1">
-                                <cursor>
-                                    <Cursor fx:constant="DEFAULT" />
-                                </cursor>
-                                <image>
-                                    <Image url="@/com/aut/shoomal/images/ShoomalFood-removebg.png" />
-                                </image>
-                            </ImageView>
-                        </children>
-                    </GridPane>
-                </VBox>
                 <StackPane.margin>
                     <Insets />
                 </StackPane.margin>

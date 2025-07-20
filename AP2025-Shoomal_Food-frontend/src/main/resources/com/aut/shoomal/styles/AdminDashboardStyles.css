@@ -129,39 +129,39 @@
 }
 
 .table-view {
-    -fx-background-color: transparent;
-    -fx-border-color: #d3c8c8;
+    -fx-background-color: #cdcdcd;
+    -fx-border-color: transparent;
     -fx-border-radius: 5px;
     -fx-border-width: 1px;
 }
 
 .table-view .column-header-background {
-    -fx-background-color: #f2f2f2;
+    -fx-background-color: #445070;
 }
 
 .table-view .column-header,
 .table-view .filler {
     -fx-size: 40px;
     -fx-border-width: 0 0 1px 0;
-    -fx-border-color: #d3c8c8;
-    -fx-background-color: #f2f2f2;
+    -fx-border-color: #92a3e1;
+    -fx-background-color: #445070;
 }
 
 .table-view .column-header .label {
     -fx-font-weight: bold;
-    -fx-text-fill: #555;
+    -fx-text-fill: #ffffff;
     -fx-alignment: center-right;
     -fx-padding: 0 10px 0 0;
 }
 
 .table-row-cell {
-    -fx-background-color: -fx-table-cell-border-color, #ffffff;
+    -fx-background-color: -fx-table-cell-border-color, #dfdcdc;
     -fx-background-insets: 0, 0 0 1px 0;
     -fx-padding: 0;
 }
 
 .table-row-cell:odd {
-    -fx-background-color: -fx-table-cell-border-color, #f9f9f9;
+    -fx-background-color: -fx-table-cell-border-color, #cdcdcd;
     -fx-background-insets: 0, 0 0 1px 0;
 }
 
