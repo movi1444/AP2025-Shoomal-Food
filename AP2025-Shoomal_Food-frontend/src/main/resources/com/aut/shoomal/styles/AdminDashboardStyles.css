@@ -7,6 +7,14 @@
     -fx-background-color: #445070;
 }
 
+.header-pane {
+    -fx-background-color: #445070;
+    -fx-padding: 20px 30px;
+    -fx-border-color: #445070;
+    -fx-border-width: 0 0 1px 0;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 5);
+}
+
 .admin-menu-bar .menu-button .label {
     -fx-text-fill: white !important;
     -fx-font-family: "Vazirmatn" !important;

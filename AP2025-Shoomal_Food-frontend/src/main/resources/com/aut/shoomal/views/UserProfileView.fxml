@@ -31,6 +31,7 @@
             </padding>
             <Hyperlink fx:id="updateProfileLink" styleClass="sidebar-hyperlink" text="بروزرسانی پروفایل" />
             <Hyperlink fx:id="transactionHistoryLink" onAction="#handleTransactionHistory" styleClass="sidebar-hyperlink" text="سابقه تراکنش" />
+            <Hyperlink fx:id="orderHistoryLink" onAction="#handleOrderHistory" styleClass="sidebar-hyperlink" text="سابقه سفارشات" />
             <Region VBox.vgrow="ALWAYS" />
             <Button onAction="#handleBackToMain" styleClass="my-button2" text="برگشت به منو" />
         </VBox>
@@ -61,9 +62,9 @@
                             </GridPane.margin>
                         </ImageView>
                     </children>
-               <VBox.margin>
-                  <Insets top="50.0" />
-               </VBox.margin>
+                    <VBox.margin>
+                        <Insets top="50.0" />
+                    </VBox.margin>
                 </GridPane>
                 <Region prefHeight="85.0" prefWidth="674.0" />
                 <GridPane prefHeight="270.0" prefWidth="674.0" styleClass="profile-info-grid">
