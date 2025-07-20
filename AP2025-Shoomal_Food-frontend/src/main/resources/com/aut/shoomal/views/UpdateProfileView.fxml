@@ -193,14 +193,6 @@
                               <Insets right="50.0" />
                            </GridPane.margin>
                         </TextField>
-                        <Label styleClass="my-label" text="نام برند" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
-                           <font>
-                              <Font size="14.0" />
-                           </font>
-                           <GridPane.margin>
-                              <Insets right="40.0" />
-                           </GridPane.margin>
-                        </Label>
                         <TextField fx:id="brandNameField" promptText="نام برند" styleClass="my-text-field" GridPane.columnIndex="1" GridPane.rowIndex="4">
                            <GridPane.margin>
                               <Insets right="50.0" />

@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -34,12 +35,15 @@ public class Main extends Application {
             primaryStage.setTitle("Shoomal Food");
             primaryStage.setMinWidth(800);
             primaryStage.setMinHeight(600);
+            Image icon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/com/aut/shoomal/images/icon.png")));
+            primaryStage.getIcons().add(icon);
             primaryStage.show();
         } else {
             Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/views/SignInView.fxml")));
             primaryStage.setTitle("Shoomal Food");
             primaryStage.setMinWidth(800);
             primaryStage.setMinHeight(600);
+            Image icon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/com/aut/shoomal/images/icon.png")));
             Scene scene = new Scene(root, 1280, 720);
             scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/styles/SignInUpStyles.css")).toExternalForm());
             primaryStage.setScene(scene);
