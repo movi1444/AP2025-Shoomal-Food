@@ -27,7 +27,6 @@ public class TransactionHistoryController extends AbstractBaseController
     @FXML private TableColumn<TransactionResponse, String> methodColumn;
     @FXML private TableColumn<TransactionResponse, String> statusColumn;
     @FXML private TableColumn<TransactionResponse, Integer> orderIdColumn;
-    //amount and date
 
     @FXML private Button backButton;
 

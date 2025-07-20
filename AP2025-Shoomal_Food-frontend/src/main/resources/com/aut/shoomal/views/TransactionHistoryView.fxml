@@ -18,7 +18,10 @@
         <Label styleClass="head-label" text="سابقه تراکنش کاربر">
             <font>
                 <Font size="16.0" />
-            </font></Label>
+            </font>
+         <VBox.margin>
+            <Insets bottom="20.0" />
+         </VBox.margin></Label>
         <TableView fx:id="transactionTable" nodeOrientation="RIGHT_TO_LEFT" styleClass="table-view" VBox.vgrow="ALWAYS">
 
             <columns>
@@ -32,6 +35,6 @@
             </columnResizePolicy>
         </TableView>
 
-        <Button fx:id="backButton" onAction="#handleBackButton" styleClass="my-button2" text="Back" />
+        <Button fx:id="backButton" onAction="#handleBackButton" styleClass="my-button2" text="برگشن به پروفایل" />
     </VBox>
 </AnchorPane>
