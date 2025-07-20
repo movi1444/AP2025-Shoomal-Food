@@ -23,7 +23,6 @@
             <Insets bottom="20.0" />
          </VBox.margin></Label>
         <TableView fx:id="transactionTable" nodeOrientation="RIGHT_TO_LEFT" styleClass="dashboard-card" VBox.vgrow="ALWAYS">
-
             <columns>
                 <TableColumn fx:id="userIdColumn" prefWidth="100" text="شناسه کاربر" />
                 <TableColumn fx:id="methodColumn" prefWidth="100" text="روش پرداخت" />
