@@ -239,7 +239,7 @@ public class MainController extends AbstractBaseController {
     {
         if (restaurantId == null)
         {
-            showAlert("Error", "Please create a restaurant first to manage food items.", Alert.AlertType.WARNING, null);
+            showAlert("Error", "Please create a restaurant first.", Alert.AlertType.WARNING, null);
             return;
         }
 
@@ -258,18 +258,7 @@ public class MainController extends AbstractBaseController {
     @FXML
     public void handleManageMenus(ActionEvent actionEvent)
     {
-        if (token == null || token.isEmpty())
-        {
-            showAlert("Authentication Error", "User not logged in. Please log in first.", Alert.AlertType.ERROR, null);
-            return;
-        }
-
-        if (restaurantId == null)
-        {
-            showAlert("Error", "Please create a restaurant first to manage food items.", Alert.AlertType.WARNING, null);
-            return;
-        }
-
+        handleError();
         navigateTo(
                 (MenuItem) actionEvent.getSource(),
                 "/com/aut/shoomal/views/ListMenuView.fxml",
@@ -285,6 +274,27 @@ public class MainController extends AbstractBaseController {
     @FXML
     public void handleManageOrders(ActionEvent actionEvent)
     {
+        handleError();
+        navigateTo(
+                (MenuItem) actionEvent.getSource(),
+                "/com/aut/shoomal/views/ListOrderView.fxml",
+                "",
+                TransitionType.SLIDE_LEFT,
+                controller -> {
+                    if (controller instanceof ShowListOrderController showListOrderController)
+                        showListOrderController.setRestaurantId(restaurantId);
+                }
+        );
+    }
 
+    private void handleError() {
+        if (token == null || token.isEmpty())
+        {
+            showAlert("Authentication Error", "User not logged in. Please log in first.", AlertType.ERROR, null);
+            return;
+        }
+
+        if (restaurantId == null)
+            showAlert("Error", "Please create a restaurant first.", AlertType.WARNING, null);
     }
 }

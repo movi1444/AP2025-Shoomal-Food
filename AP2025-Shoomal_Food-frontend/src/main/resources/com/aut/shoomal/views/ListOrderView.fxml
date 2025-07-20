@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.HBox?>
+
+<AnchorPane prefHeight="700.0" prefWidth="900.0" stylesheets="@/com/aut/shoomal/styles/ListFoodsView.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.aut.shoomal.controllers.ShowListOrderController">
+    <VBox alignment="TOP_CENTER" spacing="20.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+        <padding>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+        </padding>
+
+        <Label styleClass="header-label" text="سفارشات رستوران">
+            <font>
+                <Font size="28.0" />
+            </font>
+        </Label>
+
+        <TableView fx:id="orderTable" VBox.vgrow="ALWAYS" prefHeight="400.0" maxWidth="Infinity"> <columns>
+            <TableColumn fx:id="idColumn" text="شناسه" prefWidth="100" />
+            <TableColumn fx:id="deliveryColumn" text="آدرس" prefWidth="130" />
+            <TableColumn fx:id="customerIdColumn" text="شناسه خریدار" prefWidth="160" />
+            <TableColumn fx:id="vendorIdColumn" text="شناسه فروشنده" prefWidth="160" />
+            <TableColumn fx:id="couponIdColumn" text="شناسه کوپن" prefWidth="160" />
+            <TableColumn fx:id="itemIdsColumn" text="شناسه غذا ها" prefWidth="160" />
+            <TableColumn fx:id="rawPriceColumn" text="قیمت اولیه" prefWidth="160" />
+            <TableColumn fx:id="taxFeeColumn" text="مالیات" prefWidth="130" />
+            <TableColumn fx:id="additionalFeeColumn" text="هزینه اضافی" prefWidth="160" />
+            <TableColumn fx:id="courierFeeColumn" text="هزینه پیک" prefWidth="160" />
+            <TableColumn fx:id="payPriceColumn" text="قیمت نهایی" prefWidth="160" />
+            <TableColumn fx:id="courierIdColumn" text="شناسه پیک" prefWidth="160" />
+            <TableColumn fx:id="statusColumn" text="وضعیت" prefWidth="220" />
+            <TableColumn fx:id="createdAtColumn" text="زمان ثبت سفارش" prefWidth="250" />
+            <TableColumn fx:id="updatedAtColumn" text="زمان بروزرسانی" prefWidth="250" />
+            <TableColumn fx:id="actionsColumn" text="عملیات" prefWidth="240" resizable="false" sortable="false" />
+        </columns>
+        </TableView>
+
+        <HBox alignment="CENTER" spacing="20.0">
+            <Button fx:id="addFilterButton" onAction="#handleAddFilter" text="اعمال فیلتر" styleClass="primary-button" />
+            <Button fx:id="backButton" onAction="#handleBackButton" text="بازگشت" styleClass="secondary-button" />
+        </HBox>
+
+    </VBox>
+</AnchorPane>
