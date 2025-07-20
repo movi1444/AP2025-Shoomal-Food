@@ -54,7 +54,7 @@ public class FoodDaoImpl extends GenericDaoImpl<Food> implements FoodDao {
     {
         try {
             Query<Food> query = session.createQuery
-                    ("select f FROM Food f WHERE f.vendor.id = :rid AND exists (select m from Menu m join m.foods where m.restaurant.id = vendor.id and m.title = :title)", Food.class);
+                    ( "SELECT f FROM Food f JOIN f.menus m WHERE f.vendor.id = :rid AND m.title = :title", Food.class);
             query.setParameter("title", title);
             query.setParameter("rid", restaurantId);
             return query.list();
