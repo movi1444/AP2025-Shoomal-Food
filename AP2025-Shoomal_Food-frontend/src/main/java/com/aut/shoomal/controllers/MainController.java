@@ -1,6 +1,8 @@
 package com.aut.shoomal.controllers;
 
+import com.aut.shoomal.exceptions.FrontendServiceException;
 import com.aut.shoomal.service.RestaurantService;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -34,6 +36,7 @@ public class MainController extends AbstractBaseController {
 
     @FXML private MenuBar sellerMenuBar;
     private RestaurantService restaurantService;
+    private Integer restaurantId;
 
     private UserResponse currentUser;
     private String token;
@@ -129,6 +132,7 @@ public class MainController extends AbstractBaseController {
                     sellerMenuBar.setVisible(true);
                     sellerMenuBar.setManaged(true);
                 }
+                loadSellerRestaurantId();
                 break;
             case "courier":
                 targetPane = courierDashboardScrollPane;
@@ -163,6 +167,35 @@ public class MainController extends AbstractBaseController {
             targetPane.setManaged(true);
         }
     }
+
+    private void loadSellerRestaurantId()
+    {
+        if (token == null || token.isEmpty())
+        {
+            showAlert("Authentication Error", "User not logged in. Please log in first.", Alert.AlertType.ERROR, null);
+            return;
+        }
+
+        restaurantService.getRestaurants(token)
+                .thenAccept(restaurants -> Platform.runLater(() -> {
+                    if (restaurants != null && !restaurants.isEmpty())
+                        this.restaurantId = restaurants.getFirst().getId();
+                    else
+                        restaurantId = null;
+                }))
+                .exceptionally(e -> {
+                    Platform.runLater(() -> {
+                        if (e.getCause() instanceof FrontendServiceException fsException) {
+                            showAlert(fsException);
+                        } else {
+                            showAlert("Error", "Failed to load seller's restaurant ID: " + e.getMessage(), Alert.AlertType.ERROR, null);
+                        }
+                    });
+                    restaurantId = null;
+                    return null;
+                });
+    }
+
     private void handleProfilePictureClick(MouseEvent event) {
         System.out.println("Profile picture clicked! Navigating to user profile.");
         navigateToProfileView(profilePictureImageView);
@@ -202,36 +235,50 @@ public class MainController extends AbstractBaseController {
     }
 
     @FXML
-    public void handleAddFoodToRestaurant(ActionEvent actionEvent)
+    public void handleListFoods(ActionEvent actionEvent)
     {
+        if (restaurantId == null)
+        {
+            showAlert("Error", "Please create a restaurant first to manage food items.", Alert.AlertType.WARNING, null);
+            return;
+        }
+
         navigateTo(
                 (MenuItem) actionEvent.getSource(),
-                "/com/aut/shoomal/views/FoodDetailsView.fxml",
-                "/com/aut/shoomal/styles/MainView.css",
-                TransitionType.SLIDE_LEFT
+                "/com/aut/shoomal/views/ListFoodView.fxml",
+                "",
+                TransitionType.SLIDE_LEFT,
+                controller -> {
+                    if (controller instanceof ShowListFoodController showListFoodController)
+                        showListFoodController.setRestaurantId(restaurantId);
+                }
         );
     }
 
     @FXML
-    public void handleCreateMenu(ActionEvent actionEvent)
+    public void handleManageMenus(ActionEvent actionEvent)
     {
+        if (token == null || token.isEmpty())
+        {
+            showAlert("Authentication Error", "User not logged in. Please log in first.", Alert.AlertType.ERROR, null);
+            return;
+        }
 
-    }
+        if (restaurantId == null)
+        {
+            showAlert("Error", "Please create a restaurant first to manage food items.", Alert.AlertType.WARNING, null);
+            return;
+        }
 
-    @FXML
-    public void handleShowMenus(ActionEvent actionEvent)
-    {
-
-    }
-
-    @FXML
-    public void handleListFoods(ActionEvent actionEvent)
-    {
         navigateTo(
                 (MenuItem) actionEvent.getSource(),
-                "/com/aut/shoomal/views/ListFoodView.fxml",
-                "", //"/com/aut/shoomal/styles/AdminDashboardStyles.css",
-                TransitionType.SLIDE_LEFT
+                "/com/aut/shoomal/views/ListMenuView.fxml",
+                "",
+                TransitionType.SLIDE_LEFT,
+                controller -> {
+                    if (controller instanceof ShowListMenuController showListMenuController)
+                        showListMenuController.setRestaurantId(restaurantId);
+                }
         );
     }
 

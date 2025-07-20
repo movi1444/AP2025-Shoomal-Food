@@ -14,10 +14,9 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-
 <?import javafx.scene.control.TextArea?>
-<!-- fx:controller will be set in the FXMLLoader.load() call, not here directly -->
-<AnchorPane prefHeight="700.0" prefWidth="800.0" stylesheets="/com/aut/shoomal/styles/MainView.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+
+<AnchorPane prefHeight="700.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <VBox alignment="TOP_CENTER" spacing="20.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
         <padding>
             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
@@ -36,7 +35,7 @@
                     <Image url="@/com/aut/shoomal/images/ShoomalFoodMahi.png" />
                 </image>
             </ImageView>
-            <Button fx:id="uploadImageButton" onAction="#handleUploadImage" styleClass="my-button" text="آپلود تصویر غذا">
+            <Button fx:id="uploadImageButton" onAction="#handleUploadImage" styleClass="primary-button" text="آپلود تصویر غذا">
                 <cursor>
                     <Cursor fx:constant="HAND" />
                 </cursor>
@@ -90,8 +89,8 @@
         </VBox>
 
         <HBox alignment="CENTER" spacing="20.0">
-            <Button fx:id="saveButton" onAction="#handleSaveChanges" styleClass="my-button" text="ذخیره تغییرات" />
-            <Button fx:id="backButton" onAction="#handleBackToPreviousPage" styleClass="my-button2" text="بازگشت به صفحه قبلی" />
+            <Button fx:id="saveButton" onAction="#handleSaveChanges" styleClass="primary-button" text="ذخیره تغییرات" />
+            <Button fx:id="backButton" onAction="#handleBackToPreviousPage" styleClass="logout-button" text="بازگشت به صفحه قبلی" />
         </HBox>
     </VBox>
 </AnchorPane>

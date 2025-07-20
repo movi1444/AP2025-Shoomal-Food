@@ -122,6 +122,20 @@ public class RestaurantService extends AbstractService
         }
     }
 
+    public CompletableFuture<List<ListItemResponse>> getFoodsByMenuTitle(String token, Integer restaurantId, String title)
+    {
+        String endpoint = "restaurants/" + restaurantId + "/items/" + title;
+        try {
+            HttpRequest httpRequest = createAuthenticatedRequestBuilder(endpoint, token)
+                    .GET()
+                    .build();
+            return sendListRequest(httpRequest, new TypeReference<>() {});
+        } catch (Exception e) {
+            System.err.println("Error creating get food by menu title request: " + e.getMessage());
+            throw new RuntimeException("Error creating get food by menu title request: " + e.getMessage(), e);
+        }
+    }
+
     public CompletableFuture<MenuTitleResponse> addMenu(AddMenuTitleRequest request, String token, Integer restaurantId)
     {
         String endpoint = "restaurants/" + restaurantId + "/menu";
@@ -147,6 +161,48 @@ public class RestaurantService extends AbstractService
         } catch (Exception e) {
             System.err.println("Error creating delete menu request: " + e.getMessage());
             throw new RuntimeException("Error creating delete menu request: " + e.getMessage(), e);
+        }
+    }
+
+    public CompletableFuture<MenuTitleResponse> editMenu(AddMenuTitleRequest request, String token, Integer restaurantId, String title)
+    {
+        String endpoint = "restaurants/" + restaurantId + "/menu/edit" + title;
+        try {
+            HttpRequest httpRequest = createAuthenticatedRequestBuilder(endpoint, token)
+                    .PUT(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(request)))
+                    .build();
+            return sendRequest(httpRequest, MenuTitleResponse.class);
+        } catch (Exception e) {
+            System.err.println("Error creating update menu request: " + e.getMessage());
+            throw new RuntimeException("Error creating update menu request: " + e.getMessage(), e);
+        }
+    }
+
+    public CompletableFuture<MenuTitleResponse> getMenuByTitle(String token, Integer restaurantId, String title)
+    {
+        String endpoint = "restaurants/" + restaurantId + "/menu/" + title;
+        try {
+            HttpRequest httpRequest = createAuthenticatedRequestBuilder(endpoint, token)
+                    .GET()
+                    .build();
+            return sendRequest(httpRequest, MenuTitleResponse.class);
+        } catch (Exception e) {
+            System.err.println("Error creating get menu by title request: " + e.getMessage());
+            throw new RuntimeException("Error creating get menu by title request: " + e.getMessage(), e);
+        }
+    }
+
+    public CompletableFuture<List<MenuTitleResponse>> getMenusByRestaurantId(String token, Integer restaurantId)
+    {
+        String endpoint = "restaurants/" + restaurantId + "/menus";
+        try {
+            HttpRequest httpRequest = createAuthenticatedRequestBuilder(endpoint, token)
+                    .GET()
+                    .build();
+            return sendListRequest(httpRequest, new TypeReference<>() {});
+        } catch (Exception e) {
+            System.err.println("Error creating get menus by restaurant id request: " + e.getMessage());
+            throw new RuntimeException("Error creating get menus by restaurant id request: " + e.getMessage(), e);
         }
     }
 
