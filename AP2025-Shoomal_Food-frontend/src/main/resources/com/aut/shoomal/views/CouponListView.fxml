@@ -16,7 +16,7 @@
     </top>
     <center>
         <VBox alignment="CENTER" spacing="15" style="-fx-padding: 20;" BorderPane.alignment="CENTER">
-            <TableView fx:id="couponTable" VBox.vgrow="ALWAYS" styleClass="table-view">
+            <TableView fx:id="couponTable" VBox.vgrow="ALWAYS" styleClass="dashboard-card">
                 <columns>
                     <TableColumn fx:id="idColumn" text="شناسه" prefWidth="50" />
                     <TableColumn fx:id="couponCodeColumn" text="کد کوپن" prefWidth="120" />
