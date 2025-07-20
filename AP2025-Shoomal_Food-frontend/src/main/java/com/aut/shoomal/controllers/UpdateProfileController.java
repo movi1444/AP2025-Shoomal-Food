@@ -88,6 +88,16 @@ public class UpdateProfileController extends AbstractBaseController
             return;
         }
 
+        if (brandNameField != null) {
+            brandNameField.setVisible(false);
+            brandNameField.setManaged(false);
+        }
+        if (descriptionArea != null) {
+            descriptionArea.setVisible(false);
+            descriptionArea.setManaged(false);
+        }
+
+
         profileService.getProfile(token)
                 .thenAccept(userResponse -> {
                     Platform.runLater(() -> {
@@ -122,6 +132,16 @@ public class UpdateProfileController extends AbstractBaseController
                             {
                                 bankNameField.setText("N/A");
                                 bankAccountField.setText("N/A");
+                            }
+                            if ("seller".equalsIgnoreCase(this.userType)) {
+                                if (brandNameField != null) {
+                                    brandNameField.setVisible(true);
+                                    brandNameField.setManaged(true);
+                                }
+                                if (descriptionArea != null) {
+                                    descriptionArea.setVisible(true);
+                                    descriptionArea.setManaged(true);
+                                }
                             }
                         }
                     });
