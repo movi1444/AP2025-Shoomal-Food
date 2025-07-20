@@ -2,11 +2,11 @@ package com.aut.shoomal.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class UpdateDeliveryStatusRequest {
+public class UpdateOrderStatusRequest {
     @JsonProperty(value = "status", required = true)
     private String status;
 
-    public UpdateDeliveryStatusRequest() {}
+    public UpdateOrderStatusRequest() {}
 
     public String getStatus() {
         return status;

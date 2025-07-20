@@ -39,7 +39,7 @@
 
 /* TableView cells */
 .table-view .table-cell {
-    -fx-alignment: center-right; /* Align cell content to the right */
+    -fx-alignment: center;
     -fx-padding: 5px 10px; /* Padding for cells */
     -fx-border-color: #eeeeee; /* Light border between cells */
     -fx-border-width: 0 0 1px 0; /* Only bottom border */

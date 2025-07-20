@@ -5,15 +5,15 @@ import com.aut.shoomal.entity.restaurant.RestaurantOrderStatus;
 
 public class UpdateOrderStatusRequest {
     @JsonProperty(value = "status", required = true)
-    private RestaurantOrderStatus status;
+    private String status;
 
     public UpdateOrderStatusRequest() {}
 
-    public RestaurantOrderStatus getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(RestaurantOrderStatus status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 }

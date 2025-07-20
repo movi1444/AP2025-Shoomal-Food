@@ -134,6 +134,19 @@ public class ShowListMenuController extends AbstractBaseController
             private void handleShowMenuFoods(String title, Node source)
             {
                 handleError(title);
+                navigateTo(
+                        source,
+                        "/com/aut/shoomal/views/ListMenuFoodsView.fxml",
+                        "/com/aut/shoomal/styles/ListFoodsView.css",
+                        TransitionType.SLIDE_LEFT,
+                        controller -> {
+                            if (controller instanceof ShowListMenuFoodsController showListMenuFoodsController)
+                            {
+                                showListMenuFoodsController.setRestaurantId(restaurantId);
+                                showListMenuFoodsController.setTitle(title);
+                            }
+                        }
+                );
             }
 
             private void handleError(String title)

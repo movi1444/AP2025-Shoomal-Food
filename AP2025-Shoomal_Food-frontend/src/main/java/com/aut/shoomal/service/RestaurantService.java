@@ -261,4 +261,18 @@ public class RestaurantService extends AbstractService
             throw new RuntimeException("Error getting restaurant order list: " + e.getMessage(), e);
         }
     }
+
+    public CompletableFuture<ApiResponse> changeOrderStatus(String token, Integer orderId, UpdateOrderStatusRequest request)
+    {
+        String endpoint = "restaurants/orders/" + orderId;
+        try {
+            HttpRequest httpRequest = createAuthenticatedRequestBuilder(endpoint, token)
+                    .method("PATCH", HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(request)))
+                    .build();
+            return sendRequest(httpRequest, ApiResponse.class);
+        } catch (Exception e) {
+            System.err.println("Error creating change order status request: " + e.getMessage());
+            throw new RuntimeException("Error creating change order status request: " + e.getMessage(), e);
+        }
+    }
 }

@@ -18,6 +18,8 @@ import org.hibernate.Session;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -32,7 +34,7 @@ public class FoodItemHandler extends AbstractHttpHandler {
 
     private static final Pattern FOOD_ITEM_ID_PATH_PATTERN = Pattern.compile("/restaurants/\\d+/item/(\\d+).*");
     private static final Pattern RESTAURANT_ID_FROM_ITEM_PATH_PATTERN = Pattern.compile("/restaurants/(\\d+)/item.*");
-    private static final Pattern GET_FOODS_TITLE_PATH_PATTERN = Pattern.compile("/restaurants/(\\d+)/items(?:/[^/]+(?:/\\d+)?)?/?$");
+    private static final Pattern GET_FOODS_TITLE_PATH_PATTERN = Pattern.compile("/restaurants/(\\d+)/items/([^/]+)$");
 
     public FoodItemHandler(RestaurantManager restaurantManager, FoodManager foodManager, UserManager userManager, BlacklistedTokenDao blacklistedTokenDao) {
         this.restaurantManager = restaurantManager;
@@ -58,7 +60,7 @@ public class FoodItemHandler extends AbstractHttpHandler {
             Optional<Integer> foodItemIdOptional = extractIdFromPath(requestPath, FOOD_ITEM_ID_PATH_PATTERN);
             int foodItemId = foodItemIdOptional.orElse(-1);
 
-            Optional<String> titleOp = extractMenuTitleFromPath(requestPath, GET_FOODS_TITLE_PATH_PATTERN);
+            Optional<String> titleOp = extractPathVariable(requestPath, GET_FOODS_TITLE_PATH_PATTERN, 2);
             String menuTitle = titleOp.orElse(null);
 
             if (requestPath.equals("/restaurants/" + restaurantId + "/item") && method.equalsIgnoreCase("POST") && restaurantId != -1) {
@@ -205,11 +207,26 @@ public class FoodItemHandler extends AbstractHttpHandler {
         );
     }
 
-    private Optional<String> extractMenuTitleFromPath(String path, Pattern pattern) {
+    public static Optional<String> extractPathVariable(String path, Pattern pattern, int capturingGroupIndex)
+    {
         Matcher matcher = pattern.matcher(path);
-        if (matcher.matches() && matcher.groupCount() >= 1) {
-            return Optional.ofNullable(matcher.group(1));
+        if (matcher.matches())
+        {
+            if (matcher.groupCount() >= capturingGroupIndex)
+            {
+                String encodedValue = matcher.group(capturingGroupIndex);
+                try {
+                    String decodedValue = URLDecoder.decode(encodedValue, StandardCharsets.UTF_8);
+                    return Optional.ofNullable(decodedValue);
+                } catch (Exception e) {
+                    System.err.println("Error decoding path variable: " + e.getMessage());
+                    return Optional.empty();
+                }
+            }
+            else
+                return Optional.empty();
         }
-        return Optional.empty();
+        else
+            return Optional.empty();
     }
 }

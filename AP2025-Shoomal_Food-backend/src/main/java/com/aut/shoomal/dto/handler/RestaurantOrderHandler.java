@@ -1,5 +1,6 @@
 package com.aut.shoomal.dto.handler;
 
+import com.aut.shoomal.entity.restaurant.RestaurantOrderStatus;
 import com.aut.shoomal.entity.user.User;
 import com.aut.shoomal.entity.user.UserManager;
 import com.aut.shoomal.entity.user.Seller;
@@ -140,7 +141,7 @@ public class RestaurantOrderHandler extends AbstractHttpHandler {
         UpdateOrderStatusRequest requestBody;
         try {
             requestBody = parseRequestBody(exchange, UpdateOrderStatusRequest.class);
-            if (requestBody == null || requestBody.getStatus() == null) {
+            if (requestBody == null || requestBody.getStatus() == null || requestBody.getStatus().trim().isEmpty()) {
                 sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid input: 'status' is required."));
                 return;
             }
@@ -157,7 +158,7 @@ public class RestaurantOrderHandler extends AbstractHttpHandler {
                 throw new NotFoundException("404 Not Found: Order with ID " + orderId + " not found.");
             }
 
-            OrderStatus internalOrderStatus = switch (requestBody.getStatus()) {
+            OrderStatus internalOrderStatus = switch (RestaurantOrderStatus.fromValue(requestBody.getStatus())) {
                 case ACCEPTED -> OrderStatus.WAITING_VENDOR;
                 case REJECTED -> OrderStatus.CANCELLED;
                 case SERVED -> OrderStatus.FINDING_COURIER;
