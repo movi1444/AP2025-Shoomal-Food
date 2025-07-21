@@ -16,7 +16,10 @@ import com.aut.shoomal.exceptions.NotFoundException;
 import com.aut.shoomal.payment.order.Order;
 import com.aut.shoomal.payment.order.OrderManager;
 import com.aut.shoomal.payment.order.OrderStatus;
+import com.aut.shoomal.util.HibernateUtil;
 import com.sun.net.httpserver.HttpExchange;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -94,6 +97,8 @@ public class CourierHandler extends AbstractHttpHandler {
 
     private void handleGetAvailableDeliveries(HttpExchange exchange) throws IOException {
         List<Order> availableOrders = orderManager.getAllOrders(null, null, null, null, OrderStatus.FINDING_COURIER.getName());
+        List<Order> orders2 = orderManager.getAllOrders(null, null, null, null, OrderStatus.ON_THE_WAY.getName());
+        availableOrders.addAll(orders2);
         List<OrderResponse> responseList = availableOrders.stream()
                 .map(this::convertToOrderResponse)
                 .collect(Collectors.toList());
@@ -130,36 +135,52 @@ public class CourierHandler extends AbstractHttpHandler {
             return;
         }
 
-        Order order = orderManager.findOrderById(orderId);
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+        Order order = session.get(Order.class, orderId);
         if (order == null) {
+            if (transaction != null)
+                transaction.rollback();
+            session.close();
             throw new NotFoundException("Order with ID " + orderId + " not found.");
         }
 
         if (order.getOrderStatus() == OrderStatus.FINDING_COURIER && courierStatus == CourierDeliveryStatus.ACCEPTED) {
             if (order.getCourier() != null) {
+                if (transaction != null)
+                    transaction.rollback();
+                session.close();
                 throw new ConflictException("Delivery already assigned to another courier.");
             }
             order.setCourier(authenticatedUser);
         }
         else if (order.getCourier() == null || !order.getCourier().getId().equals(authenticatedUser.getId())) {
+            if (transaction != null)
+                transaction.rollback();
+            session.close();
             throw new ForbiddenException("You are not authorized to update this order's status.");
         }
 
         if (!isValidStatusTransition(order.getOrderStatus(), newOrderStatus)) {
+            if (transaction != null)
+                transaction.rollback();
+            session.close();
             throw new InvalidInputException("Invalid status transition from " + order.getOrderStatus().getName() + " to " + newOrderStatus.getName());
         }
 
         order.setOrderStatus(newOrderStatus);
-        orderManager.updateOrder(order);
+        session.merge(order);
+        transaction.commit();
 
         UpdateDeliveryStatusResponse response = new UpdateDeliveryStatusResponse("Order status updated successfully.", this.convertToOrderResponse(order));
+        session.close();
         sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, response);
     }
 
     private boolean isValidStatusTransition(OrderStatus currentStatus, OrderStatus newStatus) {
         return switch (currentStatus) {
             case FINDING_COURIER -> newStatus == OrderStatus.ON_THE_WAY;
-            case ON_THE_WAY -> newStatus == OrderStatus.COMPLETED;
+            case ON_THE_WAY -> newStatus == OrderStatus.COMPLETED || newStatus == OrderStatus.ON_THE_WAY;
             default -> false;
         };
     }
@@ -173,6 +194,8 @@ public class CourierHandler extends AbstractHttpHandler {
         String statusString = queryParams.get("status");
 
         List<Order> orders = orderManager.getAllOrders(search, vendorId, customerId, String.valueOf(authenticatedUser.getId()), statusString);
+        if (orders == null)
+            throw new NotFoundException("No orders found.");
 
         List<OrderResponse> responseList = orders.stream()
                 .map(this::convertToOrderResponse)

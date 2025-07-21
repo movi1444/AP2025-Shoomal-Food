@@ -66,6 +66,7 @@ public class Server
         AdminHandler adminHandler = new AdminHandler(userManager, restaurantManager, blacklistedTokenDao, orderManager, paymentTransactionManager);
         AdminCouponHandler adminCouponHandler = new AdminCouponHandler(userManager, blacklistedTokenDao, couponManager);
         CourierHandler courierHandler = new CourierHandler(userManager,orderManager,blacklistedTokenDao);
+        UserOrderHandler userOrderHandler = new UserOrderHandler(userManager, blacklistedTokenDao);
 
         try {
             final HttpServer finalServer = HttpServer.create(new InetSocketAddress(port), 0);
@@ -87,10 +88,12 @@ public class Server
             finalServer.createContext("/coupons", buyerBrowseHandler);
             finalServer.createContext("/ratings", buyerRatingHandler);
 
+            finalServer.createContext("/order", userOrderHandler);
             finalServer.createContext("/orders", buyerOrderHandler);
             finalServer.createContext("/orders/history", buyerOrderHandler);
             finalServer.createContext("/transactions", buyerOrderHandler);
             finalServer.createContext("/wallet/top-up", buyerOrderHandler);
+            finalServer.createContext("/wallet/amount", buyerOrderHandler);
             finalServer.createContext("/payment/online", buyerOrderHandler);
 
             finalServer.createContext("/favorites", buyerFavoriteHandler);

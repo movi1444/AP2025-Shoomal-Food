@@ -16,7 +16,7 @@ public class CourierService extends AbstractService
     public CompletableFuture<List<OrderResponse>> getAvailableOrders(String token)
     {
         try {
-            HttpRequest httpRequest = createAuthenticatedRequestBuilder("/deliveries/available", token)
+            HttpRequest httpRequest = createAuthenticatedRequestBuilder("deliveries/available", token)
                     .GET()
                     .build();
             return sendListRequest(httpRequest, new TypeReference<>() {});
@@ -28,7 +28,7 @@ public class CourierService extends AbstractService
 
     public CompletableFuture<UpdateDeliveryStatusResponse> changeDeliveryStatus(String token, Integer orderId, UpdateDeliveryStatusRequest request)
     {
-        String endpoint = "/deliveries/" + orderId;
+        String endpoint = "deliveries/" + orderId;
         try {
             HttpRequest httpRequest = createAuthenticatedRequestBuilder(endpoint, token)
                     .method("PATCH", HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(request)))
@@ -54,7 +54,7 @@ public class CourierService extends AbstractService
             params.put("user", user);
             String query = buildQueryString(params);
 
-            String baseEndpoint = "/deliveries/history";
+            String baseEndpoint = "deliveries/history";
             String endpoint = baseEndpoint + query;
             HttpRequest request = createAuthenticatedRequestBuilder(endpoint, token)
                     .GET()

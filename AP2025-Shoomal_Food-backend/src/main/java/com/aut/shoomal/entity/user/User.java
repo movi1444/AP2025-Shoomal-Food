@@ -73,7 +73,7 @@ public abstract class User
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.password = password;
-        this.email = (email != null && email.trim().isEmpty()) ? null : email;
+        this.email = (email != null && !email.trim().isEmpty()) ? email : null;
         this.role = role;
     }
 

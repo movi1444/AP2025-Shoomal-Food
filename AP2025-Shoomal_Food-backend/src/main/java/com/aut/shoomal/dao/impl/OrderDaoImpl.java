@@ -64,8 +64,7 @@ public class OrderDaoImpl extends GenericDaoImpl<Order> implements OrderDao
                 predicates.add(cb.like(cb.lower(orderRoot.get("customer").get("name")), likePattern));
             }
             if (courierName != null && !courierName.trim().isEmpty()) {
-                String likePattern = "%" + courierName.toLowerCase() + "%";
-                predicates.add(cb.like(cb.lower(orderRoot.get("courier").get("name")), likePattern));
+                predicates.add(cb.equal(orderRoot.get("courier").get("id"), courierName));
             }
             if (status != null) {
                 predicates.add(cb.equal(orderRoot.get("orderStatus"), status));

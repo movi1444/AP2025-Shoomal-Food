@@ -29,7 +29,7 @@ public class TransactionService extends AbstractService
     public CompletableFuture<ApiResponse> chargeWallet(String token, WalletRequest request)
     {
         try {
-            HttpRequest httpRequest = createAuthenticatedRequestBuilder("/wallet/top-up", token)
+            HttpRequest httpRequest = createAuthenticatedRequestBuilder("wallet/top-up", token)
                     .POST(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(request)))
                     .build();
             return sendRequest(httpRequest, ApiResponse.class);
@@ -39,10 +39,23 @@ public class TransactionService extends AbstractService
         }
     }
 
+    public CompletableFuture<BigDecimal> getWalletAmount(String token)
+    {
+        try {
+            HttpRequest request = createAuthenticatedRequestBuilder("wallet/amount", token)
+                    .GET()
+                    .build();
+            return sendRequest(request, BigDecimal.class);
+        } catch (Exception e) {
+            System.err.println("Client error creating wallet amount request: " + e.getMessage());
+            throw new RuntimeException("Client error creating wallet amount request: " + e.getMessage(), e);
+        }
+    }
+
     public CompletableFuture<TransactionResponse> onlinePayment(String token, PaymentRequest request)
     {
         try {
-            HttpRequest httpRequest = createAuthenticatedRequestBuilder("/payment/online", token)
+            HttpRequest httpRequest = createAuthenticatedRequestBuilder("payment/online", token)
                     .POST(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(request)))
                     .build();
             return sendRequest(httpRequest, TransactionResponse.class);

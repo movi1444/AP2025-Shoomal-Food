@@ -1,5 +1,6 @@
 package com.aut.shoomal.entity.user;
 import com.aut.shoomal.dao.UserDao;
+import org.hibernate.Session;
 
 import java.util.List;
 
@@ -55,5 +56,15 @@ public class UserManager
     public void setUserApprovalStatus(String userId, UserStatus userStatus){
         boolean approved = userStatus == UserStatus.APPROVED;
         userDao.updateApprovalStatus(Long.parseLong(userId), approved);
+    }
+
+    public List<User> findCustomersWithOrder(Session session, Long restaurantId)
+    {
+        return userDao.findCustomersWithOrder(session, restaurantId);
+    }
+
+    public List<User> findCouriersWithOrder(Session session, Long restaurantId)
+    {
+        return userDao.findCouriersWithOrder(session, restaurantId);
     }
 }

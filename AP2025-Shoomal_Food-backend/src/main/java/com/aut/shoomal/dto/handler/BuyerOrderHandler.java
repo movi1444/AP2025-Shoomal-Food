@@ -16,6 +16,7 @@ import com.aut.shoomal.payment.order.Order;
 import com.aut.shoomal.payment.order.OrderManager;
 import com.aut.shoomal.payment.transaction.PaymentTransaction;
 import com.aut.shoomal.payment.transaction.PaymentTransactionManager;
+import com.aut.shoomal.payment.wallet.Wallet;
 import com.aut.shoomal.payment.wallet.WalletManager;
 import com.aut.shoomal.util.HibernateUtil;
 import com.sun.net.httpserver.HttpExchange;
@@ -23,12 +24,14 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class BuyerOrderHandler extends AbstractHttpHandler
 {
@@ -37,6 +40,7 @@ public class BuyerOrderHandler extends AbstractHttpHandler
     private static final Pattern ORDERS_HISTORY_PATTERN = Pattern.compile("/orders/history/?");
     private static final Pattern TRANSACTIONS_PATTERN = Pattern.compile("/transactions/?");
     private static final Pattern WALLET_PATTERN = Pattern.compile("/wallet/top-up/?");
+    private static final Pattern WALLET_AMOUNT_PATTERN = Pattern.compile("/wallet/amount/?");
     private static final Pattern PAYMENT_PATTERN = Pattern.compile("/payment/online/?");
 
     private final UserManager userManager;
@@ -92,11 +96,33 @@ public class BuyerOrderHandler extends AbstractHttpHandler
                 getOrdersHistory(exchange);
             else if (TRANSACTIONS_PATTERN.matcher(path).matches())
                 getTransactions(exchange, user.getId());
+            else if (WALLET_AMOUNT_PATTERN.matcher(path).matches())
+                getWalletAmount(exchange, user.getId());
             else
                 sendResponse(exchange, HttpURLConnection.HTTP_NOT_FOUND, new ApiResponse(false, "404 Resource not found for GET."));
         }
         else
             sendResponse(exchange, HttpURLConnection.HTTP_BAD_METHOD, new ApiResponse(false, "405 Method Not Allowed."));
+    }
+
+    private void getWalletAmount(HttpExchange exchange, Long id) throws IOException
+    {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            User user = session.get(User.class, id);
+            if (user == null)
+                throw new NotFoundException("User with id " + id + " not found.");
+            Wallet wallet = user.getWallet();
+            if (wallet == null)
+                throw new NotFoundException("Wallet with user id " + id + " not found.");
+            sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, wallet.getBalance());
+        } catch (NotFoundException e) {
+            System.err.println("404 Resource not found: " + e.getMessage());
+            sendResponse(exchange, HttpURLConnection.HTTP_NOT_FOUND, new ApiResponse(false, "404 Resource not found."));
+        } catch (Exception e) {
+            System.err.println("500 Internal Server Error: " + e.getMessage());
+            e.printStackTrace();
+            sendResponse(exchange, HttpURLConnection.HTTP_INTERNAL_ERROR, new ApiResponse(false, "500 Internal Server Error: " + e.getMessage()));
+        }
     }
 
     private void submitOrder(HttpExchange exchange, Long customerId) throws IOException
