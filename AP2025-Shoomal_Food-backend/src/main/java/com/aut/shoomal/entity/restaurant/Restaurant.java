@@ -55,6 +55,8 @@ public class Restaurant {
     @ManyToMany(mappedBy = "favorites")
     private List<User> users = new ArrayList<>();
 
+    private Boolean approved = false;
+
     public Restaurant() {}
 
     public Restaurant(String name, String phone, String address, String workingHours,
@@ -72,6 +74,10 @@ public class Restaurant {
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getDescription() {
@@ -191,5 +197,13 @@ public class Restaurant {
     public void addFoodItem(Food food) {
         foods.add(food);
         food.setVendor(this);
+    }
+
+    public Boolean getApproved() {
+        return approved;
+    }
+
+    public void setApproved(Boolean approved) {
+        this.approved = approved;
     }
 }
