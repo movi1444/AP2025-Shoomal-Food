@@ -106,9 +106,9 @@ public class OrderFilterController extends AbstractBaseController
                         ObservableList<String> courierNames = FXCollections.observableArrayList("All");
                         List<String> couriers = couriersFuture.get();
                         if (couriers != null)
-                            userNames.addAll(couriers.stream().toList());
-                        userChoiceBox.setItems(courierNames);
-                        userChoiceBox.getSelectionModel().select(initialCourier != null ? initialCourier : "All");
+                            courierNames.addAll(couriers.stream().toList());
+                        courierChoiceBox.setItems(courierNames);
+                        courierChoiceBox.getSelectionModel().select(initialCourier != null ? initialCourier : "All");
                     } catch (Exception e) {
                         showAlert("Error", "Failed to process user/courier data: " + e.getMessage(), Alert.AlertType.ERROR, null);
                     }
