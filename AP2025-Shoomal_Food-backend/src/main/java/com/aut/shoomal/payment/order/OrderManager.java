@@ -176,12 +176,4 @@ public class OrderManager
             if (session != null) session.close();
         }
     }
-
-    public List<Restaurant> getTop5MostOrderedRestaurants(String searchKeyword) {
-        return orderDao.findTop5MostOrderedRestaurants(searchKeyword);
-    }
-
-    public List<Food> getTop5MostOrderedFoods(String searchKeyword) {
-        return orderDao.findTop5MostOrderedFoods(searchKeyword);
-    }
 }
