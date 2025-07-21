@@ -7,8 +7,8 @@ import java.util.List;
 public class RatingResponse
 {
     private Integer id;
-    @JsonProperty("item_id")
-    private Integer itemId;
+    @JsonProperty("order_id")
+    private Integer orderId;
     private Integer rating;
     private String comment;
     private List<String> imageBase64;
@@ -19,11 +19,11 @@ public class RatingResponse
 
     public RatingResponse() {}
 
-    public RatingResponse(Integer id, Integer itemId, Integer rating, String comment, List<String> imageBase64,
+    public RatingResponse(Integer id, Integer orderId, Integer rating, String comment, List<String> imageBase64,
                           Integer userId, String createdAt)
     {
         this.id = id;
-        this.itemId = itemId;
+        this.orderId = orderId;
         this.rating = rating;
         this.comment = comment;
         this.imageBase64 = imageBase64;
@@ -41,14 +41,14 @@ public class RatingResponse
         this.id = id;
     }
 
-    public Integer getItemId()
+    public Integer getOrderId()
     {
-        return itemId;
+        return orderId;
     }
 
-    public void setItemId(Integer itemId)
+    public void setOrderId(Integer orderId)
     {
-        this.itemId = itemId;
+        this.orderId = orderId;
     }
 
     public String getComment()

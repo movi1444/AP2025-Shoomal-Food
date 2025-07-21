@@ -128,30 +128,21 @@ public class BuyerRatingHandler extends AbstractHttpHandler
             }
             Long userId = authenticate(exchange, userManager, blacklistedTokenDao).getId();
 
-            Set<Long> foodIds = new HashSet<>();
             if (request.getOrderId() != null)
             {
                 Order order = session.get(Order.class, request.getOrderId());
                 if (order == null)
                     throw new NotFoundException("Order with id " + request.getOrderId() + " not found.");
-                for (OrderItem item : order.getOrderItems())
-                    foodIds.add(item.getFood().getId());
             }
+            Rating rating = ratingManager.submitRating(
+                    request.getOrderId(),
+                    request.getRating(),
+                    userId,
+                    request.getComment(),
+                    request.getImageBase64()
+            );
 
-            for (Long foodId : foodIds)
-            {
-                Rating rating = ratingManager.submitRating(
-                        request.getOrderId(),
-                        request.getRating(),
-                        userId,
-                        request.getComment(),
-                        request.getImageBase64()
-                );
-                Food food = session.get(Food.class, foodId);
-                food.addRating(rating);
-                ratingManager.addRating(rating, session);
-                session.merge(food);
-            }
+            ratingManager.addRating(rating, session);
             transaction.commit();
             sendResponse(exchange, HttpURLConnection.HTTP_OK, new ApiResponse(true, "200 Rating submitted."));
         } catch (IOException e) {
@@ -287,7 +278,7 @@ public class BuyerRatingHandler extends AbstractHttpHandler
     {
         return new RatingResponse(
                 rating.getId(),
-                Math.toIntExact(rating.getFood().getId()),
+                rating.getOrder().getId(),
                 rating.getRating(),
                 rating.getComment(),
                 rating.getImageBase64(),
