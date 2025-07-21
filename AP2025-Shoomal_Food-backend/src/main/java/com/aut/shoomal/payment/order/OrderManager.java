@@ -76,7 +76,7 @@ public class OrderManager
 
     public List<Order> getAllOrders(String search, String vendorName, String customerName, String courierName, String statusString) {
         OrderStatus status = (statusString != null && !statusString.isEmpty()) ? OrderStatus.fromName(statusString) : null;
-        return orderDao.findOrdersWithFilters(null, search, vendorName, customerName, courierName, status);
+        return orderDao.findOrdersWithFilters(search, vendorName, customerName, courierName, status);
     }
 
     public Order submitOrder(Long customerId, Long vendorId, Integer couponId,

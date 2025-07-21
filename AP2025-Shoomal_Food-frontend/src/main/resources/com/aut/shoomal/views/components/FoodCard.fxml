@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="TOP_CENTER" spacing="5" prefWidth="250" styleClass="food-card"
+      xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.aut.shoomal.controllers.FoodCardController">
+    <padding>
+        <Insets bottom="10" left="10" right="10" top="10"/>
+    </padding>
+
+    <ImageView fx:id="foodImageView" fitWidth="160" fitHeight="160" pickOnBounds="true" preserveRatio="true" styleClass="food-image"/>
+
+    <Label fx:id="nameLabel" text="نام غذا" wrapText="true">
+        <font>
+            <Font size="16.0" />
+        </font>
+    </Label>
+
+    <Label fx:id="priceLabel" text="قیمت: 0 تومان">
+        <font>
+            <Font size="14.0" />
+        </font>
+    </Label>
+
+    <HBox alignment="CENTER" spacing="10" VBox.vgrow="ALWAYS">
+        <Button fx:id="addToCartButton" onAction="#handleAddToCart" text="افزودن به سبد" styleClass="primary-button"/>
+        <Button fx:id="seeCommentsButton" onAction="#handleSeeComments" text="مشاهده نظرات" styleClass="secondary-button"/>
+    </HBox>
+</VBox>

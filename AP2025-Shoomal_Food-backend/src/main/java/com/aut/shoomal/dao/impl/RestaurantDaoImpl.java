@@ -92,4 +92,18 @@ public class RestaurantDaoImpl extends GenericDaoImpl<Restaurant> implements Res
             throw new RuntimeException("Error finding restaurants by owner: " + owner.getId(), e);
         }
     }
+
+    @Override
+    public List<Restaurant> findByCourier(Session session, Long courierId)
+    {
+        try {
+            Query<Restaurant> query = session.createQuery("select r from Restaurant r join r.orders o where o.restaurant.id = r.id and o.courier.id = :courierId", Restaurant.class);
+            query.setParameter("courierId", courierId);
+            return query.getResultList();
+        } catch (Exception e) {
+            System.err.println("Error finding restaurants by courierId: " + courierId);
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

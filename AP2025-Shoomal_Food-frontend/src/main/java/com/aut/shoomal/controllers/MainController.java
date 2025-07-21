@@ -1,15 +1,21 @@
 package com.aut.shoomal.controllers;
 
+import com.aut.shoomal.dto.response.RestaurantResponse;
 import com.aut.shoomal.exceptions.FrontendServiceException;
+import com.aut.shoomal.service.BuyerFavoriteService;
 import com.aut.shoomal.service.RestaurantService;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.StackPane;
 import javafx.event.ActionEvent;
 import java.net.URL;
+import java.util.HashSet;
+import java.util.List;
 import java.util.ResourceBundle;
 import com.aut.shoomal.dto.response.UserResponse;
 import com.aut.shoomal.utils.PreferencesManager;
@@ -19,11 +25,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert.AlertType;
 import java.io.IOException;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import javafx.scene.Cursor;
 import javafx.scene.shape.Circle;
+import javafx.stage.Stage;
 
 public class MainController extends AbstractBaseController {
-
     @FXML private Label welcomeUserLabel;
     @FXML private StackPane contentStackPane;
 
@@ -40,6 +49,10 @@ public class MainController extends AbstractBaseController {
 
     @FXML private MenuBar courierMenuBar;
 
+    @FXML private FlowPane buyerFavoriteRestaurantsFlowPane;
+    @FXML private FlowPane buyerOtherRestaurantsFlowPane;
+    private BuyerFavoriteService buyerFavoriteService;
+
     private UserResponse currentUser;
     private String token;
 
@@ -47,6 +60,7 @@ public class MainController extends AbstractBaseController {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         super.initialize(url, resourceBundle);
         restaurantService = new RestaurantService();
+        buyerFavoriteService = new BuyerFavoriteService();
         token = PreferencesManager.getJwtToken();
         hideAllDashboards();
         if (defaultView != null) {
@@ -131,6 +145,7 @@ public class MainController extends AbstractBaseController {
         switch (role != null ? role.toLowerCase() : "") {
             case "buyer":
                 targetPane = buyerDashboardScrollPane;
+                loadBuyerDashboardContent();
                 break;
             case "seller":
                 targetPane = sellerDashboardScrollPane;
@@ -327,7 +342,99 @@ public class MainController extends AbstractBaseController {
         );
     }
 
-    private void handleError() {
+    private void loadBuyerDashboardContent()
+    {
+        if (token == null || token.isEmpty())
+        {
+            showAlert("Authentication Error", "User not logged in. Please log in first.", Alert.AlertType.ERROR, null);
+            return;
+        }
+
+        buyerFavoriteRestaurantsFlowPane.getChildren().clear();
+        buyerOtherRestaurantsFlowPane.getChildren().clear();
+        buyerFavoriteService.getFavoriteRestaurants(token)
+                .thenCombine(buyerFavoriteService.getAllRestaurants(token), (favorites, allRestaurants) -> {
+                    Platform.runLater(() -> {
+                        if (favorites != null && !favorites.isEmpty())
+                            for (RestaurantResponse restaurant : favorites)
+                                addRestaurantCard(restaurant, buyerFavoriteRestaurantsFlowPane);
+                        else
+                            buyerFavoriteRestaurantsFlowPane.getChildren().add(new Label("شما رستوران مورد علاقه‌ای ندارید."));
+                        if (allRestaurants != null && !allRestaurants.isEmpty())
+                        {
+                            Set<Integer> favoriteIds;
+                            if (favorites != null)
+                                favoriteIds = favorites.stream()
+                                        .map(RestaurantResponse::getId)
+                                        .collect(Collectors.toSet());
+                            else
+                                favoriteIds = new HashSet<>();
+
+                            List<RestaurantResponse> otherRestaurants = allRestaurants.stream()
+                                    .filter(r -> !favoriteIds.contains(r.getId()))
+                                    .toList();
+                            if (!otherRestaurants.isEmpty())
+                                for (RestaurantResponse restaurant : otherRestaurants)
+                                    addRestaurantCard(restaurant, buyerOtherRestaurantsFlowPane);
+                            else
+                                buyerOtherRestaurantsFlowPane.getChildren().add(new Label("سایر رستوران‌ها در دسترس نیستند."));
+                        }
+                        else
+                            buyerOtherRestaurantsFlowPane.getChildren().add(new Label("هیچ رستورانی در دسترس نیست."));
+                    });
+                    return null;
+                })
+                .exceptionally(e -> {
+                    Platform.runLater(() -> {
+                        if (e.getCause() instanceof FrontendServiceException fsException)
+                            showAlert(fsException);
+                        else
+                            showAlert("Unexpected Error", "An unexpected error occurred while loading favorite restaurants: " + e.getMessage(), Alert.AlertType.ERROR, null);
+                    });
+                    return null;
+                });
+    }
+
+    private void addRestaurantCard(RestaurantResponse restaurant, FlowPane targetFlowPane) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/aut/shoomal/views/components/FavoriteRestaurantCard.fxml"));
+            VBox card = loader.load();
+            FavoriteRestaurantCardController cardController = loader.getController();
+
+            cardController.setRestaurantData(restaurant, this::navigateToRestaurantDetails);
+            targetFlowPane.getChildren().add(card);
+        } catch (IOException e) {
+            System.err.println("Failed to load restaurant card: " + e.getMessage());
+            e.printStackTrace();
+            showAlert("Load Error", "Could not load a restaurant card.", Alert.AlertType.ERROR, null);
+        }
+    }
+
+    private void navigateToRestaurantDetails(Integer restaurantId)
+    {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/aut/shoomal/views/BuyerRestaurantView.fxml"));
+            Parent root = loader.load();
+
+            BuyerShowRestaurantDetailsController showRestaurantDetailsController = loader.getController();
+            if (showRestaurantDetailsController != null)
+                showRestaurantDetailsController.setRestaurantId(restaurantId);
+
+            Stage stage = (Stage) buyerDashboardScrollPane.getScene().getWindow();
+            Scene scene = new Scene(root, stage.getWidth(), stage.getHeight());
+            stage.setScene(scene);
+            stage.setTitle("جزئیات رستوران");
+            stage.show();
+
+        } catch (IOException e) {
+            System.err.println("Failed to load BuyerRestaurantView.fxml: " + e.getMessage());
+            e.printStackTrace();
+            showAlert("Navigation Error", "Failed to load restaurant details page.", Alert.AlertType.ERROR, null);
+        }
+    }
+
+    private void handleError()
+    {
         if (token == null || token.isEmpty())
         {
             showAlert("Authentication Error", "User not logged in. Please log in first.", AlertType.ERROR, null);

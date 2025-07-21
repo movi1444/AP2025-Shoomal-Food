@@ -16,6 +16,7 @@ import com.aut.shoomal.entity.user.Seller;
 import com.aut.shoomal.entity.user.User;
 import com.aut.shoomal.entity.food.Food;
 import com.aut.shoomal.entity.menu.Menu;
+import org.hibernate.Session;
 
 import java.util.List;
 import java.util.Optional;
@@ -45,6 +46,10 @@ public class RestaurantManager {
         }
 
         return restaurant.getOwner() != null && restaurant.getOwner().getId().equals(ownerUser.getId());
+    }
+
+    public List<Restaurant> findByCourier(Session session, Long courierId) {
+        return restaurantDao.findByCourier(session, courierId);
     }
 
     public Restaurant createRestaurant(CreateRestaurantRequest request, String userId) throws InvalidInputException, ConflictException, ForbiddenException, NotFoundException {

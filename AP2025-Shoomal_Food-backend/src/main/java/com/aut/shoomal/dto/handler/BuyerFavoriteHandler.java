@@ -1,5 +1,6 @@
 package com.aut.shoomal.dto.handler;
 
+import com.aut.shoomal.entity.restaurant.RestaurantManager;
 import com.aut.shoomal.entity.user.User;
 import com.aut.shoomal.entity.user.UserManager;
 import com.aut.shoomal.entity.restaurant.Restaurant;
@@ -15,6 +16,7 @@ import org.hibernate.Transaction;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -23,13 +25,16 @@ public class BuyerFavoriteHandler extends AbstractHttpHandler
 {
     private final Pattern FAVORITES_BASE_PATTERN = Pattern.compile("/favorites/?");
     private final Pattern FAVORITES_ID_PATTERN = Pattern.compile("/favorites/(\\d+)");
+    private final Pattern NON_FAVORITES_PATTERN = Pattern.compile("/favorites/all/?");
 
     private final UserManager userManager;
     private final BlacklistedTokenDao blacklistedTokenDao;
-    public BuyerFavoriteHandler(UserManager userManager, BlacklistedTokenDao blacklistedTokenDao)
+    private final RestaurantManager restaurantManager;
+    public BuyerFavoriteHandler(UserManager userManager, BlacklistedTokenDao blacklistedTokenDao, RestaurantManager restaurantManager)
     {
         this.userManager = userManager;
         this.blacklistedTokenDao = blacklistedTokenDao;
+        this.restaurantManager = restaurantManager;
     }
 
     @Override
@@ -49,6 +54,8 @@ public class BuyerFavoriteHandler extends AbstractHttpHandler
         {
             if (FAVORITES_BASE_PATTERN.matcher(path).matches())
                 getFavoriteRestaurants(exchange, user.getId());
+            else if (NON_FAVORITES_PATTERN.matcher(path).matches())
+                getAllRestaurants(exchange);
             else
                 sendResponse(exchange, HttpURLConnection.HTTP_NOT_FOUND, new ApiResponse(false, "404 Resource not found for GET."));
         }
@@ -80,6 +87,22 @@ public class BuyerFavoriteHandler extends AbstractHttpHandler
         }
         else
             sendResponse(exchange, HttpURLConnection.HTTP_BAD_METHOD, new ApiResponse(false, "405 Method Not Allowed."));
+    }
+
+    private void getAllRestaurants(HttpExchange exchange) throws IOException
+    {
+        try {
+            List<Restaurant> restaurants = restaurantManager.getAllApprovedRestaurants();
+            if (restaurants == null)
+                throw new NotFoundException("No restaurants found.");
+            List<RestaurantResponse> responses = restaurants.stream()
+                    .map(this::convertToRestaurantResponse)
+                    .toList();
+            sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, responses);
+        } catch (NotFoundException e) {
+            System.err.println("404 Resource not found: " + e.getMessage());
+            sendResponse(exchange, HttpURLConnection.HTTP_NOT_FOUND, new ApiResponse(false, "404 Resource not found: " + e.getMessage()));
+        }
     }
 
     private void getFavoriteRestaurants(HttpExchange exchange, Long customerId) throws IOException
@@ -156,5 +179,18 @@ public class BuyerFavoriteHandler extends AbstractHttpHandler
             if (transaction != null)
                 transaction.rollback();
         }
+    }
+
+    private RestaurantResponse convertToRestaurantResponse(Restaurant restaurant)
+    {
+        return new RestaurantResponse(
+                restaurant.getId(),
+                restaurant.getName(),
+                restaurant.getAddress(),
+                restaurant.getPhone(),
+                restaurant.getLogoBase64(),
+                restaurant.getTaxFee(),
+                restaurant.getAdditionalFee()
+        );
     }
 }

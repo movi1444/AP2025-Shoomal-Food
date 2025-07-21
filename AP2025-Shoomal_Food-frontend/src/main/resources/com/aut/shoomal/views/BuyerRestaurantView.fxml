@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="700.0" prefWidth="900.0" stylesheets="@/com/aut/shoomal/styles/MainView.css"
+            xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.aut.shoomal.controllers.BuyerShowRestaurantDetailsController">
+    <VBox alignment="TOP_CENTER" spacing="20.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+        <padding>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+        </padding>
+
+        <HBox alignment="CENTER" spacing="20">
+            <ImageView fx:id="restaurantLogoView" fitWidth="100" fitHeight="100" preserveRatio="true" styleClass="restaurant-logo"/>
+            <VBox alignment="CENTER_LEFT" spacing="5">
+                <Label fx:id="restaurantNameLabel" text="نام رستوران" styleClass="header-label">
+                    <font>
+                        <Font size="28.0" />
+                    </font>
+                </Label>
+                <Label fx:id="restaurantAddressLabel" text="آدرس رستوران" styleClass="sub-header-label">
+                    <font>
+                        <Font size="16.0" />
+                    </font>
+                </Label>
+            </VBox>
+        </HBox>
+
+        <HBox alignment="CENTER" spacing="20.0">
+            <Button fx:id="backButton" onAction="#handleBack" text="بازگشت" styleClass="logout-button" />
+            <Button fx:id="seeMenusButton" onAction="#handleSeeAllMenus" text="مشاهده منو ها" styleClass="primary-button" />
+        </HBox>
+
+        <Label text="غذاهای موجود" styleClass="section-title">
+            <font>
+                <Font size="22.0" />
+            </font>
+            <VBox.margin>
+                <Insets top="10" bottom="10" />
+            </VBox.margin>
+        </Label>
+
+        <ScrollPane VBox.vgrow="ALWAYS" fitToWidth="true" fitToHeight="true">
+            <FlowPane fx:id="foodsContainerFlowPane" hgap="20" vgap="20" alignment="TOP_LEFT">
+                <padding>
+                    <Insets bottom="10" left="10" right="10" top="10"/>
+                </padding>
+            </FlowPane>
+        </ScrollPane>
+
+    </VBox>
+</AnchorPane>

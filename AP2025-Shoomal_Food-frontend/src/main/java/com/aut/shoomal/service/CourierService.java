@@ -65,4 +65,17 @@ public class CourierService extends AbstractService
             throw new RuntimeException("Error creating get delivery history request: " + e.getMessage(), e);
         }
     }
+
+    public CompletableFuture<List<String>> getVendorName(String token)
+    {
+        try {
+            HttpRequest httpRequest = createAuthenticatedRequestBuilder("deliveries/vendor", token)
+                    .GET()
+                    .build();
+            return sendListRequest(httpRequest, new TypeReference<>() {});
+        } catch (Exception e) {
+            System.err.println("Error creating get deliveries vendor name request: " + e.getMessage());
+            throw new RuntimeException("Error creating get deliveries vendor name request: " + e.getMessage(), e);
+        }
+    }
 }
