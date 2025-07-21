@@ -31,7 +31,7 @@ public class Food {
     @Column(nullable = false)
     private int supply;
 
-    @Column(name = "image_base64", columnDefinition = "TEXT")
+    @Column(name = "image_base64", columnDefinition = "LONGTEXT")
     private String imageBase64;
 
     @ManyToOne

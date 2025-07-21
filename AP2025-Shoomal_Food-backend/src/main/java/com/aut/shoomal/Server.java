@@ -59,7 +59,7 @@ public class Server
         PaymentTransactionManager paymentTransactionManager = new PaymentTransactionManager(transactionDao, orderManager);
         WalletManager walletManager = new WalletManager(walletDao, paymentTransactionManager, orderManager);
 
-        BuyerBrowseHandler buyerBrowseHandler = new BuyerBrowseHandler(userManager, restaurantManager,couponManager, foodManager, blacklistedTokenDao);
+        BuyerBrowseHandler buyerBrowseHandler = new BuyerBrowseHandler(userManager, restaurantManager,couponManager, foodManager, blacklistedTokenDao, orderManager);
         BuyerOrderHandler buyerOrderHandler = new BuyerOrderHandler(userManager, orderManager, walletManager, paymentTransactionManager, blacklistedTokenDao);
         BuyerFavoriteHandler buyerFavoriteHandler = new BuyerFavoriteHandler(userManager, blacklistedTokenDao, restaurantManager);
         BuyerRatingHandler buyerRatingHandler = new BuyerRatingHandler(userManager, ratingManager, blacklistedTokenDao);
@@ -88,6 +88,7 @@ public class Server
             finalServer.createContext("/coupons", buyerBrowseHandler);
             finalServer.createContext("/buyer/restaurants", buyerBrowseHandler);
             finalServer.createContext("/ratings", buyerRatingHandler);
+            finalServer.createContext("/search", buyerBrowseHandler);
 
             finalServer.createContext("/order", userOrderHandler);
             finalServer.createContext("/orders", buyerOrderHandler);

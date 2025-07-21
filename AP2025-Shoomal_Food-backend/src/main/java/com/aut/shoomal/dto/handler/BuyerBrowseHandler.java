@@ -14,6 +14,7 @@ import com.aut.shoomal.dto.request.ListVendorsRequest;
 import com.aut.shoomal.exceptions.NotFoundException;
 import com.aut.shoomal.payment.coupon.Coupon;
 import com.aut.shoomal.payment.coupon.CouponManager;
+import com.aut.shoomal.payment.order.OrderManager;
 import com.aut.shoomal.util.HibernateUtil;
 import com.sun.net.httpserver.HttpExchange;
 import org.hibernate.Session;
@@ -34,20 +35,25 @@ public class BuyerBrowseHandler extends AbstractHttpHandler
     private static final Pattern ITEM_ID_PATTERN = Pattern.compile("/items/(\\d+)");
     private static final Pattern COUPONS_BASE_PATH_PATTERN = Pattern.compile("/coupons/?");
     private static final Pattern BUYER_RESTAURANT_ID_PATTERN = Pattern.compile("/buyer/restaurants/(\\d+)");
+    private static final Pattern SEARCH_BASE_PATH_PATTERN = Pattern.compile("/search/?");
+
 
     private final UserManager userManager;
     private final RestaurantManager restaurantManager;
     private final FoodManager foodManager;
     private final CouponManager couponManager;
     private final BlacklistedTokenDao blacklistedTokenDao;
+    private final OrderManager orderManager;
+
     public BuyerBrowseHandler(UserManager userManager, RestaurantManager restaurantManager, CouponManager couponManager,
-                              FoodManager foodManager, BlacklistedTokenDao blacklistedTokenDao)
+                              FoodManager foodManager, BlacklistedTokenDao blacklistedTokenDao, OrderManager orderManager)
     {
         this.userManager = userManager;
         this.restaurantManager = restaurantManager;
         this.couponManager = couponManager;
         this.foodManager = foodManager;
         this.blacklistedTokenDao = blacklistedTokenDao;
+        this.orderManager = orderManager;
     }
 
     @Override
@@ -63,12 +69,15 @@ public class BuyerBrowseHandler extends AbstractHttpHandler
 
         String method = exchange.getRequestMethod();
         String path = exchange.getRequestURI().getPath();
+
         if (method.equalsIgnoreCase("POST"))
         {
             if (VENDORS_BASE_PATH_PATTERN.matcher(path).matches())
                 postVendors(exchange);
             else if (ITEMS_BASE_PATH_PATTERN.matcher(path).matches())
                 postItems(exchange);
+            else if (SEARCH_BASE_PATH_PATTERN.matcher(path).matches())
+                postSearch(exchange);
             else
                 sendResponse(exchange, HttpURLConnection.HTTP_NOT_FOUND, new ApiResponse(false, "404 Resource not found for POST."));
         }
@@ -123,6 +132,54 @@ public class BuyerBrowseHandler extends AbstractHttpHandler
         } catch (NotFoundException e) {
             System.err.println("404 Resource not found: " + e.getMessage());
             sendResponse(exchange, HttpURLConnection.HTTP_NOT_FOUND, new ApiResponse(false, "404 Resource not found."));
+        }
+    }
+
+    private void postSearch(HttpExchange exchange) throws IOException {
+        try {
+            ListVendorsRequest requestBody = parseRequestBody(exchange, ListVendorsRequest.class);
+            if (requestBody == null || requestBody.getSearch() == null || requestBody.getSearch().trim().isEmpty()) {
+                sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid input: 'search' keyword is required for this endpoint."));
+                return;
+            }
+
+            String searchKeyword = requestBody.getSearch().trim();
+
+            List<Restaurant> popularRestaurants = orderManager.getTop5MostOrderedRestaurants(searchKeyword);
+            List<Food> popularFoods = orderManager.getTop5MostOrderedFoods(searchKeyword);
+
+            List<RestaurantResponse> restaurantResponses = popularRestaurants.stream()
+                    .map(this::generateResponse)
+                    .toList();
+
+            List<ListItemResponse> foodResponses = popularFoods.stream()
+                    .map(food -> new ListItemResponse(
+                            food.getId(),
+                            food.getName(),
+                            food.getImageBase64(),
+                            food.getDescription(),
+                            (food.getVendor() != null) ? food.getVendor().getId() : null,
+                            (int) food.getPrice(),
+                            food.getSupply(),
+                            food.getKeywords()
+                    ))
+                    .toList();
+
+            Map<String, Object> searchResult = Map.of(
+                    "restaurants", restaurantResponses,
+                    "foods", foodResponses
+            );
+
+            sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, searchResult);
+
+        } catch (IOException e) {
+            System.err.println("Error parsing request body for /search: " + e.getMessage());
+            e.printStackTrace();
+            sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid input: Malformed JSON in request body."));
+        } catch (Exception e) {
+            System.err.println("500 An unexpected error occurred during POST /search: " + e.getMessage());
+            e.printStackTrace();
+            sendResponse(exchange, HttpURLConnection.HTTP_INTERNAL_ERROR, new ApiResponse(false, "500 Internal Server Error: " + e.getMessage()));
         }
     }
 
