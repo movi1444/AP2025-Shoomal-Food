@@ -28,6 +28,7 @@ public class CreateRestaurantController extends AbstractBaseController
     @FXML private TextField taxFeeField;
     @FXML private TextField additionalFeeField;
 
+    private String logoImageBase64;
     private RestaurantService restaurantService;
     private String token;
 
@@ -47,7 +48,7 @@ public class CreateRestaurantController extends AbstractBaseController
     @FXML
     public void handleUploadLogo(ActionEvent actionEvent)
     {
-
+        this.logoImageBase64 = super.handleImageUploadAndConvert(uploadLogoButton, restaurantLogoImageView);
     }
 
     @FXML
@@ -109,6 +110,7 @@ public class CreateRestaurantController extends AbstractBaseController
             request.setTaxFee(Integer.parseInt(taxFeeField.getText()));
         if (additionalFeeField != null && !additionalFeeField.getText().isEmpty())
             request.setAdditionalFee(Integer.parseInt(additionalFeeField.getText()));
+        request.setLogoBase64(logoImageBase64);
         return request;
     }
 }
