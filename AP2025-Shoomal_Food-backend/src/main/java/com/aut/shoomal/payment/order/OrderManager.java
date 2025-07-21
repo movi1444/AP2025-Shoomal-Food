@@ -68,15 +68,10 @@ public class OrderManager
         return orderDao.findById(Long.valueOf(orderId));
     }
 
-    public List<Order> getOrdersByVendor(Integer vendorId)
-    {
-        return orderDao.findOrdersWithFilters(null, null, null, null, null, null); // Adjust if vendor filtering is needed here
-    }
-
     public List<Order> getOrderHistory(Session session, Long customerId, String search, String vendorName)
     {
 
-        return orderDao.findOrdersWithFilters(customerId, search, vendorName, null, null, null);
+        return orderDao.findWithFilters(session, customerId, search, vendorName);
     }
 
     public List<Order> getAllOrders(String search, String vendorName, String customerName, String courierName, String statusString) {

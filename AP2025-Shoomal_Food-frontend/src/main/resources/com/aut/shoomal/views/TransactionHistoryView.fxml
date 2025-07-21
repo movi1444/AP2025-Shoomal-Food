@@ -34,6 +34,6 @@
             </columnResizePolicy>
         </TableView>
 
-        <Button fx:id="backButton" onAction="#handleBackButton" styleClass="my-button2" text="برگشن به پروفایل" />
+        <Button fx:id="backButton" onAction="#handleBackButton" styleClass="secondary-button" text="بازگشت به پروفایل" />
     </VBox>
 </AnchorPane>

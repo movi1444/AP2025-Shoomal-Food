@@ -32,6 +32,7 @@ public abstract class AbstractFoodDetailsController extends AbstractBaseControll
     @FXML protected Button saveButton;
     @FXML protected Button backButton;
 
+    protected String imageBase64String;
     protected RestaurantService restaurantService;
     protected String token;
     protected Integer restaurantId;
@@ -65,7 +66,7 @@ public abstract class AbstractFoodDetailsController extends AbstractBaseControll
     @FXML
     public void handleUploadImage(ActionEvent actionEvent)
     {
-
+        this.imageBase64String = handleImageUploadAndConvert(uploadImageButton, foodImageView);
     }
 
     @FXML

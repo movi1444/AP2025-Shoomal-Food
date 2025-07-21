@@ -45,7 +45,7 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                     <children>
-                        <ImageView fx:id="profileImageView" fitHeight="100" fitWidth="100" GridPane.halignment="CENTER">
+                        <ImageView fx:id="restaurantLogoView" fitHeight="100" fitWidth="100" GridPane.halignment="CENTER">
                             <GridPane.margin>
                                 <Insets top="100.0" />
                             </GridPane.margin>
