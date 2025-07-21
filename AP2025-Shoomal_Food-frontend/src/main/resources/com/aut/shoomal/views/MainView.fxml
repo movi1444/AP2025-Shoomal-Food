@@ -24,7 +24,7 @@
 
             <ScrollPane fx:id="sellerDashboardScrollPane" fitToWidth="true" styleClass="dashboard-scroll-pane">
                 <VBox alignment="CENTER" prefHeight="720.0" prefWidth="678.0" styleClass="dashboard-card">
-                    <MenuBar fx:id="sellerMenuBar" prefHeight="40.0" prefWidth="600.0" styleClass="seller-menu-bar">
+                    <MenuBar fx:id="sellerMenuBar" nodeOrientation="RIGHT_TO_LEFT" prefHeight="40.0" prefWidth="600.0" styleClass="seller-menu-bar">
                         <menus>
                             <Menu text="رستوران">
                                 <items>

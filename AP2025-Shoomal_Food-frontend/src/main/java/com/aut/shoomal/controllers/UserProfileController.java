@@ -29,6 +29,7 @@ public class UserProfileController extends AbstractBaseController {
     @FXML private Hyperlink updateProfileLink;
     @FXML private Hyperlink transactionHistoryLink;
     @FXML private Hyperlink walletLink;
+    @FXML private Hyperlink orderHistoryLink;
     @FXML private Button signOutButton;
     @FXML private ImageView profileImageView;
 
@@ -46,8 +47,11 @@ public class UserProfileController extends AbstractBaseController {
 
         transactionHistoryLink.setVisible(false);
         transactionHistoryLink.setManaged(false);
+
         walletLink.setVisible(false);
         walletLink.setManaged(false);
+        orderHistoryLink.setVisible(false);
+        orderHistoryLink.setManaged(false);
 
         if (updateProfileLink != null) {
             updateProfileLink.setOnAction(this::handleUpdateProfile);
@@ -55,6 +59,10 @@ public class UserProfileController extends AbstractBaseController {
 
         if (signOutButton != null) {
             signOutButton.setOnAction(this::handleSignOut);
+        }
+
+        if (orderHistoryLink != null) {
+            orderHistoryLink.setOnAction(this::handleOrderHistory);
         }
 
         if (profileImageView != null) {
@@ -97,6 +105,8 @@ public class UserProfileController extends AbstractBaseController {
                                 transactionHistoryLink.setManaged(true);
                                 walletLink.setVisible(true);
                                 walletLink.setManaged(true);
+                                orderHistoryLink.setVisible(true);
+                                orderHistoryLink.setManaged(true);
                             }
                             if (loggedInUser.getBank() != null)
                                 bankInfoLabel.setText("اطلاعات بانکی : " + loggedInUser.getBank().getBankName() + " - " + loggedInUser.getBank().getAccountNumber());
@@ -120,7 +130,15 @@ public class UserProfileController extends AbstractBaseController {
 
     @FXML
     private void handleBackToMain(ActionEvent event) {
-        navigateToMainView((Node) event.getSource());
+        navigateTo(
+                (Node) event.getSource(),
+                "/com/aut/shoomal/views/MainView.fxml",
+                "/com/aut/shoomal/styles/MainView.css",
+                TransitionType.SLIDE_LEFT,
+                (MainController controller) -> {
+                    controller.setLoggedInUser(this.loggedInUser);
+                }
+        );
     }
 
     @FXML
@@ -164,5 +182,13 @@ public class UserProfileController extends AbstractBaseController {
     public void handleWallet(ActionEvent actionEvent)
     {
         navigateTo(walletLink, "/com/aut/shoomal/views/ChargeWalletView.fxml", "/com/aut/shoomal/styles/MainView.css", TransitionType.SLIDE_RIGHT);
+    }
+
+    @FXML
+    public void handleOrderHistory(ActionEvent actionEvent)
+    {
+        navigateTo(orderHistoryLink, "/com/aut/shoomal/views/OrderHistoryView.fxml", "/com/aut/shoomal/styles/AdminDashboardStyles.css", TransitionType.SLIDE_RIGHT, (OrderHistoryController controller) -> {
+            controller.setLoggedInUser(loggedInUser);
+        });
     }
 }
