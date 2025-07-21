@@ -10,7 +10,7 @@ public class UserCreator
             case ADMIN -> new Admin(name, phoneNumber, password, email, role);
             case BUYER -> new Buyer(name, phoneNumber, password, email, role);
             case SELLER -> new Seller(name, phoneNumber, password, email, role);
-            case COURIER -> new Courier(email, phoneNumber, password, email, role);
+            case COURIER -> new Courier(name, phoneNumber, password, email, role);
         };
     }
 }

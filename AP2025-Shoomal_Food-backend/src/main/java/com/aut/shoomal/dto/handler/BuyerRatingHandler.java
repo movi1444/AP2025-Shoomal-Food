@@ -287,7 +287,7 @@ public class BuyerRatingHandler extends AbstractHttpHandler
     {
         return new RatingResponse(
                 rating.getId(),
-                Math.toIntExact(rating.getFood().getId()),
+                rating.getOrder().getId(),
                 rating.getRating(),
                 rating.getComment(),
                 rating.getImageBase64(),
