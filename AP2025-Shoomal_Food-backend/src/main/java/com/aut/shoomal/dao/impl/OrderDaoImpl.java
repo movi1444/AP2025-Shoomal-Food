@@ -16,6 +16,7 @@ import org.hibernate.query.Query;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.aut.shoomal.entity.food.Food;
 
 public class OrderDaoImpl extends GenericDaoImpl<Order> implements OrderDao
 {
@@ -104,5 +105,39 @@ public class OrderDaoImpl extends GenericDaoImpl<Order> implements OrderDao
         if (vendorName != null && !vendorName.trim().isEmpty())
             hql.append(" and lower(o.restaurant.name) like :vendorName");
         return hql;
+    }
+
+    public List<Restaurant> findTop5MostOrderedRestaurants(String searchKeyword) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            String hql = "SELECT o.restaurant FROM Order o " +
+                    "WHERE LOWER(o.restaurant.name) LIKE :searchKeyword " +
+                    "GROUP BY o.restaurant.id, o.restaurant.name " +
+                    "ORDER BY COUNT(o.id) DESC";
+            Query<Restaurant> query = session.createQuery(hql, Restaurant.class);
+            query.setParameter("searchKeyword", "%" + searchKeyword.toLowerCase() + "%");
+            query.setMaxResults(5);
+            return query.getResultList();
+        } catch (Exception e) {
+            System.err.println("Error finding top 5 most ordered restaurants: " + e.getMessage());
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
+    public List<Food> findTop5MostOrderedFoods(String searchKeyword) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            String hql = "SELECT oi.food FROM OrderItem oi " +
+                    "WHERE LOWER(oi.food.name) LIKE :searchKeyword " +
+                    "GROUP BY oi.food.id, oi.food.name " +
+                    "ORDER BY COUNT(oi.id) DESC";
+            Query<Food> query = session.createQuery(hql, Food.class);
+            query.setParameter("searchKeyword", "%" + searchKeyword.toLowerCase() + "%");
+            query.setMaxResults(5);
+            return query.getResultList();
+        } catch (Exception e) {
+            System.err.println("Error finding top 5 most ordered foods: " + e.getMessage());
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
     }
 }
