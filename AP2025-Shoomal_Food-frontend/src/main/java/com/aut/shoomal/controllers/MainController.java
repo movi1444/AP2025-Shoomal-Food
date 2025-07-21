@@ -38,6 +38,8 @@ public class MainController extends AbstractBaseController {
     private RestaurantService restaurantService;
     private Integer restaurantId;
 
+    @FXML private MenuBar courierMenuBar;
+
     private UserResponse currentUser;
     private String token;
 
@@ -116,6 +118,10 @@ public class MainController extends AbstractBaseController {
             sellerMenuBar.setVisible(false);
             sellerMenuBar.setManaged(false);
         }
+        if (courierMenuBar != null) {
+            courierMenuBar.setVisible(false);
+            courierMenuBar.setManaged(false);
+        }
     }
 
     private void displayDashboardForRole(String role) {
@@ -136,6 +142,10 @@ public class MainController extends AbstractBaseController {
                 break;
             case "courier":
                 targetPane = courierDashboardScrollPane;
+                if (courierMenuBar != null) {
+                    courierMenuBar.setVisible(true);
+                    courierMenuBar.setManaged(true);
+                }
                 break;
             case "admin":
                 targetPane = adminDashboardScrollPane;
@@ -283,6 +293,36 @@ public class MainController extends AbstractBaseController {
                 controller -> {
                     if (controller instanceof ShowListOrderController showListOrderController)
                         showListOrderController.setRestaurantId(restaurantId);
+                }
+        );
+    }
+
+    @FXML
+    public void handleShowAvailableOrders(ActionEvent actionEvent)
+    {
+        navigateTo(
+                (MenuItem) actionEvent.getSource(),
+                "/com/aut/shoomal/views/CourierAvailableView.fxml",
+                "/com/aut/shoomal/styles/ListFoodsView.css",
+                TransitionType.SLIDE_LEFT,
+                controller -> {
+                    if (controller instanceof CourierAvailableController courierAvailableController)
+                        courierAvailableController.loadAvailableOrders();
+                }
+        );
+    }
+
+    @FXML
+    public void handleDeliveryHistory(ActionEvent actionEvent)
+    {
+        navigateTo(
+                (MenuItem) actionEvent.getSource(),
+                "/com/aut/shoomal/views/CourierDeliveryHistoryView.fxml",
+                "/com/aut/shoomal/styles/ListFoodsView.css",
+                TransitionType.SLIDE_LEFT,
+                controller -> {
+                    if (controller instanceof CourierDeliveryHistoryController historyController)
+                        historyController.loadDeliveryHistory(null, null, null);
                 }
         );
     }

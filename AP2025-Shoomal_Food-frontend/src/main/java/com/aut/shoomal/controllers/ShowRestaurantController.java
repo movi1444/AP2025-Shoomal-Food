@@ -3,6 +3,7 @@ package com.aut.shoomal.controllers;
 import com.aut.shoomal.dto.response.RestaurantResponse;
 import com.aut.shoomal.exceptions.FrontendServiceException;
 import com.aut.shoomal.service.RestaurantService;
+import com.aut.shoomal.utils.ImageToBase64Converter;
 import com.aut.shoomal.utils.PreferencesManager;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -14,7 +15,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -42,6 +45,23 @@ public class ShowRestaurantController extends AbstractBaseController
         super.initialize(url, resourceBundle);
         restaurantService = new RestaurantService();
         token = PreferencesManager.getJwtToken();
+        if (restaurantLogoView != null) {
+            final double imageSize = 300.0;
+            restaurantLogoView.setFitWidth(imageSize);
+            restaurantLogoView.setFitHeight(imageSize);
+            restaurantLogoView.setPreserveRatio(true);
+
+            Circle clip = new Circle(imageSize / 2, imageSize / 2, imageSize / 2);
+            restaurantLogoView.setClip(clip);
+
+            restaurantLogoView.layoutBoundsProperty().addListener((obs, oldBounds, newBounds) -> {
+                clip.setCenterX(newBounds.getWidth() / 2.0);
+                clip.setCenterY(newBounds.getHeight() / 2.0);
+                clip.setRadius(Math.min(newBounds.getWidth(), newBounds.getHeight()) / 2.0);
+            });
+        }
+
+        super.setProfileImage(restaurantLogoView, null);
         loadInfo();
     }
 
@@ -66,6 +86,7 @@ public class ShowRestaurantController extends AbstractBaseController
                         phoneLabel.setText("شماره رستوران: " + restaurant.getPhone());
                         taxFeeLabel.setText("هزینه بسته بندی: " + restaurant.getTaxFee());
                         additionalFeeLabel.setText("هزینه اضافی: " + restaurant.getAdditionalFee());
+                        super.setProfileImage(restaurantLogoView, restaurant.getLogoBase64());
                     }
                 }))
                 .exceptionally(e -> {

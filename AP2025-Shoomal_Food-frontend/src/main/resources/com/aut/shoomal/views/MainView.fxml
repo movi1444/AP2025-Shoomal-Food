@@ -75,6 +75,20 @@
 
             <ScrollPane fx:id="courierDashboardScrollPane" fitToWidth="true" styleClass="dashboard-scroll-pane">
                 <VBox alignment="CENTER" prefHeight="720.0" prefWidth="678.0">
+                    <MenuBar fx:id="courierMenuBar" prefHeight="40.0" prefWidth="600.0" styleClass="seller-menu-bar">
+                        <menus>
+                            <Menu text="سفارشات آماده">
+                                <items>
+                                    <MenuItem onAction="#handleShowAvailableOrders" text="مشاهده سفارشات آماده" />
+                                </items>
+                            </Menu>
+                            <Menu text="تاریخچه سفارشات">
+                                <items>
+                                    <MenuItem onAction="#handleDeliveryHistory" text="مشاهده تاریخچه سفارشات" />
+                                </items>
+                            </Menu>
+                        </menus>
+                    </MenuBar>
                     <GridPane alignment="CENTER" prefHeight="532.0" prefWidth="680.0">
                         <columnConstraints>
                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
