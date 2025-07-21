@@ -38,6 +38,20 @@ public class RestaurantService extends AbstractService
         }
     }
 
+    public CompletableFuture<RestaurantResponse> getRestaurantById(String token, Integer restaurantId)
+    {
+        String endpoint = "buyer/restaurants/" + restaurantId;
+        try {
+            HttpRequest httpRequest = createAuthenticatedRequestBuilder(endpoint, token)
+                    .GET()
+                    .build();
+            return sendRequest(httpRequest, RestaurantResponse.class);
+        } catch (Exception e) {
+            System.err.println("Client error getting restaurant request: " + e.getMessage());
+            throw new RuntimeException("Client error getting restaurant request: " + e.getMessage(), e);
+        }
+    }
+
     public CompletableFuture<RestaurantResponse> updateRestaurant(UpdateRestaurantRequest request, String token, Integer restaurantId)
     {
         String endpoint = "restaurants/" + restaurantId;
