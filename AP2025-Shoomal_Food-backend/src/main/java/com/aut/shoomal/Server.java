@@ -61,11 +61,11 @@ public class Server
 
         BuyerBrowseHandler buyerBrowseHandler = new BuyerBrowseHandler(userManager, restaurantManager,couponManager, foodManager, blacklistedTokenDao, orderManager);
         BuyerOrderHandler buyerOrderHandler = new BuyerOrderHandler(userManager, orderManager, walletManager, paymentTransactionManager, blacklistedTokenDao);
-        BuyerFavoriteHandler buyerFavoriteHandler = new BuyerFavoriteHandler(userManager, blacklistedTokenDao);
+        BuyerFavoriteHandler buyerFavoriteHandler = new BuyerFavoriteHandler(userManager, blacklistedTokenDao, restaurantManager);
         BuyerRatingHandler buyerRatingHandler = new BuyerRatingHandler(userManager, ratingManager, blacklistedTokenDao);
         AdminHandler adminHandler = new AdminHandler(userManager, restaurantManager, blacklistedTokenDao, orderManager, paymentTransactionManager);
         AdminCouponHandler adminCouponHandler = new AdminCouponHandler(userManager, blacklistedTokenDao, couponManager);
-        CourierHandler courierHandler = new CourierHandler(userManager,orderManager,blacklistedTokenDao);
+        CourierHandler courierHandler = new CourierHandler(userManager,orderManager,blacklistedTokenDao, restaurantManager);
         UserOrderHandler userOrderHandler = new UserOrderHandler(userManager, blacklistedTokenDao);
 
         try {
@@ -86,6 +86,7 @@ public class Server
             finalServer.createContext("/vendors", buyerBrowseHandler);
             finalServer.createContext("/items", buyerBrowseHandler);
             finalServer.createContext("/coupons", buyerBrowseHandler);
+            finalServer.createContext("/buyer/restaurants", buyerBrowseHandler);
             finalServer.createContext("/ratings", buyerRatingHandler);
             finalServer.createContext("/search", buyerBrowseHandler);
 

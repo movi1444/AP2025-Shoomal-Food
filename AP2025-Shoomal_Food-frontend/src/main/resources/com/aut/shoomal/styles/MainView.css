@@ -37,6 +37,19 @@
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 5);
 }
 
+.header-label {
+    -fx-text-fill: white;
+}
+
+.dark-background-pane Label { /* Target all Labels within this pane */
+    -fx-text-fill: white;
+}
+
+.dark-background-pane .text-field { /* Target TextFields within this pane (if applicable) */
+    -fx-text-fill: white;
+    -fx-control-inner-background: #555555; /* Adjust inner background for dark TextFields */
+}
+
 .welcome-label {
     -fx-font-family: "VazirmatnB";
     -fx-font-size: 30px;
@@ -373,5 +386,79 @@
 
 .scroll-bar:horizontal {
     -fx-pref-height: 10px;
+}
 
+.favorite-restaurant-card {
+    -fx-background-color: #f0f0f0;
+    -fx-border-color: #ccc;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);
+}
+
+.favorite-restaurant-card .label {
+    -fx-text-fill: white; /* Changed to white */
+}
+
+.logo-button {
+    -fx-background-color: transparent; /* Make button background transparent */
+    -fx-padding: 0; /* Remove default button padding */
+}
+
+.logo-button:hover {
+    -fx-opacity: 0.8;
+}
+
+.logo-button:pressed {
+    -fx-opacity: 0.6;
+}
+
+.favorite-restaurant-card .label {
+    -fx-text-fill: #333;
+}
+
+.food-card {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 5, 0, 0, 2);
+    -fx-padding: 10px;
+}
+
+.food-image {
+    -fx-background-color: #f5f5f5; /* Placeholder background */
+    -fx-border-color: #ddd;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.food-card .label {
+    -fx-text-fill: #333;
+    -fx-alignment: CENTER; /* Center text within labels */
+    -fx-pref-width: 9999px; /* Allow labels to expand */
+}
+
+.food-card .primary-button {
+    -fx-font-size: 11px;
+    -fx-padding: 5px 8px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.food-card .secondary-button {
+    -fx-background-color: #9E9E9E;
+    -fx-text-fill: white;
+    -fx-font-size: 11px;
+    -fx-padding: 5px 8px;
+    -fx-background-radius: 5px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 0);
+}
+
+.food-card .secondary-button:hover {
+    -fx-background-color: #757575;
 }

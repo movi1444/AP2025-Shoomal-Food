@@ -34,53 +34,91 @@ public class OrderDaoImpl extends GenericDaoImpl<Order> implements OrderDao
         }
     }
 
-    public List<Order> findOrdersWithFilters(Long customerId, String search, String vendorName, String customerName, String courierName, OrderStatus status) {
+    public List<Order> findOrdersWithFilters(String search, String vendorName, String customerName, String courierName, OrderStatus status) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            CriteriaBuilder cb = session.getCriteriaBuilder();
-            CriteriaQuery<Order> cq = cb.createQuery(Order.class);
-            Root<Order> orderRoot = cq.from(Order.class);
-
-            orderRoot.fetch("orderItems", JoinType.LEFT);
-            orderRoot.fetch("restaurant", JoinType.LEFT);
-            orderRoot.fetch("customer", JoinType.LEFT);
-            orderRoot.fetch("courier", JoinType.LEFT);
-
-            List<Predicate> predicates = new ArrayList<>();
-
-            if (customerId != null) {
-                predicates.add(cb.equal(orderRoot.get("customer").get("id"), customerId));
-            }
-
-            if (search != null && !search.trim().isEmpty()) {
-                String likePattern = "%" + search.toLowerCase() + "%";
-                predicates.add(cb.like(cb.lower(orderRoot.join("orderItems").get("food").get("name")), likePattern));
-            }
-
-            if (vendorName != null && !vendorName.trim().isEmpty()) {
-                String likePattern = "%" + vendorName.toLowerCase() + "%";
-                predicates.add(cb.like(cb.lower(orderRoot.get("restaurant").get("name")), likePattern));
-            }
-            if (customerName != null && !customerName.trim().isEmpty()) {
-                String likePattern = "%" + customerName.toLowerCase() + "%";
-                predicates.add(cb.like(cb.lower(orderRoot.get("customer").get("name")), likePattern));
-            }
-            if (courierName != null && !courierName.trim().isEmpty()) {
-                predicates.add(cb.equal(orderRoot.get("courier").get("name"), courierName));
-            }
-            if (status != null) {
-                predicates.add(cb.equal(orderRoot.get("orderStatus"), status));
-            }
-
-            cq.where(predicates.toArray(new Predicate[0]));
-            cq.select(orderRoot).distinct(true);
-            cq.orderBy(cb.desc(orderRoot.get("createdAt")));
-
-            return session.createQuery(cq).getResultList();
+            String hql = createQuery(search, vendorName, customerName, courierName, status);
+            Query<Order> query = session.createQuery(hql, Order.class);
+            if (search != null && !search.trim().isEmpty())
+                query.setParameter("search", "%" + search.toLowerCase() + "%");
+            if (vendorName != null && !vendorName.trim().isEmpty())
+                query.setParameter("vendorName", "%" + vendorName.toLowerCase() + "%");
+            if (customerName != null && !customerName.trim().isEmpty())
+                query.setParameter("customerName", "%" + customerName.toLowerCase() + "%");
+            if (courierName != null && !courierName.trim().isEmpty())
+                query.setParameter("courierName", "%" + courierName.toLowerCase() + "%");
+            if (status != null)
+                 query.setParameter("status", status);
+            return query.list();
         } catch (Exception e) {
             System.err.println("Error finding orders with filters: " + e.getMessage());
             e.printStackTrace();
             return null;
         }
+    }
+
+    private String createQuery(String search, String vendorName, String customerName, String courierName, OrderStatus status)
+    {
+        StringBuilder hql = new StringBuilder("SELECT DISTINCT o FROM Order o ");
+        hql.append("LEFT JOIN FETCH o.customer c ");
+        hql.append("LEFT JOIN FETCH o.restaurant r ");
+        hql.append("LEFT JOIN FETCH o.courier co ");
+        hql.append("LEFT JOIN FETCH o.orderItems oi ");
+        hql.append("LEFT JOIN FETCH oi.food f ");
+
+        boolean firstCondition = true;
+        if (search != null && !search.trim().isEmpty()) {
+            if (firstCondition) {
+                hql.append("WHERE ");
+                firstCondition = false;
+            } else {
+                hql.append("AND ");
+            }
+            hql.append("LOWER(f.name) LIKE :search ");
+        }
+
+        if (vendorName != null && !vendorName.trim().isEmpty()) {
+            if (firstCondition) {
+                hql.append("WHERE ");
+                firstCondition = false;
+            } else {
+                hql.append("AND ");
+            }
+            hql.append("LOWER(r.name) LIKE :vendorName ");
+        }
+
+        if (customerName != null && !customerName.trim().isEmpty()) {
+            if (firstCondition) {
+                hql.append("WHERE ");
+                firstCondition = false;
+            } else {
+                hql.append("AND ");
+            }
+            hql.append("LOWER(c.name) LIKE :customerName ");
+        }
+
+        if (courierName != null && !courierName.trim().isEmpty()) {
+            if (firstCondition) {
+                hql.append("WHERE ");
+                firstCondition = false;
+            } else {
+                hql.append("AND ");
+            }
+            hql.append("LOWER(co.name) LIKE :courierName ");
+        }
+
+        if (status != null) {
+            if (firstCondition) {
+                hql.append("WHERE ");
+                firstCondition = false;
+            } else {
+                hql.append("AND ");
+            }
+            hql.append("o.orderStatus = :status ");
+        }
+
+        hql.append("ORDER BY o.createdAt DESC");
+
+        return hql.toString();
     }
 
     @Override

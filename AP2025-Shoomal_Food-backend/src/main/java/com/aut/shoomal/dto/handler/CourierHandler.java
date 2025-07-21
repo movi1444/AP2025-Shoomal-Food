@@ -1,6 +1,8 @@
 package com.aut.shoomal.dto.handler;
 
 import com.aut.shoomal.dto.response.UpdateDeliveryStatusResponse;
+import com.aut.shoomal.entity.restaurant.Restaurant;
+import com.aut.shoomal.entity.restaurant.RestaurantManager;
 import com.aut.shoomal.entity.user.User;
 import com.aut.shoomal.entity.user.UserManager;
 import com.aut.shoomal.entity.user.CourierDeliveryStatus;
@@ -33,16 +35,19 @@ public class CourierHandler extends AbstractHttpHandler {
 
     private final UserManager userManager;
     private final OrderManager orderManager;
+    private final RestaurantManager restaurantManager;
     private final BlacklistedTokenDao blacklistedTokenDao;
 
     private static final Pattern DELIVERIES_AVAILABLE_PATH = Pattern.compile("/deliveries/available/?$");
     private static final Pattern DELIVERIES_ORDER_ID_PATH = Pattern.compile("/deliveries/(\\d+)$");
     private static final Pattern DELIVERIES_HISTORY_PATH = Pattern.compile("/deliveries/history/?$");
+    private static final Pattern VENDOR_DELIVERY_PATTERN = Pattern.compile("/deliveries/vendor/?$");
 
-    public CourierHandler(UserManager userManager, OrderManager orderManager, BlacklistedTokenDao blacklistedTokenDao) {
+    public CourierHandler(UserManager userManager, OrderManager orderManager, BlacklistedTokenDao blacklistedTokenDao, RestaurantManager restaurantManager) {
         this.userManager = userManager;
         this.orderManager = orderManager;
         this.blacklistedTokenDao = blacklistedTokenDao;
+        this.restaurantManager = restaurantManager;
     }
 
     @Override
@@ -74,6 +79,8 @@ public class CourierHandler extends AbstractHttpHandler {
                 } else {
                     sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "Invalid order ID."));
                 }
+            } else if (VENDOR_DELIVERY_PATTERN.matcher(requestPath).matches() && method.equalsIgnoreCase("GET")) {
+                getVendorNames(exchange, authenticatedUser.getId());
             } else if (DELIVERIES_HISTORY_PATH.matcher(requestPath).matches() && method.equalsIgnoreCase("GET")) {
                 handleGetDeliveryHistory(exchange, authenticatedUser);
             } else {
@@ -93,6 +100,20 @@ public class CourierHandler extends AbstractHttpHandler {
         } finally {
             exchange.close();
         }
+    }
+
+    private void getVendorNames(HttpExchange exchange, Long id) throws IOException
+    {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        List<Restaurant> restaurants = restaurantManager.findByCourier(session, id);
+        if (restaurants == null)
+        {
+            session.close();
+            throw new NotFoundException("No restaurant found.");
+        }
+        List<String> names = restaurants.stream().map(Restaurant::getName).toList();
+        session.close();
+        sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, names);
     }
 
     private void handleGetAvailableDeliveries(HttpExchange exchange) throws IOException {
@@ -193,7 +214,7 @@ public class CourierHandler extends AbstractHttpHandler {
         String customerId = queryParams.get("customer");
         String statusString = queryParams.get("status");
 
-        List<Order> orders = orderManager.getAllOrders(search, vendorId, customerId, String.valueOf(authenticatedUser.getId()), statusString);
+        List<Order> orders = orderManager.getAllOrders(search, vendorId, customerId, authenticatedUser.getName(), statusString);
         if (orders == null)
             throw new NotFoundException("No orders found.");
 

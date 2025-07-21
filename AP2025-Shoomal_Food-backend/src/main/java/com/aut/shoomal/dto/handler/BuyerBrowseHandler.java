@@ -34,7 +34,9 @@ public class BuyerBrowseHandler extends AbstractHttpHandler
     private static final Pattern ITEMS_BASE_PATH_PATTERN = Pattern.compile("/items/?");
     private static final Pattern ITEM_ID_PATTERN = Pattern.compile("/items/(\\d+)");
     private static final Pattern COUPONS_BASE_PATH_PATTERN = Pattern.compile("/coupons/?");
+    private static final Pattern BUYER_RESTAURANT_ID_PATTERN = Pattern.compile("/buyer/restaurants/(\\d+)");
     private static final Pattern SEARCH_BASE_PATH_PATTERN = Pattern.compile("/search/?");
+
 
     private final UserManager userManager;
     private final RestaurantManager restaurantManager;
@@ -83,6 +85,7 @@ public class BuyerBrowseHandler extends AbstractHttpHandler
         {
             Optional<Integer> vendorId = extractIdFromPath(path, VENDOR_ID_PATTERN);
             Optional<Integer> itemId = extractIdFromPath(path, ITEM_ID_PATTERN);
+            Optional<Integer> buyerRestaurantId = extractIdFromPath(path, BUYER_RESTAURANT_ID_PATTERN);
             if (vendorId.isPresent())
             {
                 getMenuByVendorId(exchange, vendorId.get());
@@ -91,6 +94,11 @@ public class BuyerBrowseHandler extends AbstractHttpHandler
             if (itemId.isPresent())
             {
                 getItemById(exchange, itemId.get());
+                return;
+            }
+            if (buyerRestaurantId.isPresent())
+            {
+                getBuyerRestaurantId(exchange, (long) buyerRestaurantId.get());
                 return;
             }
             if (COUPONS_BASE_PATH_PATTERN.matcher(path).matches())
@@ -102,6 +110,29 @@ public class BuyerBrowseHandler extends AbstractHttpHandler
         }
         else
             sendResponse(exchange, HttpURLConnection.HTTP_BAD_METHOD, new ApiResponse(false, "Method Not Allowed."));
+    }
+
+    private void getBuyerRestaurantId(HttpExchange exchange, Long id) throws IOException
+    {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Restaurant restaurant = session.get(Restaurant.class, id);
+            if (restaurant == null)
+                throw new NotFoundException("Restaurant with id " + id + " not found.");
+
+            RestaurantResponse response = new RestaurantResponse(
+                    restaurant.getId(),
+                    restaurant.getName(),
+                    restaurant.getAddress(),
+                    restaurant.getPhone(),
+                    restaurant.getLogoBase64(),
+                    restaurant.getTaxFee(),
+                    restaurant.getAdditionalFee()
+            );
+            sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, response);
+        } catch (NotFoundException e) {
+            System.err.println("404 Resource not found: " + e.getMessage());
+            sendResponse(exchange, HttpURLConnection.HTTP_NOT_FOUND, new ApiResponse(false, "404 Resource not found."));
+        }
     }
 
     private void postSearch(HttpExchange exchange) throws IOException {
@@ -151,7 +182,6 @@ public class BuyerBrowseHandler extends AbstractHttpHandler
             sendResponse(exchange, HttpURLConnection.HTTP_INTERNAL_ERROR, new ApiResponse(false, "500 Internal Server Error: " + e.getMessage()));
         }
     }
-
 
     private void postVendors(HttpExchange exchange) throws IOException
     {

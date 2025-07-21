@@ -166,6 +166,11 @@ public class AdminHandler extends AbstractHttpHandler {
 
         try {
             List<Order> orders = orderManager.getAllOrders(search, vendorName, customerName, courierName, statusString);
+            if (orders == null)
+            {
+                sendResponse(exchange, HttpURLConnection.HTTP_NOT_FOUND, new ApiResponse(false, "No orders found"));
+                return;
+            }
 
             List<OrderResponse> orderResponses = orders.stream()
                     .map(this::convertToOrderResponse)
