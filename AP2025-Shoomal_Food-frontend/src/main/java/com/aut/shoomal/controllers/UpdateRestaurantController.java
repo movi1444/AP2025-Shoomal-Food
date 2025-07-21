@@ -78,7 +78,7 @@ public class UpdateRestaurantController extends AbstractBaseController
                                 taxFeeField.setText(String.valueOf(restaurant.getTaxFee()));
                             if (additionalFeeField != null)
                                 additionalFeeField.setText(String.valueOf(restaurant.getAdditionalFee()));
-                            super.setProfileImage(restaurantLogoImageView, restaurant.getLogoBase64());
+                            super.setProfileImage(restaurantLogoImageView, logoImageBase64String);
                         }
                     });
                 })
