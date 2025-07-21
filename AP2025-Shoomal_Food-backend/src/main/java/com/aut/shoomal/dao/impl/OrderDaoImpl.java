@@ -128,6 +128,7 @@ public class OrderDaoImpl extends GenericDaoImpl<Order> implements OrderDao
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             String hql = "SELECT oi.food FROM OrderItem oi " +
                     "WHERE LOWER(oi.food.name) LIKE :searchKeyword " +
+                    "AND oi.food.supply > 0 " +
                     "GROUP BY oi.food.id, oi.food.name " +
                     "ORDER BY COUNT(oi.id) DESC";
             Query<Food> query = session.createQuery(hql, Food.class);

@@ -1,20 +1,5 @@
-@font-face {
-    font-family: 'Vazirmatn';
-    src: url("/com/aut/shoomal/fonts/Vazirmatn-Black.ttf");
-}
-
-@font-face {
-    font-family: 'VazirmatnB';
-    src: url("/com/aut/shoomal/fonts/Vazirmatn-Bold.ttf");
-}
-
-@font-face {
-    font-family: 'Beach';
-    src: url("/com/aut/shoomal/fonts/Sahel.ttf");
-}
-
 .root {
-    -fx-background-color: #f0f2f5;
+    -fx-background-color: #2C3E50;
     -fx-font-family: "Vazirmatn";
 }
 
@@ -111,10 +96,10 @@
 }
 
 .search-result-item {
-    -fx-background-color: #ffffff;
+    -fx-background-color: #2c3e50;
     -fx-padding: 10px 15px;
     -fx-background-radius: 5px;
-    -fx-border-color: #e0e0e0;
+    -fx-border-color: #bababa;
     -fx-border-width: 1px;
     -fx-border-radius: 5px;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.02), 5, 0, 0, 2);
@@ -124,7 +109,7 @@
 .search-result-name {
     -fx-font-family: "Vazirmatn";
     -fx-font-size: 16px;
-    -fx-text-fill: #333333;
+    -fx-text-fill: #f1f1f1;
     -fx-alignment: CENTER_RIGHT;
 }
 
@@ -175,4 +160,29 @@
 
 .scroll-bar:horizontal {
     -fx-pref-height: 10px;
+}
+
+.dashboard-card {
+    -fx-background-color: #a6a5a5;
+    -fx-padding: 20px;
+    -fx-margin: 15px;
+    -fx-background-radius: 8px;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 5);
+    -fx-max-width: 400px;
+}
+
+.search-results-scroll-pane {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.search-results-scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.search-results-scroll-pane .content {
+    -fx-background-color: transparent;
 }

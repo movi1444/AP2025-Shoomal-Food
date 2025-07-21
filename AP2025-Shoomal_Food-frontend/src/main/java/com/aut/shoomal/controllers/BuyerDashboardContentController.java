@@ -8,7 +8,6 @@ import com.aut.shoomal.service.BuyerService;
 import com.aut.shoomal.utils.PreferencesManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
@@ -21,18 +20,20 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.control.ScrollPane;
+import javafx.geometry.Pos;
 
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 
 public class BuyerDashboardContentController extends AbstractBaseController {
 
     @FXML private TextField searchBar;
     @FXML private Button searchButton;
+    @FXML private ScrollPane searchResultsScrollPane;
     @FXML private VBox searchResultsContainer;
     @FXML private Label restaurantsHeader;
     @FXML private VBox popularRestaurantsVBox;
@@ -64,6 +65,13 @@ public class BuyerDashboardContentController extends AbstractBaseController {
             });
         }
         clearSearchResults();
+
+        if (searchResultsContainer != null) {
+            searchResultsContainer.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+            searchResultsContainer.setAlignment(Pos.CENTER);
+            searchResultsContainer.setMaxWidth(400);
+        }
+
 
         if (viewAllRestaurantsLink != null) {
             viewAllRestaurantsLink.setOnAction(event -> handleViewAllRestaurants());
@@ -165,59 +173,44 @@ public class BuyerDashboardContentController extends AbstractBaseController {
                     return null;
                 });
     }
+
     private void displaySearchResults(List<RestaurantResponse> restaurants, List<ListItemResponse> foods, boolean isPopularSearch) {
         popularRestaurantsVBox.getChildren().clear();
         popularFoodsVBox.getChildren().clear();
 
+        restaurantsHeader.setVisible(true);
+        restaurantsHeader.setManaged(true);
+        foodsHeader.setVisible(true);
+        foodsHeader.setManaged(true);
+        viewAllRestaurantsLink.setVisible(true);
+        viewAllRestaurantsLink.setManaged(true);
+        viewAllFoodsLink.setVisible(true);
+        viewAllFoodsLink.setManaged(true);
+
         if (restaurants != null && !restaurants.isEmpty()) {
-            restaurantsHeader.setVisible(true);
-            restaurantsHeader.setManaged(true);
             for (RestaurantResponse restaurant : restaurants) {
                 popularRestaurantsVBox.getChildren().add(createRestaurantResultNode(restaurant));
             }
-            if (isPopularSearch) {
-                viewAllRestaurantsLink.setText("مشاهده همه رستوران‌ها");
-                viewAllRestaurantsLink.setVisible(true);
-                viewAllRestaurantsLink.setManaged(true);
-            } else {
-                viewAllRestaurantsLink.setVisible(false);
-                viewAllRestaurantsLink.setManaged(false);
-            }
-        } else {
-            restaurantsHeader.setVisible(false);
-            restaurantsHeader.setManaged(false);
-            viewAllRestaurantsLink.setVisible(false);
-            viewAllRestaurantsLink.setManaged(false);
+            viewAllRestaurantsLink.setText("مشاهده همه رستوران‌ها");
         }
 
         if (foods != null && !foods.isEmpty()) {
-            foodsHeader.setVisible(true);
-            foodsHeader.setManaged(true);
             for (ListItemResponse food : foods) {
                 popularFoodsVBox.getChildren().add(createFoodResultNode(food));
             }
-            if (isPopularSearch) {
-                viewAllFoodsLink.setText("مشاهده همه غذاها");
-                viewAllFoodsLink.setVisible(true);
-                viewAllFoodsLink.setManaged(true);
-            } else {
-                viewAllFoodsLink.setVisible(false);
-                viewAllFoodsLink.setManaged(false);
-            }
-        } else {
-            foodsHeader.setVisible(false);
-            foodsHeader.setManaged(false);
-            viewAllFoodsLink.setVisible(false);
-            viewAllFoodsLink.setManaged(false);
+            viewAllFoodsLink.setText("مشاهده همه غذاها");
         }
 
-        searchResultsContainer.setVisible(true);
-        searchResultsContainer.setManaged(true);
+        searchResultsScrollPane.setVisible(true);
+        searchResultsScrollPane.setManaged(true);
     }
 
+
     private void clearSearchResults() {
-        searchResultsContainer.setVisible(false);
-        searchResultsContainer.setManaged(false);
+        if (searchResultsScrollPane != null) {
+            searchResultsScrollPane.setVisible(false);
+            searchResultsScrollPane.setManaged(false);
+        }
         popularRestaurantsVBox.getChildren().clear();
         popularFoodsVBox.getChildren().clear();
         restaurantsHeader.setVisible(false);
@@ -235,13 +228,25 @@ public class BuyerDashboardContentController extends AbstractBaseController {
         hbox.getStyleClass().add("search-result-item");
         hbox.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
 
+        ImageView icon = new ImageView();
+        if (restaurant.getLogoBase64() != null && !restaurant.getLogoBase64().isEmpty()) {
+            setProfileImage(icon, restaurant.getLogoBase64());
+        } else {
+            icon.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/com/aut/shoomal/images/icon.png"))));
+        }
+        icon.setFitWidth(40);
+        icon.setFitHeight(40);
+
         Label nameLabel = new Label(restaurant.getName());
         nameLabel.getStyleClass().add("search-result-name");
 
-        ImageView icon = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/com/aut/shoomal/images/restaurant_icon.png"))));
-        icon.setFitWidth(20);
-        icon.setFitHeight(20);
         hbox.getChildren().addAll(icon, nameLabel);
+
+        hbox.setOnMouseClicked(event -> {
+            System.out.println("Restaurant clicked: " + restaurant.getName() + " (ID: " + restaurant.getId() + ")");
+            showAlert("رستوران", "صفحه جزئیات رستوران " + restaurant.getName() + " هنوز پیاده‌سازی نشده است.", Alert.AlertType.INFORMATION, null);
+        });
+
         return hbox;
     }
 
@@ -250,18 +255,28 @@ public class BuyerDashboardContentController extends AbstractBaseController {
         hbox.getStyleClass().add("search-result-item");
         hbox.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
 
+        ImageView icon = new ImageView();
+        if (food.getImageBase64() != null && !food.getImageBase64().isEmpty()) {
+            setProfileImage(icon, food.getImageBase64());
+        } else {
+            icon.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/com/aut/shoomal/images/icon.png"))));
+        }
+        icon.setFitWidth(40);
+        icon.setFitHeight(40);
+
         Label nameLabel = new Label(food.getName());
         nameLabel.getStyleClass().add("search-result-name");
 
-        ImageView icon = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/icon.png"))));
-        icon.setFitWidth(20);
-        icon.setFitHeight(20);
-
         hbox.getChildren().addAll(icon, nameLabel);
+
+        hbox.setOnMouseClicked(event -> {
+            System.out.println("Food clicked: " + food.getName() + " (ID: " + food.getId() + ", Vendor ID: " + food.getVendorId() + ")");
+            showAlert("غذا", "صفحه جزئیات غذا " + food.getName() + " هنوز پیاده‌سازی نشده است.", Alert.AlertType.INFORMATION, null);
+        });
+
         return hbox;
     }
     public void setLoggedInUser(UserResponse currentUser) {
         this.loggedInUser = currentUser;
     }
 }
-

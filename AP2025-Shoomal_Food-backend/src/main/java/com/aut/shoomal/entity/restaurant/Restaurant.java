@@ -27,7 +27,7 @@ public class Restaurant {
 
     private String workingHours;
 
-    @Column(name = "logo_base64", columnDefinition = "TEXT")
+    @Column(name = "logo_base64", columnDefinition = "LONGTEXT")
     private String logoBase64;
 
     @Column(length = 1000)
