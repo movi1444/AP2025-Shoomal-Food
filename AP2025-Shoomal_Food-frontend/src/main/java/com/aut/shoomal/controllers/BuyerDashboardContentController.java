@@ -7,8 +7,10 @@ import com.aut.shoomal.exceptions.FrontendServiceException;
 import com.aut.shoomal.service.BuyerService;
 import com.aut.shoomal.utils.PreferencesManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
@@ -22,12 +24,16 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.ScrollPane;
 import javafx.geometry.Pos;
+import javafx.scene.layout.AnchorPane;
+import javafx.util.Duration;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 
 public class BuyerDashboardContentController extends AbstractBaseController {
 
@@ -42,10 +48,15 @@ public class BuyerDashboardContentController extends AbstractBaseController {
     @FXML private Hyperlink viewAllRestaurantsLink;
     @FXML private Hyperlink viewAllFoodsLink;
 
+    @FXML private Hyperlink viewActiveOrdersLink;
+    @FXML private AnchorPane activeOrdersPanel;
+
     private BuyerService buyerService;
     private String token;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private UserResponse loggedInUser;
+
+    private BuyerActiveOrdersController activeOrdersController;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -72,13 +83,26 @@ public class BuyerDashboardContentController extends AbstractBaseController {
             searchResultsContainer.setMaxWidth(400);
         }
 
-
         if (viewAllRestaurantsLink != null) {
             viewAllRestaurantsLink.setOnAction(event -> handleViewAllRestaurants());
         }
         if (viewAllFoodsLink != null) {
             viewAllFoodsLink.setOnAction(event -> handleViewAllFoods());
         }
+
+        if (viewActiveOrdersLink != null) {
+            viewActiveOrdersLink.setOnAction(event -> handleViewActiveOrders());
+        }
+
+        if (activeOrdersPanel != null) {
+            activeOrdersPanel.setTranslateX(activeOrdersPanel.getPrefWidth());
+            activeOrdersPanel.setVisible(false);
+            activeOrdersPanel.setManaged(false);
+        }
+    }
+
+    public void setLoggedInUser(UserResponse user) {
+        this.loggedInUser = user;
     }
 
     private void handleSearch() {
@@ -96,12 +120,14 @@ public class BuyerDashboardContentController extends AbstractBaseController {
 
         buyerService.searchPopularRestaurantsAndFoods(token, searchText)
                 .thenAccept(results -> Platform.runLater(() -> {
-                    List<RestaurantResponse> restaurants = ((List<Map<String, Object>>) results.get("restaurants")).stream()
+                    List<Map<String, Object>> restaurantsMap = (List<Map<String, Object>>) results.get("restaurants");
+                    List<RestaurantResponse> restaurants = restaurantsMap.stream()
                             .map(json -> objectMapper.convertValue(json, RestaurantResponse.class))
                             .filter(Objects::nonNull)
                             .toList();
 
-                    List<ListItemResponse> foods = ((List<Map<String, Object>>) results.get("foods")).stream()
+                    List<Map<String, Object>> foodsMap = (List<Map<String, Object>>) results.get("foods");
+                    List<ListItemResponse> foods = foodsMap.stream()
                             .map(json -> objectMapper.convertValue(json, ListItemResponse.class))
                             .filter(Objects::nonNull)
                             .toList();
@@ -226,21 +252,23 @@ public class BuyerDashboardContentController extends AbstractBaseController {
     private Node createRestaurantResultNode(RestaurantResponse restaurant) {
         HBox hbox = new HBox(10);
         hbox.getStyleClass().add("search-result-item");
-        hbox.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+        hbox.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
+        hbox.setAlignment(Pos.CENTER_RIGHT);
 
         ImageView icon = new ImageView();
         if (restaurant.getLogoBase64() != null && !restaurant.getLogoBase64().isEmpty()) {
             setProfileImage(icon, restaurant.getLogoBase64());
         } else {
-            icon.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/com/aut/shoomal/images/icon.png"))));
+            icon.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/com/aut/shoomal/images/restaurant_icon.png"))));
         }
-        icon.setFitWidth(40);
-        icon.setFitHeight(40);
+        icon.setFitWidth(45);
+        icon.setFitHeight(45);
 
         Label nameLabel = new Label(restaurant.getName());
         nameLabel.getStyleClass().add("search-result-name");
-
-        hbox.getChildren().addAll(icon, nameLabel);
+        nameLabel.setMaxWidth(Double.MAX_VALUE);
+        nameLabel.setAlignment(Pos.CENTER);
+        hbox.getChildren().addAll(nameLabel, icon);
 
         hbox.setOnMouseClicked(event -> {
             System.out.println("Restaurant clicked: " + restaurant.getName() + " (ID: " + restaurant.getId() + ")");
@@ -253,30 +281,76 @@ public class BuyerDashboardContentController extends AbstractBaseController {
     private Node createFoodResultNode(ListItemResponse food) {
         HBox hbox = new HBox(10);
         hbox.getStyleClass().add("search-result-item");
-        hbox.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+        hbox.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
+        hbox.setAlignment(Pos.CENTER_RIGHT);
 
         ImageView icon = new ImageView();
         if (food.getImageBase64() != null && !food.getImageBase64().isEmpty()) {
             setProfileImage(icon, food.getImageBase64());
         } else {
-            icon.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/com/aut/shoomal/images/icon.png"))));
+            icon.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/com/aut/shoomal/images/food_icon.png"))));
         }
-        icon.setFitWidth(40);
-        icon.setFitHeight(40);
+        icon.setFitWidth(45);
+        icon.setFitHeight(45);
 
         Label nameLabel = new Label(food.getName());
         nameLabel.getStyleClass().add("search-result-name");
-
-        hbox.getChildren().addAll(icon, nameLabel);
+        nameLabel.setMaxWidth(Double.MAX_VALUE);
+        nameLabel.setAlignment(Pos.CENTER);
+        hbox.getChildren().addAll(nameLabel, icon);
 
         hbox.setOnMouseClicked(event -> {
             System.out.println("Food clicked: " + food.getName() + " (ID: " + food.getId() + ", Vendor ID: " + food.getVendorId() + ")");
             showAlert("غذا", "صفحه جزئیات غذا " + food.getName() + " هنوز پیاده‌سازی نشده است.", Alert.AlertType.INFORMATION, null);
         });
-
         return hbox;
     }
-    public void setLoggedInUser(UserResponse currentUser) {
-        this.loggedInUser = currentUser;
+
+    @FXML
+    private void handleViewActiveOrders() {
+        if (token == null || token.isEmpty()) {
+            showAlert("خطای احراز هویت", "کاربر وارد نشده است. لطفا ابتدا وارد شوید.", Alert.AlertType.ERROR, null);
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/views/BuyerActiveOrdersView.fxml")));
+            Node activeOrdersContent = loader.load();
+            activeOrdersController = loader.getController();
+
+            if (activeOrdersController != null) {
+                activeOrdersController.setCloseCallback(this::closeActiveOrdersPanel);
+            }
+
+            activeOrdersPanel.getChildren().setAll(activeOrdersContent);
+            activeOrdersPanel.setVisible(true);
+            activeOrdersPanel.setManaged(true);
+
+            TranslateTransition slideIn = new TranslateTransition(Duration.millis(500), activeOrdersPanel);
+            slideIn.setFromX(activeOrdersPanel.getPrefWidth());
+            slideIn.setToX(0);
+            slideIn.play();
+
+            if (activeOrdersController != null) {
+                activeOrdersController.loadActiveOrders();
+            }
+
+        } catch (IOException e) {
+            System.err.println("Failed to load BuyerActiveOrdersView.fxml: " + e.getMessage());
+            e.printStackTrace();
+            showAlert("خطا", "خطا در بارگذاری صفحه سفارشات فعال.", Alert.AlertType.ERROR, null);
+        }
+    }
+
+    public void closeActiveOrdersPanel(Void v) {
+        TranslateTransition slideOut = new TranslateTransition(Duration.millis(500), activeOrdersPanel);
+        slideOut.setFromX(0);
+        slideOut.setToX(activeOrdersPanel.getPrefWidth());
+        slideOut.setOnFinished(event -> {
+            activeOrdersPanel.setVisible(false);
+            activeOrdersPanel.setManaged(false);
+            activeOrdersPanel.getChildren().clear();
+        });
+        slideOut.play();
     }
 }
