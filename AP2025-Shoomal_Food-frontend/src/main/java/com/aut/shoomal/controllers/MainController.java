@@ -131,6 +131,19 @@ public class MainController extends AbstractBaseController {
         switch (role != null ? role.toLowerCase() : "") {
             case "buyer":
                 targetPane = buyerDashboardScrollPane;
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/aut/shoomal/views/BuyerDashboardContent.fxml"));
+                    Parent buyerContentRoot = loader.load();
+
+                    BuyerDashboardContentController buyerController = loader.getController();
+                     if (buyerController != null) {buyerController.setLoggedInUser(this.currentUser);
+                     }
+                    buyerDashboardScrollPane.setContent(buyerContentRoot);
+                } catch (IOException e) {
+                    System.err.println("Failed to load BuyerDashboardContent.fxml: " + e.getMessage());
+                    e.printStackTrace();
+                    showAlert("Error", "Failed to load buyer dashboard content.", AlertType.ERROR, null);
+                }
                 break;
             case "seller":
                 targetPane = sellerDashboardScrollPane;
