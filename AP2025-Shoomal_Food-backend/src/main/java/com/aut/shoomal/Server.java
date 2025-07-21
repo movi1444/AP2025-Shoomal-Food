@@ -65,7 +65,7 @@ public class Server
         BuyerRatingHandler buyerRatingHandler = new BuyerRatingHandler(userManager, ratingManager, blacklistedTokenDao);
         AdminHandler adminHandler = new AdminHandler(userManager, restaurantManager, blacklistedTokenDao, orderManager, paymentTransactionManager);
         AdminCouponHandler adminCouponHandler = new AdminCouponHandler(userManager, blacklistedTokenDao, couponManager);
-        CourierHandler courierHandler = new CourierHandler(userManager,orderManager,blacklistedTokenDao);
+        CourierHandler courierHandler = new CourierHandler(userManager,orderManager,blacklistedTokenDao, restaurantManager);
         UserOrderHandler userOrderHandler = new UserOrderHandler(userManager, blacklistedTokenDao);
 
         try {

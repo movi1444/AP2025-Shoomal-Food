@@ -9,18 +9,23 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class CourierDeliveryHistoryController extends AbstractBaseController
+public class CourierDeliveryHistoryController extends AbstractBaseController implements CourierFilterController.FilterCallback
 {
     @FXML private TableView<OrderResponse> orderTable;
     @FXML private TableColumn<OrderResponse, String> deliveryColumn;
@@ -43,6 +48,9 @@ public class CourierDeliveryHistoryController extends AbstractBaseController
 
     private CourierService courierService;
     private String token;
+
+    private String currentSearch = null;
+    private String currentVendor = null;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle)
@@ -106,12 +114,36 @@ public class CourierDeliveryHistoryController extends AbstractBaseController
     @FXML
     public void handleAddFilter(ActionEvent actionEvent)
     {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/aut/shoomal/views/CourierFilterView.fxml"));
+            Parent root = loader.load();
 
+            CourierFilterController filterController = loader.getController();
+            filterController.setFilterCallback(this);
+            filterController.setInitialFilters(currentSearch, currentVendor);
+
+            Stage filterStage = new Stage();
+            filterStage.initModality(Modality.APPLICATION_MODAL);
+            filterStage.setTitle("فیلتر سفارشات");
+            filterStage.setScene(new Scene(root));
+            filterStage.showAndWait();
+        } catch (Exception e) {
+            showAlert("خطا در باز کردن فیلتر", "مشکلی در بارگذاری صفحه فیلتر پیش آمد: " + e.getMessage(), Alert.AlertType.ERROR, null);
+            e.printStackTrace();
+        }
     }
 
     @FXML
     public void handleBackButton(ActionEvent actionEvent)
     {
         navigateToMainView((Node) actionEvent.getSource());
+    }
+
+    @Override
+    public void onFilterApplied(String search, String vendor)
+    {
+        this.currentSearch = search;
+        this.currentVendor = vendor;
+        loadDeliveryHistory(currentSearch, vendor, null);
     }
 }
