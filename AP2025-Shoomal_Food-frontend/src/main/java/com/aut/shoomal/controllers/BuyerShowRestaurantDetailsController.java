@@ -114,16 +114,6 @@ public class BuyerShowRestaurantDetailsController extends AbstractBaseController
                 });
     }
 
-    private void handleSeeComments(Integer foodId)
-    {
-
-    }
-
-    private void handleAddToCart(Integer foodId)
-    {
-
-    }
-
     @FXML
     public void handleBack(ActionEvent event)
     {

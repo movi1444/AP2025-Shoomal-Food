@@ -9,11 +9,16 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -49,19 +54,28 @@ public class BuyerShowListMenuController extends AbstractBaseController
 
             private void handleShowMenuFoods(String title, Node source)
             {
-                navigateTo(
-                        source,
-                        "/com/aut/shoomal/views/BuyerMenuFoodsView.fxml",
-                        "/com/aut/shoomal/styles/MainView.css",
-                        TransitionType.SLIDE_LEFT,
-                        controller -> {
-                            if (controller instanceof BuyerShowMenuFoodsController menuFoodsController)
-                            {
-                                menuFoodsController.setRestaurantId(restaurantId);
-                                menuFoodsController.setTitle(title);
-                            }
-                        }
-                );
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/aut/shoomal/views/BuyerMenuFoodsView.fxml"));
+                    Parent root = loader.load();
+
+                    BuyerShowMenuFoodsController controller = loader.getController();
+                    if (controller != null)
+                    {
+                        controller.setRestaurantId(restaurantId);
+                        controller.setTitle(title);
+                    }
+
+                    Stage stage = (Stage) source.getScene().getWindow();
+                    Scene scene = new Scene(root, stage.getWidth(), stage.getHeight());
+                    stage.setScene(scene);
+                    stage.setTitle("غذا های منو");
+                    stage.show();
+
+                } catch (IOException e) {
+                    System.err.println("Failed to load BuyerMenuFoodsView.fxml: " + e.getMessage());
+                    e.printStackTrace();
+                    showAlert("Navigation Error", "Failed to load menu foods page.", Alert.AlertType.ERROR, null);
+                }
             }
 
             @Override
