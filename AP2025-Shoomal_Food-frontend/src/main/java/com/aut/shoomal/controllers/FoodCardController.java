@@ -19,6 +19,7 @@ public class FoodCardController extends AbstractBaseController
     private ImageView foodImageView;
     @FXML private Label nameLabel;
     @FXML private Label priceLabel;
+    @FXML private Label supplyLabel;
     @FXML private Button addToCartButton;
     @FXML private Button seeCommentsButton;
 
@@ -41,7 +42,8 @@ public class FoodCardController extends AbstractBaseController
         if (food != null)
         {
             nameLabel.setText(food.getName());
-            priceLabel.setText("قیمت: " + food.getPrice());
+            priceLabel.setText("قیمت واحد: " + food.getPrice());
+            supplyLabel.setText("تعداد موجود: " + food.getSupply());
 
             String imageBase64 = food.getImageBase64();
             if (imageBase64 != null && !imageBase64.isEmpty())

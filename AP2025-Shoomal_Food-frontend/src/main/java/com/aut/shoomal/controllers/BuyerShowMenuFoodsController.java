@@ -12,28 +12,23 @@ import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Objects;
 import java.util.ResourceBundle;
 
-public class BuyerShowRestaurantDetailsController extends AbstractBaseController
+public class BuyerShowMenuFoodsController extends AbstractBaseController
 {
-    @FXML private ImageView restaurantLogoView;
-    @FXML private Label restaurantNameLabel;
-    @FXML private Label restaurantAddressLabel;
-    @FXML private Button backButton;
-    @FXML private Button seeMenusButton;
     @FXML private FlowPane foodsContainerFlowPane;
+    @FXML private Label menuTitleLabel;
+    @FXML private Button backButton;
 
     private RestaurantService restaurantService;
-    private String token;
     private Integer restaurantId;
+    private String title, token;
+    private boolean ready = false;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle)
@@ -43,40 +38,17 @@ public class BuyerShowRestaurantDetailsController extends AbstractBaseController
         token = PreferencesManager.getJwtToken();
     }
 
-    public void setRestaurantId(Integer restaurantId)
-    {
-        this.restaurantId = restaurantId;
-        loadRestaurantDetailsAndFoods();
-    }
-
-    private void loadRestaurantDetailsAndFoods()
+    private void loadFoods()
     {
         handleError();
 
-        restaurantService.getRestaurantById(token, restaurantId)
-                .thenCombine(restaurantService.getFoodsByRestaurantId(token, restaurantId), (restaurantResponse, foods) -> {
+        restaurantService.getMenuByTitle(token, restaurantId, title)
+                .thenCombine(restaurantService.getFoodsByMenuTitle(token, restaurantId, title), (menu, foods) -> {
                     Platform.runLater(() -> {
-                        if (restaurantResponse != null)
-                        {
-                            restaurantNameLabel.setText(restaurantResponse.getName());
-                            restaurantAddressLabel.setText("آدرس:   " + restaurantResponse.getAddress());
-
-                            String logoBase64 = restaurantResponse.getLogoBase64();
-                            if (logoBase64 != null && !logoBase64.isEmpty())
-                            {
-                                try {
-                                    super.setProfileImage(restaurantLogoView, logoBase64);
-                                } catch (Exception e) {
-                                    System.err.println("Error decoding restaurant logo: " + e.getMessage());
-                                    restaurantLogoView.setImage(null);
-                                }
-                            }
-                            else
-                                restaurantLogoView.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/com/aut/shoomal/images/ShoomalFoodMahi.png"))));
-                        }
+                        if (menu != null)
+                            menuTitleLabel.setText("عنوان منو:  " + menu.getTitle());
                         else
-                            showAlert("Error", "Failed to load restaurant details.", Alert.AlertType.ERROR, null);
-
+                            showAlert("Error", "Failed to load menu details.", Alert.AlertType.ERROR, null);
                         foodsContainerFlowPane.getChildren().clear();
                         if (foods != null && !foods.isEmpty())
                             for (ListItemResponse food : foods)
@@ -98,7 +70,7 @@ public class BuyerShowRestaurantDetailsController extends AbstractBaseController
                                 }
                             }
                         else
-                            foodsContainerFlowPane.getChildren().add(new Label("هیچ غذایی در این رستوران موجود نیست."));
+                            foodsContainerFlowPane.getChildren().add(new Label("هیچ غذایی در این منو موجود نیست."));
                     });
                     return null;
                 })
@@ -114,17 +86,32 @@ public class BuyerShowRestaurantDetailsController extends AbstractBaseController
                 });
     }
 
-    @FXML
-    public void handleBack(ActionEvent event)
+    public void setRestaurantId(Integer restaurantId)
     {
-        navigateToMainView((Node) event.getSource());
+        this.restaurantId = restaurantId;
+        isReadyToLoad();
+    }
+
+    public void setTitle(String title)
+    {
+        this.title = title;
+        isReadyToLoad();
+    }
+
+    private void isReadyToLoad()
+    {
+        if (restaurantId != null && title != null && !title.isEmpty() && !ready)
+        {
+            ready = true;
+            loadFoods();
+        }
     }
 
     @FXML
-    public void handleSeeAllMenus(ActionEvent event)
+    public void handleBack(ActionEvent actionEvent)
     {
         navigateTo(
-                (Node) event.getSource(),
+                (Node) actionEvent.getSource(),
                 "/com/aut/shoomal/views/BuyerRestaurantMenuView.fxml",
                 "/com/aut/shoomal/styles/MainView.css",
                 TransitionType.SLIDE_LEFT,
@@ -140,6 +127,11 @@ public class BuyerShowRestaurantDetailsController extends AbstractBaseController
         if (token == null || token.isEmpty())
         {
             showAlert("Authentication Error", "User not logged in. Please log in first.", Alert.AlertType.ERROR, null);
+            return;
+        }
+        if (title == null || title.isEmpty())
+        {
+            showAlert("Error", "No menu title provided.", Alert.AlertType.ERROR, null);
             return;
         }
         if (restaurantId == null)

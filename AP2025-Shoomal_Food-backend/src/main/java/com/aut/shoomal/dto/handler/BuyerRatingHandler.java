@@ -10,6 +10,7 @@ import com.aut.shoomal.entity.user.UserManager;
 import com.aut.shoomal.dao.BlacklistedTokenDao;
 import com.aut.shoomal.dto.request.SubmitRatingRequest;
 import com.aut.shoomal.dto.response.ApiResponse;
+import com.aut.shoomal.exceptions.ConflictException;
 import com.aut.shoomal.exceptions.InvalidInputException;
 import com.aut.shoomal.exceptions.NotFoundException;
 import com.aut.shoomal.payment.order.Order;
@@ -147,6 +148,8 @@ public class BuyerRatingHandler extends AbstractHttpHandler
                         request.getComment(),
                         request.getImageBase64()
                 );
+                if (ratingManager.checkConflict(session, userId, foodId, request.getOrderId()))
+                    throw new ConflictException("Rating already submitted for this order.");
                 Food food = session.get(Food.class, foodId);
                 food.addRating(rating);
                 ratingManager.addRating(rating, session);
@@ -170,6 +173,9 @@ public class BuyerRatingHandler extends AbstractHttpHandler
             sendResponse(exchange, HttpURLConnection.HTTP_NOT_FOUND, new ApiResponse(false, "404 Resource not found: " + e.getMessage()));
             if (transaction != null)
                 transaction.rollback();
+        } catch (ConflictException e) {
+            System.err.println("409 Conflict: " + e.getMessage());
+            sendResponse(exchange, HttpURLConnection.HTTP_CONFLICT, new ApiResponse(false, "409 Conflict: " + e.getMessage()));
         } catch (Exception e) {
             System.err.println("An unexpected error occurred during POST /ratings: " + e.getMessage());
             e.printStackTrace();
