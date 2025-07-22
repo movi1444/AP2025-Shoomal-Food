@@ -124,7 +124,7 @@ public class ShowRestaurantController extends AbstractBaseController
                 updateController.setRestaurantId(restaurantId);
 
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-            Scene scene = new Scene(root, stage.getWidth(), stage.getHeight());
+            Scene scene = new Scene(root, stage.getWidth() - 15, stage.getHeight() - 38);
             stage.setScene(scene);
             stage.setTitle("Update Restaurant");
             stage.show();

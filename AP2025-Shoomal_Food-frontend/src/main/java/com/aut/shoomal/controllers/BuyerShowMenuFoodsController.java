@@ -14,6 +14,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
+import com.aut.shoomal.dto.request.AddItemToCartRequest;
+import com.aut.shoomal.service.CartService;
+import javafx.scene.control.Hyperlink;
 
 import java.io.IOException;
 import java.net.URL;
@@ -24,8 +27,10 @@ public class BuyerShowMenuFoodsController extends AbstractBaseController
     @FXML private FlowPane foodsContainerFlowPane;
     @FXML private Label menuTitleLabel;
     @FXML private Button backButton;
+    @FXML private Hyperlink viewCartButton;
 
     private RestaurantService restaurantService;
+    private CartService cartService;
     private Integer restaurantId;
     private String title, token;
     private boolean ready = false;
@@ -35,7 +40,12 @@ public class BuyerShowMenuFoodsController extends AbstractBaseController
     {
         super.initialize(url, resourceBundle);
         restaurantService = new RestaurantService();
+        cartService = new CartService();
         token = PreferencesManager.getJwtToken();
+
+        if (viewCartButton != null) {
+            viewCartButton.setOnAction(this::handleViewCart);
+        }
     }
 
     private void loadFoods()
@@ -57,7 +67,6 @@ public class BuyerShowMenuFoodsController extends AbstractBaseController
                                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/aut/shoomal/views/components/FoodCard.fxml"));
                                     VBox foodCard = loader.load();
                                     FoodCardController foodCardController = loader.getController();
-
                                     foodCardController.setFoodData(food,
                                             this::handleAddToCart,
                                             this::handleSeeComments
@@ -118,6 +127,66 @@ public class BuyerShowMenuFoodsController extends AbstractBaseController
                 controller -> {
                     if (controller instanceof BuyerShowListMenuController menuController)
                         menuController.setRestaurantId(restaurantId);
+                }
+        );
+    }
+    public void handleAddToCart(Long foodItemId, Integer quantity) {
+        if (token == null || token.isEmpty()) {
+            showAlert("Authentication Error", "User not logged in. Please log in first.", Alert.AlertType.ERROR, null);
+            return;
+        }
+        if (this.restaurantId == null) {
+            showAlert("Error", "Restaurant information not loaded. Cannot add to cart.", Alert.AlertType.ERROR, null);
+            return;
+        }
+
+        AddItemToCartRequest request = new AddItemToCartRequest();
+        request.setRestaurantId(this.restaurantId.longValue());
+        request.setFoodItemId(foodItemId);
+        request.setQuantity(quantity);
+
+        cartService.addItemToCart(request, token)
+                .thenAccept(cartResponse -> Platform.runLater(() -> {
+                    showAlert("موفقیت", "آیتم به سبد خرید اضافه شد! مجموع: " + cartResponse.getTotalPrice() + " تومان", Alert.AlertType.INFORMATION, null);
+                }))
+                .exceptionally(e -> {
+                    Platform.runLater(() -> {
+                        if (e.getCause() instanceof FrontendServiceException exception) {
+                            showAlert(exception);
+                        } else {
+                            showAlert("خطا", "افزودن آیتم به سبد خرید با شکست مواجه شد: " + e.getMessage(), Alert.AlertType.ERROR, null);
+                        }
+                    });
+                    return null;
+                });
+    }
+
+    @Override
+    protected void handleSeeComments(Integer foodId) {
+        showAlert("مشاهده نظرات", "قابلیت مشاهده نظرات برای غذای با شناسه " + foodId + " هنوز پیاده‌سازی نشده است.", Alert.AlertType.INFORMATION, null);
+    }
+
+    @FXML
+    public void handleViewCart(ActionEvent event) {
+        if (token == null || token.isEmpty()) {
+            showAlert("Authentication Error", "User not logged in. Please log in first.", Alert.AlertType.ERROR, null);
+            return;
+        }
+        if (this.restaurantId == null) {
+            showAlert("Error", "Restaurant information not loaded. Cannot view cart.", Alert.AlertType.ERROR, null);
+            return;
+        }
+
+        navigateTo(
+                (Node) event.getSource(),
+                "/com/aut/shoomal/views/CartView.fxml",
+                "/com/aut/shoomal/styles/AdminDashboardStyles.css",
+                TransitionType.SLIDE_RIGHT,
+                controller -> {
+                    if (controller instanceof CartController cartController) {
+                        cartController.setRestaurantId(this.restaurantId);
+                        cartController.setUserId(PreferencesManager.getUserData().getId().longValue());
+                    }
                 }
         );
     }

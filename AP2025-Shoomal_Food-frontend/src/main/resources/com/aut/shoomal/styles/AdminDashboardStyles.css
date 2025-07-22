@@ -230,6 +230,25 @@
     -fx-translate-y: 1px;
 }
 
+.my-button3 {
+    -fx-background-color: #f44336; /* Red */
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 5px 10px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-cursor: hand;
+}
+
+.my-button3:hover {
+    -fx-background-color: #da190b;
+}
+
+.my-button3:pressed {
+    -fx-background-color: #810000;
+    -fx-translate-y: 1px;
+}
+
 .filter-sidebar {
     -fx-background-color: #34495e;
     -fx-padding: 15px;
@@ -390,4 +409,33 @@
 .filter-sidebar .my-button2:pressed {
     -fx-background-color: #737373;
     -fx-translate-y: 1px;
+}
+
+.quantity-button {
+    -fx-background-color: #4CAF50; /* Green */
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 5px 10px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-cursor: hand;
+}
+
+.quantity-button:hover {
+    -fx-background-color: #45a049;
+}
+
+.form-field {
+    -fx-background-color: #f0f0f0;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 8px;
+    -fx-font-size: 14px;
+    -fx-text-fill: #333333;
+    -fx-prompt-text-fill: #888888;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);
+}
+
+.form-field:focused {
+    -fx-border-color: #4CAF50;
+    -fx-background-color: #ffffff;
 }
