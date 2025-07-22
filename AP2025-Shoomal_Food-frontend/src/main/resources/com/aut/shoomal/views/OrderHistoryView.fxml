@@ -54,6 +54,7 @@
             <TableColumn fx:id="rawPriceColumn" prefWidth="100" text="قیمت کل" />
             <TableColumn fx:id="statusColumn" prefWidth="120" text="وضعیت" />
             <TableColumn fx:id="createdAtColumn" prefWidth="150" text="تاریخ ثبت" />
+            <TableColumn fx:id="ratingActionsColumn" text="عملیات امتیازدهی" prefWidth="230" resizable="false" sortable="false" />
         </columns>
         <columnResizePolicy>
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

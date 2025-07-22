@@ -4,6 +4,8 @@ import com.aut.shoomal.dto.response.OrderResponse;
 import com.aut.shoomal.dto.response.RestaurantResponse;
 import com.aut.shoomal.dto.response.UserResponse;
 import com.aut.shoomal.exceptions.FrontendServiceException;
+import com.aut.shoomal.service.BuyerFavoriteService;
+import com.aut.shoomal.service.BuyerRatingService;
 import com.aut.shoomal.service.OrderService;
 import com.aut.shoomal.service.BuyerService;
 import com.aut.shoomal.utils.PreferencesManager;
@@ -13,21 +15,23 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.NodeOrientation;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.util.StringConverter;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Comparator;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -40,6 +44,7 @@ public class OrderHistoryController extends AbstractBaseController {
     @FXML private TableColumn<OrderResponse, Integer> rawPriceColumn;
     @FXML private TableColumn<OrderResponse, String> statusColumn;
     @FXML private TableColumn<OrderResponse, String> createdAtColumn;
+    @FXML private TableColumn<OrderResponse, Void> ratingActionsColumn;
 
     @FXML private TextField searchField;
     @FXML private ComboBox<RestaurantResponse> vendorFilterComboBox;
@@ -51,6 +56,7 @@ public class OrderHistoryController extends AbstractBaseController {
 
     private OrderService orderService;
     private BuyerService buyerService;
+    private BuyerRatingService buyerRatingService;
     private String token;
     private UserResponse loggedInUser;
     private boolean isFilterSidebarVisible = false;
@@ -63,6 +69,7 @@ public class OrderHistoryController extends AbstractBaseController {
         super.initialize(url, resourceBundle);
         orderService = new OrderService();
         buyerService = new BuyerService();
+        buyerRatingService = new BuyerRatingService();
         token = PreferencesManager.getJwtToken();
 
         setupOrderTable();
@@ -93,6 +100,110 @@ public class OrderHistoryController extends AbstractBaseController {
         orderTable.getSortOrder().clear();
         orderTable.getSortOrder().add(idColumn);
         idColumn.setSortType(TableColumn.SortType.ASCENDING);
+
+        ratingActionsColumn.setCellFactory(param -> new TableCell<>() {
+            private final Button addRatingButton = new Button("افزودن");
+            private final Button updateRatingButton = new Button("مشاهده و ویرایش");
+            private final Button deleteRatingButton = new Button("حذف");
+            private final HBox pane = new HBox(5, addRatingButton, updateRatingButton, deleteRatingButton);
+            {
+                addRatingButton.getStyleClass().add("table-cell-button");
+                updateRatingButton.getStyleClass().add("table-cell-button");
+                deleteRatingButton.getStyleClass().add("delete-button");
+
+                addRatingButton.setOnAction(event -> {
+                    OrderResponse order = getTableView().getItems().get(getIndex());
+                    handleOpenRatingPage(order.getId(), "ADD");
+                });
+
+                updateRatingButton.setOnAction(event -> {
+                    OrderResponse order = getTableView().getItems().get(getIndex());
+                    handleOpenRatingPage(order.getId(), "UPDATE");
+                });
+
+                deleteRatingButton.setOnAction(event -> {
+                    OrderResponse order = getTableView().getItems().get(getIndex());
+                    handleDeleteRating(order.getId());
+                });
+            }
+
+            private void handleDeleteRating(Integer orderId)
+            {
+                if (token == null || token.isEmpty())
+                {
+                    showAlert("خطای احراز هویت", "کاربر وارد نشده است. لطفا ابتدا وارد شوید.", Alert.AlertType.ERROR, null);
+                    navigateToSignInView(orderTable);
+                    return;
+                }
+
+                Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
+                confirmationAlert.setTitle("تایید حذف");
+                confirmationAlert.setHeaderText(null);
+                confirmationAlert.setContentText("آیا مطمئن هستید که می‌خواهید نظر خود را حذف کنید؟");
+                confirmationAlert.getDialogPane().getStylesheets().add(
+                        Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/styles/AlertStyles.css")).toExternalForm()
+                );
+                confirmationAlert.getDialogPane().getStyleClass().add("custom-alert");
+                confirmationAlert.getDialogPane().getStyleClass().add("confirmation");
+
+                confirmationAlert.showAndWait().ifPresent(response -> {
+                    if (response == ButtonType.OK)
+                    {
+                        buyerRatingService.deleteRating(token, orderId)
+                                .thenAccept(result -> Platform.runLater(() -> {
+                                    if (result.isSuccess()) {
+                                        showAlert("موفقیت", "نظر شما با موفقیت حذف شد.", Alert.AlertType.INFORMATION, null);
+                                        loadOrders(null, null);
+                                    } else
+                                        showAlert("خطا", "خطا در حذف نظر", Alert.AlertType.ERROR, null);
+                                }))
+                                .exceptionally(e -> {
+                                    Platform.runLater(() -> {
+                                        if (e.getCause() instanceof FrontendServiceException fsException)
+                                            showAlert(fsException);
+                                        else
+                                            showAlert("Unexpected Error", "An unexpected error occurred: " + e.getMessage(), Alert.AlertType.ERROR, null);
+                                    });
+                                    return null;
+                                });
+                    }
+                });
+            }
+
+            private void handleOpenRatingPage(Integer orderId, String mode)
+            {
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/aut/shoomal/views/RatingView.fxml"));
+                    Parent root = loader.load();
+
+                    RatingController ratingController = loader.getController();
+                    if (ratingController != null)
+                        ratingController.setRatingContext(orderId, mode);
+
+                    Stage stage = new Stage();
+                    stage.initModality(Modality.APPLICATION_MODAL);
+                    stage.setTitle("امتیازدهی و نظر");
+                    stage.setScene(new Scene(root));
+                    stage.showAndWait();
+
+                    loadOrders(null, null);
+                } catch (IOException e) {
+                    System.err.println("Failed to load RatingView.fxml: " + e.getMessage());
+                    e.printStackTrace();
+                    showAlert("Error", "Failed to open rating page.", Alert.AlertType.ERROR, null);
+                }
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty)
+            {
+                super.updateItem(item, empty);
+                if (empty)
+                    setGraphic(null);
+                else
+                    setGraphic(pane);
+            }
+        });
     }
 
     private void setupFilterComboBoxes() {

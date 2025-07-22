@@ -115,7 +115,7 @@ public class ShowListFoodController extends AbstractBaseController
                 confirmationAlert.showAndWait().ifPresent(response -> {
                     if (response == ButtonType.OK)
                     {
-                        restaurantService.deleteFoodFromRestaurant(token, restaurantId, foodId)
+                        restaurantService.deleteFoodFromRestaurant(token, foodId)
                                 .thenAccept(apiResponse -> Platform.runLater(() -> {
                                     if (apiResponse.isSuccess())
                                     {

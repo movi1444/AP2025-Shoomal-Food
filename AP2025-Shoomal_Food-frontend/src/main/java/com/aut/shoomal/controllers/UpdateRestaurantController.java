@@ -19,7 +19,7 @@ import java.util.ResourceBundle;
 
 public class UpdateRestaurantController extends AbstractBaseController
 {
-    @FXML private ImageView restaurantLogoImageView;
+    @FXML private ImageView restaurantLogoImageView = new ImageView();
     @FXML private Button uploadLogoButton;
     @FXML private Button saveButton;
     @FXML private Button backButton;

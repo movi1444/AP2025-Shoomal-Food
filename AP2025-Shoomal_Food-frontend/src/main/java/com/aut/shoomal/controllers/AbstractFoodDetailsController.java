@@ -22,7 +22,7 @@ import java.util.concurrent.CompletableFuture;
 public abstract class AbstractFoodDetailsController extends AbstractBaseController
 {
     @FXML protected Label titleLabel;
-    @FXML protected ImageView foodImageView;
+    @FXML protected ImageView foodImageView = new ImageView();
     @FXML protected Button uploadImageButton;
     @FXML protected TextField nameField;
     @FXML protected TextField descriptionField;

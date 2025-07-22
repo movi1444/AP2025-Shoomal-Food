@@ -292,65 +292,55 @@
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 0);
 }
 
-/* Styling for the individual Menu items (top-level items) */
 .seller-menu-bar .menu-button {
-    -fx-padding: 15px 160px; /* Padding around each top-level menu item (top/bottom, left/right) */
+    -fx-padding: 15px 160px;
     -fx-text-fill: white;
     -fx-background-color: transparent;
     -fx-font-weight: bold;
     -fx-cursor: hand;
 }
 
-/* Hover effect for top-level menu items */
 .seller-menu-bar .menu-button:hover {
-    -fx-background-color: #66BB6A; /* Lighter green on hover */
+    -fx-background-color: #66BB6A;
     -fx-text-fill: white;
 }
 
-/* When a menu is showing its submenu */
 .seller-menu-bar .menu-button:showing {
-    -fx-background-color: #388E3C; /* Darker green when active/showing */
+    -fx-background-color: #388E3C;
     -fx-text-fill: white;
 }
 
-/* Styling for the ContextMenu (the dropdown part of the menu) */
 .seller-menu-bar .context-menu {
-    -fx-background-color: #D2B48C; /* Background color for the dropdown menu */
+    -fx-background-color: #D2B48C;
     -fx-background-radius: 5px;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 0);
-    -fx-padding: 5px 0; /* Padding inside the dropdown */
+    -fx-padding: 5px 0;
 }
 
-/* Styling for individual MenuItem within the dropdown */
 .seller-menu-bar .menu-item {
-    -fx-padding: 8px 20px; /* Padding for each item in the dropdown (top/bottom, left/right) */
+    -fx-padding: 8px 20px;
     -fx-text-fill: black;
     -fx-font-size: 17px;
 }
 
-/* Hover effect for MenuItem in the dropdown */
 .seller-menu-bar .menu-item:hover {
     -fx-background-color: #4CAF50;
     -fx-text-fill: white;
 }
 
-/* When a MenuItem is pressed */
 .seller-menu-bar .menu-item:pressed {
-    -fx-background-color: #388E3C; /* Darker green when pressed */
+    -fx-background-color: #388E3C;
 }
 
-/* Styling for the text within MenuItems */
 .seller-menu-bar .menu-item .label {
     -fx-text-fill: inherit;
 }
 
-/* If you want to change the text color of the top-level Menu items when they are disabled */
 .seller-menu-bar .menu-button:disabled {
-    -fx-opacity: 0.6; /* Make it slightly transparent */
+    -fx-opacity: 0.6;
     -fx-text-fill: #cccccc;
 }
 
-/* If you want to change the text color of the dropdown MenuItems when they are disabled */
 .seller-menu-bar .menu-item:disabled {
     -fx-opacity: 0.6;
     -fx-text-fill: #cccccc;
@@ -415,12 +405,12 @@
 }
 
 .favorite-restaurant-card .label {
-    -fx-text-fill: white; /* Changed to white */
+    -fx-text-fill: white;
 }
 
 .logo-button {
-    -fx-background-color: transparent; /* Make button background transparent */
-    -fx-padding: 0; /* Remove default button padding */
+    -fx-background-color: transparent;
+    -fx-padding: 0;
 }
 
 .logo-button:hover {
@@ -455,8 +445,8 @@
 
 .food-card .label {
     -fx-text-fill: #333;
-    -fx-alignment: CENTER; /* Center text within labels */
-    -fx-pref-width: 9999px; /* Allow labels to expand */
+    -fx-alignment: CENTER;
+    -fx-pref-width: 9999px;
 }
 
 .food-card .primary-button {
@@ -478,4 +468,84 @@
 
 .food-card .secondary-button:hover {
     -fx-background-color: #757575;
+}
+
+.remove-image-button {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-padding: 2px 5px;
+    -fx-background-radius: 15px;
+    -fx-border-radius: 15px;
+    -fx-min-width: 20px;
+    -fx-max-width: 20px;
+    -fx-min-height: 20px;
+    -fx-max-height: 20px;
+    -fx-cursor: hand;
+    -fx-alignment: center;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 3, 0, 0, 1);
+}
+
+.remove-image-button:hover {
+    -fx-background-color: #c0392b;
+}
+
+.remove-image-button:pressed {
+    -fx-background-color: #a93226;
+    -fx-translate-y: 1px;
+}
+
+/* In your MainView.css */
+
+.food-image-large {
+    -fx-background-color: #f5f5f5;
+    -fx-border-color: #ddd;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.comment-card {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 5, 0, 0, 2);
+    -fx-padding: 15px;
+    -fx-pref-width: 700px;
+    -fx-max-width: 700px;
+}
+
+.comment-card .label {
+    -fx-text-fill: #333;
+    -fx-alignment: TOP_RIGHT;
+}
+
+.comment-card .comment-text {
+    -fx-font-size: 14px;
+    -fx-text-fill: #555;
+    -fx-wrap-text: true;
+}
+
+.comment-card .user-info-label {
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-text-fill: #2c3e50;
+}
+
+.comment-card .rating-number-label {
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+    -fx-text-fill: #FFD700;
+}
+
+.comment-card .comment-image-view {
+    -fx-fit-width: 100px;
+    -fx-fit-height: 100px;
+    -fx-preserve-ratio: true;
+    -fx-border-color: #ddd;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
 }
