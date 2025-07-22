@@ -306,6 +306,8 @@ public abstract class AbstractBaseController implements Initializable {
                 if (base64String != null && !base64String.isEmpty()) {
                     byte[] imageBytes = Base64.getDecoder().decode(base64String);
                     Image image = new Image(new ByteArrayInputStream(imageBytes));
+                    if (imageView == null)
+                        imageView = new ImageView();
                     imageView.setImage(image);
                 }
                 return base64String;

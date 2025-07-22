@@ -36,7 +36,7 @@ public class RatingManager
 
     public void deleteRating(Session session, Integer ratingId)
     {
-        Rating rating = this.findById(ratingId);
+        Rating rating = session.get(Rating.class, ratingId);
         if (rating == null)
             throw new NotFoundException("Rating with id " + ratingId + " not found.");
         session.remove(rating);
@@ -114,14 +114,14 @@ public class RatingManager
         }
     }
 
-    public Rating findById(Integer ratingId)
-    {
-        return ratingDao.findById(Long.valueOf(ratingId));
-    }
-
     public boolean checkConflict(Session session, Long userId, Long foodId, Integer orderId)
     {
         List<Rating> ratings = ratingDao.checkConflict(session, userId, foodId, orderId);
         return ratings != null && !ratings.isEmpty();
+    }
+
+    public List<Rating> getByOrderId(Session session, Long userId, Integer orderId)
+    {
+        return ratingDao.getByOrderId(session, userId, orderId);
     }
 }

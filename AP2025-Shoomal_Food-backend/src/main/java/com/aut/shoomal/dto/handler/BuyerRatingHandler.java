@@ -25,11 +25,9 @@ import org.hibernate.Transaction;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class BuyerRatingHandler extends AbstractHttpHandler
 {
@@ -71,9 +69,9 @@ public class BuyerRatingHandler extends AbstractHttpHandler
         {
             if (RATINGS_ID_PATTERN.matcher(path).matches())
             {
-                Optional<Integer> ratingId = extractIdFromPath(path, RATINGS_ID_PATTERN);
-                if (ratingId.isPresent())
-                    getRatingById(exchange, ratingId.get());
+                Optional<Integer> orderId = extractIdFromPath(path, RATINGS_ID_PATTERN);
+                if (orderId.isPresent())
+                    getRatingsByOrderId(exchange, user.getId(), orderId.get());
                 else
                     sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid rating ID."));
             }
@@ -92,9 +90,9 @@ public class BuyerRatingHandler extends AbstractHttpHandler
         {
             if (RATINGS_ID_PATTERN.matcher(path).matches())
             {
-                Optional<Integer> ratingId = extractIdFromPath(path, RATINGS_ID_PATTERN);
-                if (ratingId.isPresent())
-                    updateRating(exchange, ratingId.get());
+                Optional<Integer> orderId = extractIdFromPath(path, RATINGS_ID_PATTERN);
+                if (orderId.isPresent())
+                    updateRating(exchange, user.getId(), orderId.get());
                 else
                     sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid rating ID."));
             }
@@ -104,9 +102,9 @@ public class BuyerRatingHandler extends AbstractHttpHandler
         else if (method.equalsIgnoreCase("DELETE"))
             if (RATINGS_ID_PATTERN.matcher(path).matches())
             {
-                Optional<Integer> ratingId = extractIdFromPath(path, RATINGS_ID_PATTERN);
-                if (ratingId.isPresent())
-                    deleteRating(exchange, ratingId.get());
+                Optional<Integer> orderId = extractIdFromPath(path, RATINGS_ID_PATTERN);
+                if (orderId.isPresent())
+                    deleteRating(exchange, user.getId(), orderId.get());
                 else
                     sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid rating ID."));
             }
@@ -208,30 +206,39 @@ public class BuyerRatingHandler extends AbstractHttpHandler
         }
     }
 
-    private void getRatingById(HttpExchange exchange, Integer ratingId) throws IOException
+    private void getRatingsByOrderId(HttpExchange exchange, Long userId, Integer orderId) throws IOException
     {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Rating rating = session.get(Rating.class, ratingId);
-            if (rating == null)
-                throw new NotFoundException("Rating with id " + ratingId + " not found.");
-            RatingResponse response = this.createRatingResponse(rating);
-            sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, response);
+            List<Rating> ratings = ratingManager.getByOrderId(session, userId, orderId);
+            if (ratings == null)
+                throw new NotFoundException("No rating with order id " + orderId + " found.");
+            List<RatingResponse> responses = ratings.stream()
+                            .map(this::createRatingResponse)
+                            .toList();
+            sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, responses);
         } catch (NotFoundException e) {
             System.err.println("404 Resource not found: " + e.getMessage());
             sendResponse(exchange, HttpURLConnection.HTTP_NOT_FOUND, new ApiResponse(false, "404 Resource not found: " + e.getMessage()));
         } catch (Exception e) {
-            System.err.println("An unexpected error occurred during GET /ratings/" + ratingId + ": " + e.getMessage());
+            System.err.println("An unexpected error occurred during GET /ratings/" + orderId + ": " + e.getMessage());
             e.printStackTrace();
             sendResponse(exchange, HttpURLConnection.HTTP_INTERNAL_ERROR, new ApiResponse(false, "500 Internal Server Error."));
         }
     }
 
-    private void deleteRating(HttpExchange exchange, Integer ratingId) throws IOException
+    private void deleteRating(HttpExchange exchange, Long userId, Integer orderId) throws IOException
     {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
-            ratingManager.deleteRating(session, ratingId);
+            List<Rating> ratings = ratingManager.getByOrderId(session, userId, orderId);
+            if (ratings == null || ratings.isEmpty())
+                throw new NotFoundException("Rating with order id " + orderId + " not found.");
+            for (Rating rating : ratings)
+            {
+                Integer id = rating.getId();
+                ratingManager.deleteRating(session, id);
+            }
             transaction.commit();
             sendResponse(exchange, HttpURLConnection.HTTP_OK, new ApiResponse(true, "200 Rating deleted."));
         } catch (NotFoundException e) {
@@ -242,13 +249,13 @@ public class BuyerRatingHandler extends AbstractHttpHandler
         } catch (Exception e) {
             if (transaction != null)
                 transaction.rollback();
-            System.err.println("An unexpected error occurred during DELETE /ratings/" + ratingId + ": " + e.getMessage());
+            System.err.println("An unexpected error occurred during DELETE /ratings/" + orderId + ": " + e.getMessage());
             e.printStackTrace();
             sendResponse(exchange, HttpURLConnection.HTTP_INTERNAL_ERROR, new ApiResponse(false, "500 Internal Server Error."));
         }
     }
 
-    private void updateRating(HttpExchange exchange, Integer ratingId) throws IOException
+    private void updateRating(HttpExchange exchange, Long userId, Integer orderId) throws IOException
     {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             UpdateRatingRequest request = parseRequestBody(exchange, UpdateRatingRequest.class);
@@ -258,20 +265,27 @@ public class BuyerRatingHandler extends AbstractHttpHandler
                 return;
             }
 
-            Rating rating = session.get(Rating.class, ratingId);
-            if (rating == null)
-                throw new NotFoundException("Rating with id " + ratingId + " not found.");
-            ratingManager.updateRating(session, ratingId, request.getRating(), request.getComment(), request.getImageBase64());
-            UpdateRatingResponse response = new UpdateRatingResponse(
-                    rating.getId(),
-                    (rating.getOrder() != null) ? rating.getOrder().getId() : null,
-                    rating.getRating(),
-                    rating.getComment(),
-                    Math.toIntExact(rating.getUser().getId()),
-                    rating.getCreatedAt().toString()
-            );
+            List<Rating> ratings = ratingManager.getByOrderId(session, userId, orderId);
+            if (ratings == null)
+                throw new NotFoundException("Rating not found.");
 
-            sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, response);
+            List<UpdateRatingResponse> responses = new ArrayList<>();
+            for (Rating rating : ratings)
+            {
+                Integer ratingId = rating.getId();
+                ratingManager.updateRating(session, ratingId, request.getRating(), request.getComment(), request.getImageBase64());
+                UpdateRatingResponse response = new UpdateRatingResponse(
+                        rating.getId(),
+                        (rating.getOrder() != null) ? rating.getOrder().getId() : null,
+                        rating.getRating(),
+                        rating.getComment(),
+                        Math.toIntExact(rating.getUser().getId()),
+                        rating.getCreatedAt().toString()
+                );
+                responses.add(response);
+            }
+
+            sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, responses);
         } catch (IOException e) {
             System.err.println("Error parsing request body: Malformed JSON in request body. " + e.getMessage());
             e.printStackTrace();
@@ -283,7 +297,7 @@ public class BuyerRatingHandler extends AbstractHttpHandler
             System.err.println("404 Resource not found: " + e.getMessage());
             sendResponse(exchange, HttpURLConnection.HTTP_NOT_FOUND, new ApiResponse(false, "404 Resource not found."));
         } catch (Exception e) {
-            System.err.println("An unexpected error occurred during PUT /ratings/" + ratingId + ": " + e.getMessage());
+            System.err.println("An unexpected error occurred during PUT /ratings/" + orderId + ": " + e.getMessage());
             e.printStackTrace();
             sendResponse(exchange, HttpURLConnection.HTTP_INTERNAL_ERROR, new ApiResponse(false, "500 Internal Server Error."));
         }

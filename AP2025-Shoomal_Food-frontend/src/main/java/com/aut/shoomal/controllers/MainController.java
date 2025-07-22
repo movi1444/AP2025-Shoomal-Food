@@ -1,6 +1,5 @@
 package com.aut.shoomal.controllers;
 
-import com.aut.shoomal.dto.response.RestaurantResponse;
 import com.aut.shoomal.exceptions.FrontendServiceException;
 import com.aut.shoomal.service.RestaurantService;
 import javafx.application.Platform;
@@ -8,13 +7,10 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.StackPane;
 import javafx.event.ActionEvent;
 import java.net.URL;
-import java.util.HashSet;
-import java.util.List;
 import java.util.ResourceBundle;
 import com.aut.shoomal.dto.response.UserResponse;
 import com.aut.shoomal.utils.PreferencesManager;
@@ -24,8 +20,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert.AlertType;
 import java.io.IOException;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import javafx.scene.Cursor;
 import javafx.scene.shape.Circle;
