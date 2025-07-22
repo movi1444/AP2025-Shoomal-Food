@@ -80,9 +80,9 @@ public class RestaurantService extends AbstractService
         }
     }
 
-    public CompletableFuture<ListItemResponse> editFood(UpdateFoodItemRequest request, String token, Integer foodId, Integer restaurantId)
+    public CompletableFuture<ListItemResponse> editFood(UpdateFoodItemRequest request, String token, Integer foodId)
     {
-        String endpoint = "restaurants/" + restaurantId + "/item/" + foodId;
+        String endpoint = "restaurants/" + foodId + "/item";
         try {
             HttpRequest httpRequest = createAuthenticatedRequestBuilder(endpoint, token)
                     .PUT(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(request)))
@@ -94,9 +94,9 @@ public class RestaurantService extends AbstractService
         }
     }
 
-    public CompletableFuture<ApiResponse> deleteFoodFromRestaurant(String token, Integer restaurantId, Integer foodId)
+    public CompletableFuture<ApiResponse> deleteFoodFromRestaurant(String token, Integer foodId)
     {
-        String endpoint = "restaurants/" + restaurantId + "/item/" + foodId;
+        String endpoint = "restaurants/" + foodId + "/item";
         try {
             HttpRequest httpRequest = createAuthenticatedRequestBuilder(endpoint, token)
                     .DELETE()
@@ -108,9 +108,9 @@ public class RestaurantService extends AbstractService
         }
     }
 
-    public CompletableFuture<ListItemResponse> getFoodById(String token, Integer restaurantId, Integer foodId)
+    public CompletableFuture<ListItemResponse> getFoodById(String token, Integer foodId)
     {
-        String endpoint = "restaurants/" + restaurantId + "/item/" + foodId;
+        String endpoint = "restaurants/" + foodId + "/item";
         try {
             HttpRequest httpRequest = createAuthenticatedRequestBuilder(endpoint, token)
                     .GET()
