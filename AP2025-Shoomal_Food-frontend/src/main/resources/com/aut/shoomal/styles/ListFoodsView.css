@@ -1,7 +1,7 @@
 /* Apply RTL to the root container of the FXML */
 .root {
     -fx-node-orientation: right-to-left;
-    -fx-background-color: #f0f2f5; /* Light background for the page */
+    -fx-background-color: #ffffff; /* Light background for the page */
 }
 
 /* General styling for headers and titles */

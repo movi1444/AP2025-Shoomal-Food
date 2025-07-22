@@ -130,7 +130,7 @@ public abstract class AbstractService
         return queryString.toString();
     }
 
-    private void handleHttpErrorResponse(int code, String responseBody) throws FrontendServiceException
+    protected void handleHttpErrorResponse(int code, String responseBody) throws FrontendServiceException
     {
         String backendErrorMessage = "An unknown error occurred on the server.";
         try {
@@ -165,7 +165,7 @@ public abstract class AbstractService
         }
     }
 
-    private void handleCompletableFutureException(Throwable e)
+    protected void handleCompletableFutureException(Throwable e)
     {
         Throwable cause = e.getCause() != null ? e.getCause() : e;
         switch (cause) {

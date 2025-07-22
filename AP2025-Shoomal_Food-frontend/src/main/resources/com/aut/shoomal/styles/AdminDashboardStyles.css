@@ -323,19 +323,20 @@
 }
 
 .my-text-field {
-    -fx-background-color: #fbdede;
-    -fx-border-color: #ced4da;
+    -fx-background-color: #ffffff;
+    -fx-border-color: #c5c5c5;
     -fx-border-width: 1px;
-    -fx-border-radius: 5px;
-    -fx-background-radius: 5px;
+    -fx-border-radius: 20px;
+    -fx-background-radius: 20px;
     -fx-font-family: "Vazirmatn";
     -fx-font-size: 14px;
-    -fx-padding: 8px 10px;
-    -fx-prompt-text-fill: #6c757d;
+    -fx-padding: 8px 15px;
+    -fx-prompt-text-fill: #888888;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 2);
 }
 
 .my-text-field:focused {
-    -fx-border-color: #007bff;
+    -fx-border-color: #4CAF50;
     -fx-border-width: 2px;
     -fx-background-insets: 0;
 }
