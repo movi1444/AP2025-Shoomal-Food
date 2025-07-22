@@ -53,6 +53,27 @@
     -fx-text-fill: white !important;
 }
 
+.table-cell .button {
+    -fx-background-color: #2196F3; /* Blue for edit button */
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-padding: 4px 8px;
+    -fx-background-radius: 5px;
+    -fx-cursor: hand;
+}
+
+.table-cell .button:hover {
+    -fx-background-color: #1976D2;
+}
+
+/* Specific style for delete buttons if you add them later */
+.table-cell .delete-button {
+    -fx-background-color: #F44336; /* Red for delete button */
+}
+.table-cell .delete-button:hover {
+    -fx-background-color: #D32F2F;
+}
+
 @font-face {
     font-family: 'Vazirmatn';
     src: url("/com/aut/shoomal/fonts/Vazirmatn-Black.ttf");

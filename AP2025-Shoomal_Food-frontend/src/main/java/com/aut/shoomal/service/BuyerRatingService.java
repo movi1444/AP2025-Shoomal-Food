@@ -6,8 +6,10 @@ import com.aut.shoomal.dto.response.ApiResponse;
 import com.aut.shoomal.dto.response.ItemRatingResponse;
 import com.aut.shoomal.dto.response.RatingResponse;
 import com.aut.shoomal.dto.response.UpdateRatingResponse;
+import com.fasterxml.jackson.core.type.TypeReference;
 
 import java.net.http.HttpRequest;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class BuyerRatingService extends AbstractService
@@ -25,6 +27,20 @@ public class BuyerRatingService extends AbstractService
         }
     }
 
+    public CompletableFuture<List<RatingResponse>> getRatingsByOrderId(String token, Integer orderId)
+    {
+        String endpoint = "ratings/" + orderId;
+        try {
+            HttpRequest httpRequest = createAuthenticatedRequestBuilder(endpoint, token)
+                    .GET()
+                    .build();
+            return sendListRequest(httpRequest, new TypeReference<>() {});
+        } catch (Exception e) {
+            System.err.println("Error creating get ratings by orderId request: " + e.getMessage());
+            throw new RuntimeException("Error creating get ratings by orderId request: " + e.getMessage(), e);
+        }
+    }
+
     public CompletableFuture<ItemRatingResponse> getItemRating(String token, Integer itemId)
     {
         String endpoint = "ratings/items/" + itemId;
@@ -39,23 +55,9 @@ public class BuyerRatingService extends AbstractService
         }
     }
 
-    public CompletableFuture<RatingResponse> getRatingById(String token, Integer ratingId)
+    public CompletableFuture<ApiResponse> deleteRating(String token, Integer orderId)
     {
-        String endpoint = "ratings/" + ratingId;
-        try {
-            HttpRequest httpRequest = createAuthenticatedRequestBuilder(endpoint, token)
-                    .GET()
-                    .build();
-            return sendRequest(httpRequest, RatingResponse.class);
-        } catch (Exception e) {
-            System.err.println("Error creating get rating by id request: " + e.getMessage());
-            throw new RuntimeException("Error creating get rating by id request: " + e.getMessage(), e);
-        }
-    }
-
-    public CompletableFuture<ApiResponse> deleteRating(String token, Integer ratingId)
-    {
-        String endpoint = "ratings/" + ratingId;
+        String endpoint = "ratings/" + orderId;
         try {
             HttpRequest httpRequest = createAuthenticatedRequestBuilder(endpoint, token)
                     .DELETE()
@@ -67,14 +69,14 @@ public class BuyerRatingService extends AbstractService
         }
     }
 
-    public CompletableFuture<UpdateRatingResponse> updateRating(String token, Integer ratingId, UpdateRatingRequest request)
+    public CompletableFuture<List<UpdateRatingResponse>> updateRating(String token, Integer orderId, UpdateRatingRequest request)
     {
-        String endpoint = "ratings/" + ratingId;
+        String endpoint = "ratings/" + orderId;
         try {
             HttpRequest httpRequest = createAuthenticatedRequestBuilder(endpoint, token)
                     .PUT(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(request)))
                     .build();
-            return sendRequest(httpRequest, UpdateRatingResponse.class);
+            return sendListRequest(httpRequest, new TypeReference<>() {});
         } catch (Exception e) {
             System.err.println("Error creating update rating request: " + e.getMessage());
             throw new RuntimeException("Error creating update rating request: " + e.getMessage(), e);

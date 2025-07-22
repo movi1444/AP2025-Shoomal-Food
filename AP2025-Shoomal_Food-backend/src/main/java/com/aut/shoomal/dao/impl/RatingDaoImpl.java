@@ -25,4 +25,19 @@ public class RatingDaoImpl extends GenericDaoImpl<Rating> implements RatingDao
             return null;
         }
     }
+
+    @Override
+    public List<Rating> getByOrderId(Session session, Long userId, Integer orderId)
+    {
+        try {
+            Query<Rating> query = session.createQuery("select r from Rating r where r.user.id = :uid and r.order.id = :oid", Rating.class);
+            query.setParameter("uid", userId);
+            query.setParameter("oid", orderId);
+            return query.list();
+        } catch (Exception e) {
+            System.err.println("Could not check conflict: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
 }
