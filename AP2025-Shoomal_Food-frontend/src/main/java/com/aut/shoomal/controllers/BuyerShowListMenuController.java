@@ -66,7 +66,7 @@ public class BuyerShowListMenuController extends AbstractBaseController
                     }
 
                     Stage stage = (Stage) source.getScene().getWindow();
-                    Scene scene = new Scene(root, stage.getWidth(), stage.getHeight());
+                    Scene scene = new Scene(root, stage.getWidth() - 15, stage.getHeight() - 38);
                     stage.setScene(scene);
                     stage.setTitle("غذا های منو");
                     stage.show();

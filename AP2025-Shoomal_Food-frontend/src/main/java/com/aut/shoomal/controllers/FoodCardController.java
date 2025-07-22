@@ -11,6 +11,7 @@ import javafx.scene.image.ImageView;
 import java.net.URL;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class FoodCardController extends AbstractBaseController
@@ -23,7 +24,7 @@ public class FoodCardController extends AbstractBaseController
     @FXML private Button seeCommentsButton;
 
     private ListItemResponse food;
-    private Consumer<Integer> onAddToCart;
+    private BiConsumer<Long, Integer> onAddToCart;
     private Consumer<Integer> onSeeComments;
 
     @Override
@@ -32,7 +33,7 @@ public class FoodCardController extends AbstractBaseController
         super.initialize(url, resourceBundle);
     }
 
-    public void setFoodData(ListItemResponse food, Consumer<Integer> onAddToCart, Consumer<Integer> onSeeComments)
+    public void setFoodData(ListItemResponse food, BiConsumer<Long, Integer> onAddToCart, Consumer<Integer> onSeeComments)
     {
         this.food = food;
         this.onAddToCart = onAddToCart;
@@ -63,7 +64,7 @@ public class FoodCardController extends AbstractBaseController
     private void handleAddToCart(ActionEvent event)
     {
         if (food != null && onAddToCart != null)
-            onAddToCart.accept(food.getId());
+            onAddToCart.accept(food.getId().longValue(), 1);
     }
 
     @FXML
