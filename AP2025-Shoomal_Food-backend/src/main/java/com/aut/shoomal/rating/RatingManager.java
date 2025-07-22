@@ -118,4 +118,10 @@ public class RatingManager
     {
         return ratingDao.findById(Long.valueOf(ratingId));
     }
+
+    public boolean checkConflict(Session session, Long userId, Long foodId, Integer orderId)
+    {
+        List<Rating> ratings = ratingDao.checkConflict(session, userId, foodId, orderId);
+        return ratings != null && !ratings.isEmpty();
+    }
 }

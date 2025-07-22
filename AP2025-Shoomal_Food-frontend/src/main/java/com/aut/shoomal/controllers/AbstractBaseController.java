@@ -429,6 +429,16 @@ public abstract class AbstractBaseController implements Initializable {
         }
     }
 
+    protected void handleSeeComments(Integer foodId)
+    {
+
+    }
+
+    protected void handleAddToCart(Integer foodId)
+    {
+
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
     }
