@@ -103,7 +103,7 @@
 
 .sidebar .button {
     -fx-background-color: transparent;
-    -fx-text-fill: #ecf0f1;
+    -fx-text-fill: #ffffff;
     -fx-font-family: "Vazirmatn";
     -fx-font-size: 16px;
     -fx-padding: 15px 25px;
@@ -243,29 +243,46 @@
     -fx-text-fill: #ecf0f1;
     -fx-font-family: "Vazirmatn";
     -fx-font-size: 16px;
-    -fx-padding: 15px 25px;
-    -fx-alignment: CENTER_RIGHT;
+    -fx-padding: 0px;
     -fx-max-width: infinity;
     -fx-border-color: transparent;
     -fx-focus-color: transparent;
 }
 
 .sidebar-hyperlink:hover {
-    -fx-background-color: #1abc9c;
+    -fx-background-color: transparent;
     -fx-underline: false;
+    -fx-text-fill: #afafaf;
 }
 
 .sidebar-hyperlink:focused {
-    -fx-text-fill: white;
+    -fx-text-fill: #afafaf;
     -fx-underline: false;
     -fx-background-radius: 5px;
-    -fx-padding: 15px 25px;
-    -fx-alignment: CENTER_RIGHT;
+    -fx-padding: 0px;
     -fx-border-color: transparent;
     -fx-focus-color: transparent;
 }
 
-/* General styling for the MenuBar */
+.sidebar-hyperlink1 {
+    -fx-background-color: transparent;
+    -fx-text-fill: #ecf0f1;
+    -fx-font-family: "Vazirmatn";
+    -fx-font-size: 16px;
+    -fx-padding: 15px 25px;
+    -fx-alignment: center-right;
+    -fx-max-width: infinity;
+}
+
+.sidebar-hyperlink1:hover {
+    -fx-background-color: #1abc9c;
+    -fx-underline: false;
+}
+
+.sidebar-hyperlink1:focused {
+    -fx-border-color: transparent;
+}
+
 .seller-menu-bar {
     -fx-background-color: #4CAF50;
     -fx-font-family: "Vazirmatn";

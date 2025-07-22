@@ -17,6 +17,8 @@ import com.aut.shoomal.payment.wallet.WalletManager;
 import com.aut.shoomal.rating.RatingManager;
 import com.aut.shoomal.util.HibernateUtil;
 import com.sun.net.httpserver.HttpServer;
+import com.aut.shoomal.entity.cart.CartManager;
+
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -44,6 +46,7 @@ public class Server
         RatingDao ratingDao = new RatingDaoImpl();
         TransactionDao transactionDao = new TransactionDaoImpl();
         WalletDao walletDao = new WalletDaoImpl();
+        CartDao cartDao = new CartDaoImpl();
 
         UserManager userManager = new UserManager(userDao);
         RoleManager roleManager = new RoleManager(roleDao);
@@ -58,9 +61,11 @@ public class Server
         RatingManager ratingManager = new RatingManager(ratingDao, orderManager, userManager);
         PaymentTransactionManager paymentTransactionManager = new PaymentTransactionManager(transactionDao, orderManager);
         WalletManager walletManager = new WalletManager(walletDao, paymentTransactionManager, orderManager);
+        CartManager cartManager = new CartManager(cartDao, foodDao, userDao, restaurantDao);
+
 
         BuyerBrowseHandler buyerBrowseHandler = new BuyerBrowseHandler(userManager, restaurantManager,couponManager, foodManager, blacklistedTokenDao, orderManager);
-        BuyerOrderHandler buyerOrderHandler = new BuyerOrderHandler(userManager, orderManager, walletManager, paymentTransactionManager, blacklistedTokenDao);
+        BuyerOrderHandler buyerOrderHandler = new BuyerOrderHandler(userManager, orderManager, walletManager, paymentTransactionManager, blacklistedTokenDao, cartManager);
         BuyerFavoriteHandler buyerFavoriteHandler = new BuyerFavoriteHandler(userManager, blacklistedTokenDao, restaurantManager);
         BuyerRatingHandler buyerRatingHandler = new BuyerRatingHandler(userManager, ratingManager, blacklistedTokenDao);
         AdminHandler adminHandler = new AdminHandler(userManager, restaurantManager, blacklistedTokenDao, orderManager, paymentTransactionManager);
@@ -97,6 +102,11 @@ public class Server
             finalServer.createContext("/wallet/top-up", buyerOrderHandler);
             finalServer.createContext("/wallet/amount", buyerOrderHandler);
             finalServer.createContext("/payment/online", buyerOrderHandler);
+
+            finalServer.createContext("/cart/add", buyerOrderHandler);
+            finalServer.createContext("/cart/remove", buyerOrderHandler);
+            finalServer.createContext("/cart", buyerOrderHandler);
+            finalServer.createContext("/cart/clear", buyerOrderHandler);
 
             finalServer.createContext("/favorites", buyerFavoriteHandler);
 

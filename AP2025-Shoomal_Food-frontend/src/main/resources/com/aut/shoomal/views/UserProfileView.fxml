@@ -29,10 +29,10 @@
             <padding>
                 <Insets bottom="20" left="10" right="20" top="20" />
             </padding>
-            <Hyperlink fx:id="updateProfileLink" styleClass="sidebar-hyperlink" text="بروزرسانی پروفایل" />
-            <Hyperlink fx:id="transactionHistoryLink" onAction="#handleTransactionHistory" styleClass="sidebar-hyperlink" text="سابقه تراکنش" />
-            <Hyperlink fx:id="walletLink" onAction="#handleWallet" styleClass="sidebar-hyperlink" text="کیف پول" />
-            <Hyperlink fx:id="orderHistoryLink" onAction="#handleOrderHistory" styleClass="sidebar-hyperlink" text="سابقه سفارشات" />
+            <Hyperlink fx:id="updateProfileLink" styleClass="sidebar-hyperlink1" text="بروزرسانی پروفایل" />
+            <Hyperlink fx:id="transactionHistoryLink" onAction="#handleTransactionHistory" styleClass="sidebar-hyperlink1" text="سابقه تراکنش" />
+            <Hyperlink fx:id="walletLink" onAction="#handleWallet" styleClass="sidebar-hyperlink1" text="کیف پول" />
+            <Hyperlink fx:id="orderHistoryLink" onAction="#handleOrderHistory" styleClass="sidebar-hyperlink1" text="سابقه سفارشات" />
             <Region VBox.vgrow="ALWAYS" />
             <Button onAction="#handleBackToMain" styleClass="my-button2" text="برگشت به منو" />
         </VBox>
