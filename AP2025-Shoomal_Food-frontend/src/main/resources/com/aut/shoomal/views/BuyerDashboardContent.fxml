@@ -12,32 +12,33 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <StackPane alignment="TOP_CENTER" prefHeight="552.0" prefWidth="800.0" styleClass="content-area" stylesheets="@/com/aut/shoomal/styles/BuyerDashboardStyles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.aut.shoomal.controllers.BuyerDashboardContentController">
     <children>
         <VBox alignment="TOP_CENTER" spacing="20">
             <HBox alignment="CENTER_RIGHT" prefHeight="89.0" prefWidth="800.0" styleClass="search-bar-container">
-   
-               <Hyperlink fx:id="viewActiveOrdersLink" onAction="#handleViewActiveOrders" styleClass="sidebar-hyperlink">
-                   <graphic>
-                       <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                               <Image url="@../images/order.png" />
-                           </image>
-                       </ImageView>
-                   </graphic>
-               <HBox.margin>
-                  <Insets left="20.0" />
-               </HBox.margin>
-               <tooltip>
-                  <Tooltip text="پیگیری سفارشات" />
-               </tooltip>
-               </Hyperlink>
+                <Hyperlink fx:id="viewActiveOrdersLink" onAction="#handleViewActiveOrders" styleClass="sidebar-hyperlink">
+                    <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../images/order.png" />
+                            </image>
+                        </ImageView>
+                    </graphic>
+                    <HBox.margin>
+                        <Insets left="20.0" />
+                    </HBox.margin>
+                    <tooltip>
+                        <Tooltip text="پیگیری سفارشات" />
+                    </tooltip>
+                </Hyperlink>
                 <TextField fx:id="searchBar" nodeOrientation="RIGHT_TO_LEFT" promptText="جستجو..." styleClass="my-text-field" HBox.hgrow="ALWAYS">
                     <HBox.margin>
                         <Insets left="250.0" />
@@ -57,44 +58,69 @@
                     </HBox.margin>
                 </ImageView>
             </HBox>
-
-            <HBox alignment="CENTER" HBox.hgrow="ALWAYS">
-                <ScrollPane fx:id="searchResultsScrollPane" fitToWidth="true" managed="false" nodeOrientation="RIGHT_TO_LEFT" styleClass="search-results-scroll-pane" visible="false">
-                    <VBox fx:id="searchResultsContainer" alignment="TOP_CENTER" spacing="15" styleClass="dashboard-card">
-                        <GridPane>
-                            <columnConstraints>
-                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="350.0" />
-                            </columnConstraints>
-                            <rowConstraints>
-                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                            </rowConstraints>
-                            <children>
-                                <Label fx:id="restaurantsHeader" styleClass="card-title" text="رستوران‌های محبوب" GridPane.halignment="CENTER" />
-                            </children>
-                        </GridPane>
-                        <VBox fx:id="popularRestaurantsVBox" spacing="8" />
-                        <Hyperlink fx:id="viewAllRestaurantsLink" styleClass="sidebar-hyperlink" text="مشاهده همه رستوران‌ها" />
-                        <Separator prefWidth="200.0" />
-                        <GridPane>
-                            <columnConstraints>
-                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                            </columnConstraints>
-                            <rowConstraints>
-                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                            </rowConstraints>
-                            <children>
-                                <Label fx:id="foodsHeader" styleClass="card-title" text="غذاهای محبوب" GridPane.halignment="CENTER" />
-                            </children>
-                        </GridPane>
-                        <VBox fx:id="popularFoodsVBox" spacing="8" />
-                        <Hyperlink fx:id="viewAllFoodsLink" styleClass="sidebar-hyperlink" text="مشاهده همه غذاها" />
-                    </VBox>
-                </ScrollPane>
+            <Label styleClass="section-title" text="رستوران‌های مورد علاقه">
+                <font>
+                    <Font size="22.0" />
+                </font>
                 <VBox.margin>
-                    <Insets top="-60.0" />
+                    <Insets bottom="10.0" />
                 </VBox.margin>
-            </HBox>
+            </Label>
+            <FlowPane fx:id="buyerFavoriteRestaurantsFlowPane" alignment="TOP_LEFT" hgap="25" vgap="25">
+                <padding>
+                    <Insets bottom="10" left="10" right="10" top="10" />
+                </padding>
+            </FlowPane>
+            <VBox prefHeight="20" />
+            <Label styleClass="section-title" text="سایر رستوران‌ها">
+                <font>
+                    <Font size="22.0" />
+                </font>
+                <VBox.margin>
+                    <Insets bottom="10" top="10" />
+                </VBox.margin>
+            </Label>
+            <FlowPane fx:id="buyerOtherRestaurantsFlowPane" alignment="TOP_LEFT" hgap="25" vgap="25">
+                <padding>
+                    <Insets bottom="10" left="10" right="10" top="10" />
+                </padding>
+            </FlowPane>
         </VBox>
+
+        <ScrollPane fx:id="searchResultsScrollPane" fitToWidth="true" managed="false" maxHeight="400.0" maxWidth="400.0" nodeOrientation="RIGHT_TO_LEFT" styleClass="search-results-scroll-pane" visible="false" StackPane.alignment="TOP_CENTER">
+            <VBox fx:id="searchResultsContainer" alignment="TOP_CENTER" spacing="15" styleClass="dashboard-card">
+                <GridPane>
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="350.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                    <children>
+                        <Label fx:id="restaurantsHeader" styleClass="card-title" text="رستوران‌های محبوب" GridPane.halignment="CENTER" />
+                    </children>
+                </GridPane>
+                <VBox fx:id="popularRestaurantsVBox" spacing="8" />
+                <Hyperlink fx:id="viewAllRestaurantsLink" styleClass="sidebar-hyperlink" text="مشاهده همه رستوران‌ها" />
+                <Separator prefWidth="200.0" />
+                <GridPane>
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                    <children>
+                        <Label fx:id="foodsHeader" styleClass="card-title" text="غذاهای محبوب" GridPane.halignment="CENTER" />
+                    </children>
+                </GridPane>
+                <VBox fx:id="popularFoodsVBox" spacing="8" />
+                <Hyperlink fx:id="viewAllFoodsLink" styleClass="sidebar-hyperlink" text="مشاهده همه غذاها" />
+            </VBox>
+         <StackPane.margin>
+            <Insets top="85.0" />
+         </StackPane.margin>
+        </ScrollPane>
 
         <AnchorPane fx:id="activeOrdersPanel" managed="false" maxWidth="400.0" prefWidth="400.0" styleClass="active-orders-panel" translateX="-400" visible="false">
         </AnchorPane>
