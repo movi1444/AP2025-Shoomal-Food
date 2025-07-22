@@ -133,7 +133,16 @@ public class BuyerShowRestaurantDetailsController extends AbstractBaseController
     @FXML
     public void handleSeeAllMenus(ActionEvent event)
     {
-
+        navigateTo(
+                (Node) event.getSource(),
+                "/com/aut/shoomal/views/BuyerRestaurantMenuView.fxml",
+                "/com/aut/shoomal/styles/MainView.css",
+                TransitionType.SLIDE_LEFT,
+                controller -> {
+                    if (controller instanceof BuyerShowListMenuController menuController)
+                        menuController.setRestaurantId(restaurantId);
+                }
+        );
     }
 
     private void handleError()

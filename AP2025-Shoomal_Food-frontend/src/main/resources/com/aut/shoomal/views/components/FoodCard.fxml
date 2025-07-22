@@ -28,6 +28,12 @@
         </font>
     </Label>
 
+    <Label fx:id="supplyLabel" text="تعداد">
+        <font>
+            <Font size="14.0" />
+        </font>
+    </Label>
+
     <HBox alignment="CENTER" spacing="10" VBox.vgrow="ALWAYS">
         <Button fx:id="addToCartButton" onAction="#handleAddToCart" text="افزودن به سبد" styleClass="primary-button"/>
         <Button fx:id="seeCommentsButton" onAction="#handleSeeComments" text="مشاهده نظرات" styleClass="secondary-button"/>

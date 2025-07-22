@@ -3,7 +3,6 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
@@ -12,23 +11,17 @@
 
 <AnchorPane prefHeight="700.0" prefWidth="900.0" stylesheets="@/com/aut/shoomal/styles/MainView.css"
             xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.aut.shoomal.controllers.BuyerShowRestaurantDetailsController">
+            fx:controller="com.aut.shoomal.controllers.BuyerShowMenuFoodsController">
     <VBox alignment="TOP_CENTER" spacing="20.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
         <padding>
             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
         </padding>
 
         <HBox alignment="CENTER" spacing="20">
-            <ImageView fx:id="restaurantLogoView" fitWidth="100" fitHeight="100" preserveRatio="true" styleClass="restaurant-logo"/>
             <VBox alignment="CENTER_LEFT" spacing="5">
-                <Label fx:id="restaurantNameLabel" text="نام رستوران" styleClass="header-label">
+                <Label fx:id="menuTitleLabel" text="عنوان منو" styleClass="header-label">
                     <font>
                         <Font size="28.0" />
-                    </font>
-                </Label>
-                <Label style="-fx-text-fill: white; -fx-font-size: 16px;" fx:id="restaurantAddressLabel" text="آدرس رستوران" styleClass="sub-header-label">
-                    <font>
-                        <Font size="16.0" />
                     </font>
                 </Label>
             </VBox>
@@ -36,7 +29,6 @@
 
         <HBox alignment="CENTER" spacing="20.0">
             <Button fx:id="backButton" onAction="#handleBack" text="بازگشت" styleClass="logout-button" />
-            <Button fx:id="seeMenusButton" onAction="#handleSeeAllMenus" text="مشاهده منو ها" styleClass="primary-button" />
         </HBox>
 
         <Label style="-fx-text-fill: white; -fx-font-size: 22px;" text="غذاهای موجود" styleClass="section-title">

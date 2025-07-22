@@ -203,7 +203,7 @@ public class ShowListMenuController extends AbstractBaseController
                         if (e.getCause() instanceof FrontendServiceException fsException)
                             showAlert(fsException);
                         else
-                            showAlert("خطا", "خطای غیرمنتظره در حذف غذا: " + e.getMessage(), Alert.AlertType.ERROR, null);
+                            showAlert("خطا", "خطای غیرمنتظره در نمایش منو ها: " + e.getMessage(), Alert.AlertType.ERROR, null);
                     });
                     return null;
                 });
