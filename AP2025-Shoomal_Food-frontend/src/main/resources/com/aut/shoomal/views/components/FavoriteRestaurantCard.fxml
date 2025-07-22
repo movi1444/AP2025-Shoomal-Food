@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="TOP_CENTER" spacing="5" prefWidth="300" styleClass="favorite-restaurant-card" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+<VBox alignment="TOP_CENTER" spacing="5" styleClass="favorite-restaurant-card" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.aut.shoomal.controllers.FavoriteRestaurantCardController">
     <padding>
         <Insets bottom="10" left="10" right="10" top="10"/>

@@ -15,8 +15,7 @@ import java.util.function.Consumer;
 
 public class FoodCardController extends AbstractBaseController
 {
-    @FXML
-    private ImageView foodImageView;
+    @FXML private ImageView foodImageView = new ImageView();
     @FXML private Label nameLabel;
     @FXML private Label priceLabel;
     @FXML private Label supplyLabel;

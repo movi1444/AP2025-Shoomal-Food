@@ -22,7 +22,7 @@ public class RestaurantHandler extends AbstractHttpHandler {
     private final RestaurantOrderHandler restaurantOrderHandler;
 
     private static final Pattern RESTAURANT_CORE_PATH_PATTERN = Pattern.compile("/restaurants(?:/\\d+)?/?$|/restaurants/mine/?$");
-    private static final Pattern FOOD_ITEM_PATH_PATTERN = Pattern.compile("/restaurants/\\d+/item(?:/\\d+)?/?$");
+    private static final Pattern FOOD_ITEM_PATH_PATTERN = Pattern.compile("/restaurants/(\\d+)/item");
     private static final Pattern MENU_PATH_PATTERN = Pattern.compile("/restaurants/\\d+/menu(?:/[^/]+(?:/\\d+)?)?/?$");
     private static final Pattern RESTAURANT_ORDERS_PATH_PATTERN = Pattern.compile("/restaurants/(\\d+)/orders/?$|/restaurants/orders/(\\d+)$");
     private static final Pattern GET_FOODS_PATH_PATTERN = Pattern.compile("/restaurants/(\\d+)/items");

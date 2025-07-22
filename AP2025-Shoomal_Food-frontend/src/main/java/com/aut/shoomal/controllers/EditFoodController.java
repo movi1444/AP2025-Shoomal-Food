@@ -61,7 +61,7 @@ public class EditFoodController extends AbstractFoodDetailsController
             return;
         }
 
-        restaurantService.getFoodById(token, restaurantId, foodId)
+        restaurantService.getFoodById(token, foodId)
                 .thenAccept(food -> Platform.runLater(() -> {
                     if (food != null)
                     {
@@ -96,7 +96,7 @@ public class EditFoodController extends AbstractFoodDetailsController
         updateRequest.setKeywords(request.getKeywords());
         updateRequest.setImageBase64(request.getImageBase64());
 
-        return restaurantService.editFood(updateRequest, token, foodId, restaurantId);
+        return restaurantService.editFood(updateRequest, token, foodId);
     }
 
     private String convertToTextField(List<String> keywords)

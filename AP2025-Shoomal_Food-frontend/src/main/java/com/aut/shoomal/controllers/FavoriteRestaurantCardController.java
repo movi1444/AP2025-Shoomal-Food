@@ -16,7 +16,7 @@ import java.util.function.Consumer;
 public class FavoriteRestaurantCardController extends AbstractBaseController
 {
     @FXML private Button logoButton;
-    @FXML private ImageView restaurantLogoView;
+    @FXML private ImageView restaurantLogoView = new ImageView();
     @FXML private Label nameLabel;
     @FXML private Label addressLabel;
     @FXML private Label phoneLabel;

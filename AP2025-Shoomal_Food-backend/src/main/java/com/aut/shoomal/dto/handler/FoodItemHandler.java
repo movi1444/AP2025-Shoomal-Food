@@ -32,7 +32,7 @@ public class FoodItemHandler extends AbstractHttpHandler {
     protected final UserManager userManager;
     protected final BlacklistedTokenDao blacklistedTokenDao;
 
-    private static final Pattern FOOD_ITEM_ID_PATH_PATTERN = Pattern.compile("/restaurants/\\d+/item/(\\d+).*");
+    private static final Pattern FOOD_ITEM_ID_PATH_PATTERN = Pattern.compile("/restaurants/(\\d+)/item.*");
     private static final Pattern RESTAURANT_ID_FROM_ITEM_PATH_PATTERN = Pattern.compile("/restaurants/(\\d+)/item.*");
     private static final Pattern GET_FOODS_TITLE_PATH_PATTERN = Pattern.compile("/restaurants/(\\d+)/items/([^/]+)$");
 
@@ -65,13 +65,13 @@ public class FoodItemHandler extends AbstractHttpHandler {
 
             if (requestPath.equals("/restaurants/" + restaurantId + "/item") && method.equalsIgnoreCase("POST") && restaurantId != -1) {
                 handleAddFoodItem(exchange, authenticatedUser, restaurantId);
-            } else if (requestPath.equals("/restaurants/" + restaurantId + "/item/" + foodItemId) && foodItemId != -1 && restaurantId != -1) {
+            } if (requestPath.equals("/restaurants/" + foodItemId + "/item") && foodItemId != -1) {
                 if (method.equalsIgnoreCase("PUT")) {
                     handleUpdateFoodItem(exchange, authenticatedUser, restaurantId, foodItemId);
                 } else if (method.equalsIgnoreCase("DELETE")) {
                     handleDeleteFoodItem(exchange, authenticatedUser, restaurantId, foodItemId);
                 } else if (method.equalsIgnoreCase("GET")) {
-                    getFoodByIdAndRestaurantId(exchange, (long) restaurantId, (long) foodItemId);
+                    getFoodByIdAndRestaurantId(exchange, (long) foodItemId);
                 } else {
                     sendResponse(exchange, HttpURLConnection.HTTP_BAD_METHOD, new ApiResponse(false, "Method Not Allowed. Expected PUT or DELETE"));
                 }
@@ -121,10 +121,10 @@ public class FoodItemHandler extends AbstractHttpHandler {
         sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, responses);
     }
 
-    private void getFoodByIdAndRestaurantId(HttpExchange exchange, Long restaurantId, Long foodItemId) throws IOException
+    private void getFoodByIdAndRestaurantId(HttpExchange exchange, Long foodItemId) throws IOException
     {
         Session session = HibernateUtil.getSessionFactory().openSession();
-        Food food = foodManager.getByIdAndRestaurantId(session, foodItemId, restaurantId);
+        Food food = session.get(Food.class, foodItemId);
         if (food == null)
         {
             session.close();

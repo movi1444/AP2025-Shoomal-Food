@@ -18,6 +18,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.util.Duration;
@@ -433,7 +434,30 @@ public abstract class AbstractBaseController implements Initializable {
 
     protected void handleSeeComments(Integer foodId)
     {
+        if (foodId == null) {
+            showAlert("Error", "Food ID is missing for comments.", Alert.AlertType.ERROR, null);
+            return;
+        }
 
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/aut/shoomal/views/FoodCommentsView.fxml"));
+            Parent root = loader.load();
+
+            FoodCommentsController foodCommentsController = loader.getController();
+            if (foodCommentsController != null)
+                foodCommentsController.setFoodId(foodId);
+
+            Stage commentsStage = new Stage();
+            commentsStage.initModality(Modality.APPLICATION_MODAL);
+            commentsStage.setTitle("نظرات غذا");
+            commentsStage.setScene(new Scene(root));
+            commentsStage.setResizable(true);
+            commentsStage.showAndWait();
+        } catch (IOException e) {
+            System.err.println("Failed to load FoodCommentsView.fxml: " + e.getMessage());
+            e.printStackTrace();
+            showAlert("Navigation Error", "Failed to load food comments page.", Alert.AlertType.ERROR, null);
+        }
     }
 
     protected void handleAddToCart(Integer foodId)

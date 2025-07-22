@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="TOP_RIGHT" spacing="5" prefWidth="500" prefHeight="300" styleClass="comment-card"
+      xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.aut.shoomal.controllers.CommentCardController">
+    <padding>
+        <Insets bottom="10" left="15" right="15" top="10"/>
+    </padding>
+
+        <Label fx:id="userIdLabel" text="شناسه کاربر" styleClass="user-info-label">
+            <font>
+                <Font size="14.0" />
+            </font>
+        </Label>
+
+        <HBox alignment="TOP_RIGHT" spacing="7">
+        <Label fx:id="ratingNumberLabel" text="5" styleClass="rating-number-label">
+            <font>
+                <Font size="16.0" />
+            </font>
+        </Label>
+        <Label text="امتیاز:"/>
+        </HBox>
+
+    <Label fx:id="commentTextLabel" text="نظر کاربر" wrapText="true" styleClass="comment-text">
+        <font>
+            <Font size="14.0" />
+        </font>
+    </Label>
+
+    <FlowPane fx:id="commentImagesFlowPane" hgap="5" vgap="5" alignment="TOP_RIGHT">
+        <padding>
+            <Insets top="5"/>
+        </padding>
+    </FlowPane>
+</VBox>
