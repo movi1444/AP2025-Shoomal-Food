@@ -4,6 +4,7 @@ import com.aut.shoomal.dto.response.ListItemResponse;
 import com.aut.shoomal.dto.response.RestaurantResponse;
 import com.aut.shoomal.dto.response.UserResponse;
 import com.aut.shoomal.exceptions.FrontendServiceException;
+import com.aut.shoomal.service.BuyerFavoriteService;
 import com.aut.shoomal.service.BuyerService;
 import com.aut.shoomal.utils.PreferencesManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,15 +26,19 @@ import javafx.scene.layout.VBox;
 import javafx.scene.control.ScrollPane;
 import javafx.geometry.Pos;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.FlowPane;
 import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class BuyerDashboardContentController extends AbstractBaseController {
 
@@ -51,17 +56,24 @@ public class BuyerDashboardContentController extends AbstractBaseController {
     @FXML private Hyperlink viewActiveOrdersLink;
     @FXML private AnchorPane activeOrdersPanel;
 
+    @FXML private FlowPane buyerFavoriteRestaurantsFlowPane;
+    @FXML private FlowPane buyerOtherRestaurantsFlowPane;
+
     private BuyerService buyerService;
+    private BuyerFavoriteService buyerFavoriteService;
     private String token;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private UserResponse loggedInUser;
 
     private BuyerActiveOrdersController activeOrdersController;
 
+    private Consumer<Integer> navigateToRestaurantDetailsCallback;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         super.initialize(url, resourceBundle);
         buyerService = new BuyerService();
+        buyerFavoriteService = new BuyerFavoriteService();
         token = PreferencesManager.getJwtToken();
 
         if (searchButton != null) {
@@ -99,10 +111,93 @@ public class BuyerDashboardContentController extends AbstractBaseController {
             activeOrdersPanel.setVisible(false);
             activeOrdersPanel.setManaged(false);
         }
+
+        if (buyerFavoriteRestaurantsFlowPane != null) {
+            buyerFavoriteRestaurantsFlowPane.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+        }
+        if (buyerOtherRestaurantsFlowPane != null) {
+            buyerOtherRestaurantsFlowPane.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+        }
     }
 
     public void setLoggedInUser(UserResponse user) {
         this.loggedInUser = user;
+    }
+
+    public void setNavigateToRestaurantDetailsCallback(Consumer<Integer> callback) {
+        this.navigateToRestaurantDetailsCallback = callback;
+    }
+
+    public void loadBuyerDashboardContent() {
+        if (token == null || token.isEmpty()) {
+            showAlert("Authentication Error", "User not logged in. Please log in first.", Alert.AlertType.ERROR, null);
+            return;
+        }
+
+        if (buyerFavoriteRestaurantsFlowPane == null || buyerOtherRestaurantsFlowPane == null) {
+            System.err.println("FlowPanes are not initialized. Check FXML for BuyerDashboardContentController.");
+            return;
+        }
+
+        buyerFavoriteRestaurantsFlowPane.getChildren().clear();
+        buyerOtherRestaurantsFlowPane.getChildren().clear();
+        buyerFavoriteService.getFavoriteRestaurants(token)
+                .thenCombine(buyerFavoriteService.getAllRestaurants(token), (favorites, allRestaurants) -> {
+                    Platform.runLater(() -> {
+                        if (favorites != null && !favorites.isEmpty()) {
+                            for (RestaurantResponse restaurant : favorites) {
+                                addRestaurantCard(restaurant, buyerFavoriteRestaurantsFlowPane);
+                            }
+                        } else {
+                            buyerFavoriteRestaurantsFlowPane.getChildren().add(new Label("شما رستوران مورد علاقه‌ای ندارید."));
+                        }
+
+                        if (allRestaurants != null && !allRestaurants.isEmpty()) {
+                            Set<Integer> favoriteIds = (favorites != null)
+                                    ? favorites.stream().map(RestaurantResponse::getId).collect(Collectors.toSet())
+                                    : new HashSet<>();
+
+                            List<RestaurantResponse> otherRestaurants = allRestaurants.stream()
+                                    .filter(r -> !favoriteIds.contains(r.getId()))
+                                    .toList();
+                            if (!otherRestaurants.isEmpty()) {
+                                for (RestaurantResponse restaurant : otherRestaurants) {
+                                    addRestaurantCard(restaurant, buyerOtherRestaurantsFlowPane);
+                                }
+                            } else {
+                                buyerOtherRestaurantsFlowPane.getChildren().add(new Label("سایر رستوران‌ها در دسترس نیستند."));
+                            }
+                        } else {
+                            buyerOtherRestaurantsFlowPane.getChildren().add(new Label("هیچ رستورانی در دسترس نیست."));
+                        }
+                    });
+                    return null;
+                })
+                .exceptionally(e -> {
+                    Platform.runLater(() -> {
+                        if (e.getCause() instanceof FrontendServiceException fsException) {
+                            showAlert(fsException);
+                        } else {
+                            showAlert("Unexpected Error", "An unexpected error occurred while loading favorite restaurants: " + e.getMessage(), Alert.AlertType.ERROR, null);
+                        }
+                    });
+                    return null;
+                });
+    }
+
+    private void addRestaurantCard(RestaurantResponse restaurant, FlowPane targetFlowPane) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/aut/shoomal/views/components/FavoriteRestaurantCard.fxml"));
+            VBox card = loader.load();
+            FavoriteRestaurantCardController cardController = loader.getController();
+
+            cardController.setRestaurantData(restaurant, navigateToRestaurantDetailsCallback);
+            targetFlowPane.getChildren().add(card);
+        } catch (IOException e) {
+            System.err.println("Failed to load restaurant card: " + e.getMessage());
+            e.printStackTrace();
+            showAlert("Load Error", "Could not load a restaurant card.", Alert.AlertType.ERROR, null);
+        }
     }
 
     private void handleSearch() {
@@ -231,7 +326,6 @@ public class BuyerDashboardContentController extends AbstractBaseController {
         searchResultsScrollPane.setManaged(true);
     }
 
-
     private void clearSearchResults() {
         if (searchResultsScrollPane != null) {
             searchResultsScrollPane.setVisible(false);
@@ -272,7 +366,11 @@ public class BuyerDashboardContentController extends AbstractBaseController {
 
         hbox.setOnMouseClicked(event -> {
             System.out.println("Restaurant clicked: " + restaurant.getName() + " (ID: " + restaurant.getId() + ")");
-            showAlert("رستوران", "صفحه جزئیات رستوران " + restaurant.getName() + " هنوز پیاده‌سازی نشده است.", Alert.AlertType.INFORMATION, null);
+            if (navigateToRestaurantDetailsCallback != null) {
+                navigateToRestaurantDetailsCallback.accept(restaurant.getId());
+            } else {
+                showAlert("Navigation Error", "Navigation callback not set.", Alert.AlertType.ERROR, null);
+            }
         });
 
         return hbox;

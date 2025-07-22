@@ -19,6 +19,7 @@
 
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.text.Font?>
+
 <BorderPane prefHeight="729.0" prefWidth="693.0" stylesheets="@/com/aut/shoomal/styles/MainView.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.aut.shoomal.controllers.MainController">
 
     <center>
@@ -118,45 +119,9 @@
                     <Insets />
                 </StackPane.margin>
             </ScrollPane>
-
             <ScrollPane fx:id="adminDashboardScrollPane" fitToWidth="true" styleClass="dashboard-scroll-pane">
             </ScrollPane>
-            <ScrollPane fx:id="buyerDashboardScrollPane" fitToWidth="true" fitToHeight="true" styleClass="dashboard-scroll-pane"> <!-- Added fitToHeight="true" -->
-                <VBox alignment="TOP_CENTER" spacing="30.0">
-                    <padding>
-                        <Insets bottom="20" left="20" right="20" top="20"/>
-                    </padding>
-
-                    <Label text="رستوران‌های مورد علاقه" styleClass="section-title">
-                        <font>
-                            <Font size="22.0" />
-                        </font>
-                        <VBox.margin>
-                            <Insets top="10" bottom="10" />
-                        </VBox.margin>
-                    </Label>
-                    <FlowPane fx:id="buyerFavoriteRestaurantsFlowPane" hgap="25" vgap="25" alignment="TOP_LEFT">
-                        <padding>
-                            <Insets bottom="10" left="10" right="10" top="10"/>
-                        </padding>
-                    </FlowPane>
-
-                    <VBox prefHeight="20" />
-                    <Label text="سایر رستوران‌ها" styleClass="section-title">
-                        <font>
-                            <Font size="22.0" />
-                        </font>
-                        <VBox.margin>
-                            <Insets top="10" bottom="10" />
-                        </VBox.margin>
-                    </Label>
-                    <FlowPane fx:id="buyerOtherRestaurantsFlowPane" hgap="25" vgap="25" alignment="TOP_LEFT">
-                        <padding>
-                            <Insets bottom="10" left="10" right="10" top="10"/>
-                        </padding>
-                    </FlowPane>
-
-                </VBox>
+            <ScrollPane fx:id="buyerDashboardScrollPane" fitToWidth="true" fitToHeight="true" styleClass="dashboard-scroll-pane">
             </ScrollPane>
         </StackPane>
     </center>
