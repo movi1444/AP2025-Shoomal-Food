@@ -1,5 +1,4 @@
 package com.aut.shoomal.dao.impl;
-import com.aut.shoomal.entity.restaurant.Restaurant;
 import com.aut.shoomal.entity.user.Courier;
 import com.aut.shoomal.entity.user.Seller;
 import com.aut.shoomal.entity.user.User;

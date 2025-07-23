@@ -8,6 +8,7 @@ import com.aut.shoomal.entity.restaurant.RestaurantManager;
 import com.aut.shoomal.dao.BlacklistedTokenDao;
 import com.aut.shoomal.dto.response.ApiResponse;
 import com.aut.shoomal.payment.order.OrderManager;
+import com.aut.shoomal.payment.transaction.PaymentTransactionManager;
 import com.sun.net.httpserver.HttpExchange;
 
 import java.io.IOException;
@@ -20,6 +21,7 @@ public class RestaurantHandler extends AbstractHttpHandler {
     private final FoodItemHandler foodItemHandler;
     private final MenuHandler menuHandler;
     private final RestaurantOrderHandler restaurantOrderHandler;
+    private PaymentTransactionManager paymentTransactionManager;
 
     private static final Pattern RESTAURANT_CORE_PATH_PATTERN = Pattern.compile("/restaurants(?:/\\d+)?/?$|/restaurants/mine/?$");
     private static final Pattern FOOD_ITEM_PATH_PATTERN = Pattern.compile("/restaurants/(\\d+)/item");
@@ -32,11 +34,12 @@ public class RestaurantHandler extends AbstractHttpHandler {
 
 
     public RestaurantHandler(RestaurantManager restaurantManager, FoodManager foodManager, MenuManager menuManager,
-                             UserManager userManager, BlacklistedTokenDao blacklistedTokenDao, OrderManager orderManager) {
+                             UserManager userManager, BlacklistedTokenDao blacklistedTokenDao,
+                             OrderManager orderManager, PaymentTransactionManager paymentTransactionManager) {
         this.restaurantCoreHandler = new RestaurantCoreHandler(restaurantManager, userManager, blacklistedTokenDao);
         this.foodItemHandler = new FoodItemHandler(restaurantManager, foodManager, userManager, blacklistedTokenDao);
         this.menuHandler = new MenuHandler(restaurantManager, menuManager, foodManager, userManager, blacklistedTokenDao);
-        this.restaurantOrderHandler = new RestaurantOrderHandler(restaurantManager, orderManager, userManager, blacklistedTokenDao);
+        this.restaurantOrderHandler = new RestaurantOrderHandler(restaurantManager, orderManager, userManager, blacklistedTokenDao, paymentTransactionManager);
     }
 
     @Override

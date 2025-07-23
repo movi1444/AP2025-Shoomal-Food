@@ -15,7 +15,14 @@ import com.aut.shoomal.exceptions.NotFoundException;
 import com.aut.shoomal.payment.order.Order;
 import com.aut.shoomal.payment.order.OrderManager;
 import com.aut.shoomal.payment.order.OrderStatus;
+import com.aut.shoomal.payment.transaction.PaymentTransaction;
+import com.aut.shoomal.payment.transaction.PaymentTransactionManager;
+import com.aut.shoomal.payment.transaction.PaymentTransactionStatus;
+import com.aut.shoomal.payment.wallet.Wallet;
+import com.aut.shoomal.util.HibernateUtil;
 import com.sun.net.httpserver.HttpExchange;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -30,17 +37,19 @@ public class RestaurantOrderHandler extends AbstractHttpHandler {
     private final RestaurantManager restaurantManager;
     private final OrderManager orderManager;
     protected final UserManager userManager;
+    private final PaymentTransactionManager paymentTransactionManager;
     protected final BlacklistedTokenDao blacklistedTokenDao;
 
     private static final Pattern RESTAURANT_ID_ORDERS_PATH = Pattern.compile("/restaurants/(\\d+)/orders/?$");
     private static final Pattern RESTAURANT_ORDER_ID_PATH = Pattern.compile("/restaurants/orders/(\\d+)$");
 
     public RestaurantOrderHandler(RestaurantManager restaurantManager, OrderManager orderManager,
-                                  UserManager userManager, BlacklistedTokenDao blacklistedTokenDao) {
+                                  UserManager userManager, BlacklistedTokenDao blacklistedTokenDao, PaymentTransactionManager paymentTransactionManager) {
         this.restaurantManager = restaurantManager;
         this.orderManager = orderManager;
         this.userManager = userManager;
         this.blacklistedTokenDao = blacklistedTokenDao;
+        this.paymentTransactionManager = paymentTransactionManager;
     }
 
     @Override
@@ -164,8 +173,21 @@ public class RestaurantOrderHandler extends AbstractHttpHandler {
                 case SERVED -> OrderStatus.FINDING_COURIER;
             };
 
-            order.setOrderStatus(internalOrderStatus);
-            orderManager.updateOrder(order);
+            Session session = HibernateUtil.getSessionFactory().openSession();
+            Transaction tx = session.beginTransaction();
+            boolean success = true;
+            if (internalOrderStatus == OrderStatus.CANCELLED)
+                success = refundTransaction(exchange, session, order);
+
+            if (success)
+            {
+                order.setOrderStatus(internalOrderStatus);
+                session.merge(order);
+                tx.commit();
+            }
+            else if (tx != null)
+                tx.rollback();
+            session.close();
 
             sendResponse(exchange, HttpURLConnection.HTTP_OK, new ApiResponse(true, "200 Order status changed successfully."));
 
@@ -183,6 +205,42 @@ public class RestaurantOrderHandler extends AbstractHttpHandler {
             e.printStackTrace();
             sendResponse(exchange, HttpURLConnection.HTTP_INTERNAL_ERROR, new ApiResponse(false, "500 Internal Server Error: An unexpected error occurred."));
         }
+    }
+
+    private boolean refundTransaction(HttpExchange exchange, Session session, Order order) throws IOException
+    {
+        try {
+            PaymentTransaction transaction = paymentTransactionManager.getByOrderId(session, order.getId());
+            Wallet wallet = getWallet(order, transaction);
+            transaction.setStatus(PaymentTransactionStatus.REFUNDED);
+            session.merge(transaction);
+            session.merge(wallet);
+            return true;
+        } catch (NotFoundException e) {
+            System.err.println("404 Resource not found: " + e.getMessage());
+            sendResponse(exchange, HttpURLConnection.HTTP_NOT_FOUND, new ApiResponse(false, "404 Resource not found: " + e.getMessage()));
+            return false;
+        } catch (Exception e) {
+            System.err.println("An unexpected error occurred during refunding transaction: " + e.getMessage());
+            e.printStackTrace();
+            sendResponse(exchange, HttpURLConnection.HTTP_INTERNAL_ERROR, new ApiResponse(false, e.getMessage()));
+            return false;
+        }
+    }
+
+    private static Wallet getWallet(Order order, PaymentTransaction transaction)
+    {
+        if (transaction == null)
+            throw new NotFoundException("404 Not Found: Transaction with order id " + order.getId() + " not found.");
+        User user = transaction.getUser();
+        if (user == null)
+            throw new NotFoundException("404 Not Found: User with order id " + order.getId() + " and Transaction id " + transaction.getId() + " not found.");
+        Wallet wallet = user.getWallet();
+        if (wallet == null)
+            throw new NotFoundException("Wallet not found.");
+
+        wallet.deposit(transaction.getAmount());
+        return wallet;
     }
 
 
