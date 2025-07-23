@@ -9,11 +9,13 @@ import com.aut.shoomal.dao.MenuDao;
 import com.aut.shoomal.dao.RestaurantDao;
 import com.aut.shoomal.dto.request.AddFoodItemRequest;
 import com.aut.shoomal.dto.request.UpdateFoodItemRequest;
+import com.aut.shoomal.exceptions.ConflictException;
 import com.aut.shoomal.exceptions.ForbiddenException;
 import com.aut.shoomal.exceptions.InvalidInputException;
 import com.aut.shoomal.exceptions.NotFoundException;
 import org.hibernate.Session;
 
+import java.net.ConnectException;
 import java.util.List;
 
 public class FoodManager {
@@ -42,10 +44,6 @@ public class FoodManager {
 
     public void updateFood(Food food, Session session) {
         this.foodDao.update(food, session);
-    }
-
-    public void deleteFood(Long id){
-        this.foodDao.delete(id);
     }
 
     public List<Food> getAllFoods(){
@@ -97,17 +95,10 @@ public class FoodManager {
         return newFood;
     }
 
-    public Food updateFoodItem(int restaurantId, int itemId, UpdateFoodItemRequest request, String userId) throws NotFoundException, InvalidInputException, ForbiddenException {
-        Restaurant restaurant = restaurantDao.findById((long) restaurantId);
-        if (restaurant == null) {
-            throw new NotFoundException("Restaurant not found.");
-        }
-        if (!restaurantManager.isOwner(restaurantId, userId)) {
-            throw new ForbiddenException("Not authorized to update food item in this restaurant.");
-        }
+    public Food updateFoodItem(int itemId, UpdateFoodItemRequest request) throws NotFoundException, InvalidInputException {
 
         Food existingFood = foodDao.findById((long) itemId);
-        if (existingFood == null || !existingFood.getVendor().getId().equals(restaurant.getId())) {
+        if (existingFood == null) {
             throw new NotFoundException("Food item not found in this restaurant.");
         }
 
@@ -122,26 +113,23 @@ public class FoodManager {
         return existingFood;
     }
 
-    public void deleteFoodItem(int restaurantId, int itemId, String userId) throws NotFoundException, ForbiddenException {
-        Restaurant restaurant = restaurantDao.findById((long) restaurantId);
-        if (restaurant == null) {
-            throw new NotFoundException("Restaurant not found.");
-        }
-        if (!restaurantManager.isOwner(restaurantId, userId)) {
-            throw new ForbiddenException("Not authorized to delete food item from this restaurant.");
-        }
+    public boolean deleteFoodItem(Session session, int itemId) throws NotFoundException, ConflictException {
 
         Food foodToDelete = foodDao.findById((long) itemId);
-        if (foodToDelete == null || !foodToDelete.getVendor().getId().equals(restaurant.getId())) {
+        if (foodToDelete == null) {
             throw new NotFoundException("Food item not found in this restaurant.");
         }
 
         List<Menu> menusContainingFoodItem = menuDao.findByFoodItemId((long) itemId);
         for (Menu menu : menusContainingFoodItem) {
             menu.getFoodItems().removeIf(foodInMenu -> foodInMenu.getId().equals((long) itemId));
-            menuManager.updateMenu(menu);
+            session.merge(menu);
         }
-
-        foodDao.delete((long) itemId);
+        try {
+            session.remove(foodToDelete);
+            return true;
+        } catch (Exception e) {
+            throw new ConflictException("Failed to delete food item. item is a part of an order.");
+        }
     }
 }
