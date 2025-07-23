@@ -16,6 +16,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -26,7 +27,9 @@ public class TransactionHistoryController extends AbstractBaseController
     @FXML private TableColumn<TransactionResponse, Integer> userIdColumn;
     @FXML private TableColumn<TransactionResponse, String> methodColumn;
     @FXML private TableColumn<TransactionResponse, String> statusColumn;
+    @FXML private TableColumn<TransactionResponse, String> dateColumn;
     @FXML private TableColumn<TransactionResponse, Integer> orderIdColumn;
+    @FXML private TableColumn<TransactionResponse, BigDecimal> amountColumn;
 
     @FXML private Button backButton;
 
@@ -42,6 +45,8 @@ public class TransactionHistoryController extends AbstractBaseController
         methodColumn.setCellValueFactory(new PropertyValueFactory<>("paymentMethod"));
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
         orderIdColumn.setCellValueFactory(new PropertyValueFactory<>("orderId"));
+        dateColumn.setCellValueFactory(new PropertyValueFactory<>("transactionDate"));
+        amountColumn.setCellValueFactory(new PropertyValueFactory<>("amount"));
 
         loadTransactionHistory();
     }

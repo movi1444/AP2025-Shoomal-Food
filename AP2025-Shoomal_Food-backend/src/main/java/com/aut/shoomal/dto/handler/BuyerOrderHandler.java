@@ -570,10 +570,12 @@ public class BuyerOrderHandler extends AbstractHttpHandler
     {
         return new TransactionResponse(
                 Math.toIntExact(transaction.getId()),
-                transaction.getStatus().toApiString(),
+                transaction.getStatus().getStatus(),
                 transaction.getMethod().getName(),
                 (transaction.getOrder() != null) ? transaction.getOrder().getId() : null,
-                Math.toIntExact(transaction.getUser().getId())
+                Math.toIntExact(transaction.getUser().getId()),
+                transaction.getTransactionTime().toString(),
+                transaction.getAmount()
         );
     }
 

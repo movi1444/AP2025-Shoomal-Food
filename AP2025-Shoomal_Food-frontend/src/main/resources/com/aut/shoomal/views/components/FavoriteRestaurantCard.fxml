@@ -31,4 +31,5 @@
         <font>
             <Font size="20.0" /> </font>
     </Label>
+    <Button fx:id="favoriteButton" onAction="#handleFavoriteAction" text="دکمه علاقه مندی" />
 </VBox>

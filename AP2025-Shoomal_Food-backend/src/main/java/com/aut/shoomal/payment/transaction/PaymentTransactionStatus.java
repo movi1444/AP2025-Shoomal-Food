@@ -18,23 +18,10 @@ public enum PaymentTransactionStatus
         return status;
     }
 
-    public String toApiString() {
-        return switch (this) {
-            case COMPLETED -> "success";
-            case FAILED -> "failed";
-            default -> throw new IllegalArgumentException("Unsupported transaction status for API representation: " + this.name());
-        };
-    }
-
     public static PaymentTransactionStatus fromStatusName(String statusName) {
-        if (statusName != null) {
-            if (statusName.equalsIgnoreCase("success")) {
-                return COMPLETED;
-            }
-            if (statusName.equalsIgnoreCase("failed")) {
-                return FAILED;
-            }
-        }
+        for (PaymentTransactionStatus paymentTransactionStatus : PaymentTransactionStatus.values())
+            if (paymentTransactionStatus.getStatus().equalsIgnoreCase(statusName))
+                return paymentTransactionStatus;
         throw new IllegalArgumentException("Unknown or unsupported payment transaction API status: " + statusName);
     }
 }

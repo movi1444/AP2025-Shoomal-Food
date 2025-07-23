@@ -23,6 +23,7 @@ import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import javafx.util.StringConverter;
 
+import java.math.BigDecimal;
 import java.net.URL;
 import java.util.Comparator;
 import java.util.ResourceBundle;
@@ -36,6 +37,8 @@ public class AdminTransactionsController extends AbstractBaseController {
     @FXML private TableColumn<TransactionResponse, Integer> orderIdColumn;
     @FXML private TableColumn<TransactionResponse, String> statusColumn;
     @FXML private TableColumn<TransactionResponse, String> methodColumn;
+    @FXML private TableColumn<TransactionResponse, String> dateColumn;
+    @FXML private TableColumn<TransactionResponse, BigDecimal> amountColumn;
 
     @FXML private TextField searchTextField;
     @FXML private ComboBox<UserResponse> userComboBox;
@@ -80,6 +83,8 @@ public class AdminTransactionsController extends AbstractBaseController {
         orderIdColumn.setCellValueFactory(new PropertyValueFactory<>("orderId"));
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
         methodColumn.setCellValueFactory(new PropertyValueFactory<>("paymentMethod"));
+        dateColumn.setCellValueFactory(new PropertyValueFactory<>("transactionDate"));
+        amountColumn.setCellValueFactory(new PropertyValueFactory<>("amount"));
 
         transactionsTableView.getSortOrder().clear();
         transactionsTableView.getSortOrder().add(transactionIdColumn);

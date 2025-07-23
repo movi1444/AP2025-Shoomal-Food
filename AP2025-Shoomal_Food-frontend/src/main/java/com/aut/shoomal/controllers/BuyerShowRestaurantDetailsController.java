@@ -88,26 +88,31 @@ public class BuyerShowRestaurantDetailsController extends AbstractBaseController
                             showAlert("Error", "Failed to load restaurant details.", Alert.AlertType.ERROR, null);
 
                         foodsContainerFlowPane.getChildren().clear();
+                        int count = 0;
                         if (foods != null && !foods.isEmpty())
                             for (ListItemResponse food : foods)
                             {
-                                try {
-                                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/aut/shoomal/views/components/FoodCard.fxml"));
-                                    VBox foodCard = loader.load();
-                                    FoodCardController foodCardController = loader.getController();
+                                if (food.getSupply() > 0)
+                                {
+                                    count++;
+                                    try {
+                                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/aut/shoomal/views/components/FoodCard.fxml"));
+                                        VBox foodCard = loader.load();
+                                        FoodCardController foodCardController = loader.getController();
 
-                                    foodCardController.setFoodData(food,
-                                            this::handleAddToCart,
-                                            this::handleSeeComments
-                                    );
-                                    foodsContainerFlowPane.getChildren().add(foodCard);
-                                } catch (IOException e) {
-                                    System.err.println("Failed to load food card: " + e.getMessage());
-                                    e.printStackTrace();
-                                    showAlert("Load Error", "Could not load a food item card.", Alert.AlertType.ERROR, null);
+                                        foodCardController.setFoodData(food,
+                                                this::handleAddToCart,
+                                                this::handleSeeComments
+                                        );
+                                        foodsContainerFlowPane.getChildren().add(foodCard);
+                                    } catch (IOException e) {
+                                        System.err.println("Failed to load food card: " + e.getMessage());
+                                        e.printStackTrace();
+                                        showAlert("Load Error", "Could not load a food item card.", Alert.AlertType.ERROR, null);
+                                    }
                                 }
                             }
-                        else
+                        if (foods == null || foods.isEmpty() || count == 0)
                             foodsContainerFlowPane.getChildren().add(new Label("هیچ غذایی در این رستوران موجود نیست."));
                     });
                     return null;
@@ -123,12 +128,6 @@ public class BuyerShowRestaurantDetailsController extends AbstractBaseController
                     return null;
                 });
     }
-
-    @Override
-    protected void handleSeeComments(Integer foodId) {
-        showAlert("مشاهده نظرات", "قابلیت مشاهده نظرات برای غذای با شناسه " + foodId + " هنوز پیاده‌سازی نشده است.", Alert.AlertType.INFORMATION, null);
-    }
-
 
     public void handleAddToCart(Long foodItemId, Integer quantity) {
         if (token == null || token.isEmpty()) {
@@ -212,9 +211,7 @@ public class BuyerShowRestaurantDetailsController extends AbstractBaseController
             showAlert("Authentication Error", "User not logged in. Please log in first.", Alert.AlertType.ERROR, null);
             return;
         }
-        if (restaurantId == null) {
+        if (restaurantId == null)
             showAlert("Error", "No restaurant ID provided.", Alert.AlertType.ERROR, null);
-            return;
-        }
     }
 }
