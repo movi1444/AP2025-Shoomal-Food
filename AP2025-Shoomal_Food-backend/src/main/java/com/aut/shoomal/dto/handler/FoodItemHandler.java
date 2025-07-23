@@ -15,11 +15,14 @@ import com.aut.shoomal.exceptions.*;
 import com.aut.shoomal.util.HibernateUtil;
 import com.sun.net.httpserver.HttpExchange;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -67,9 +70,9 @@ public class FoodItemHandler extends AbstractHttpHandler {
                 handleAddFoodItem(exchange, authenticatedUser, restaurantId);
             } else if (requestPath.equals("/restaurants/" + foodItemId + "/item") && foodItemId != -1) {
                 if (method.equalsIgnoreCase("PUT")) {
-                    handleUpdateFoodItem(exchange, authenticatedUser, restaurantId, foodItemId);
+                    handleUpdateFoodItem(exchange, authenticatedUser, foodItemId);
                 } else if (method.equalsIgnoreCase("DELETE")) {
-                    handleDeleteFoodItem(exchange, authenticatedUser, restaurantId, foodItemId);
+                    handleDeleteFoodItem(exchange, authenticatedUser, foodItemId);
                 } else if (method.equalsIgnoreCase("GET")) {
                     getFoodByIdAndRestaurantId(exchange, (long) foodItemId);
                 } else {
@@ -157,12 +160,8 @@ public class FoodItemHandler extends AbstractHttpHandler {
         sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, convertToFoodItemResponse(newFoodItem));
     }
 
-    private void handleUpdateFoodItem(HttpExchange exchange, User authenticatedUser, Integer restaurantIdFromPath, Integer itemId) throws IOException {
+    private void handleUpdateFoodItem(HttpExchange exchange, User authenticatedUser, Integer itemId) throws IOException {
         if (!checkHttpMethod(exchange, "PUT")) return;
-        if (!restaurantManager.isOwner(restaurantIdFromPath, String.valueOf(authenticatedUser.getId()))) {
-            sendResponse(exchange, HttpURLConnection.HTTP_FORBIDDEN, new ApiResponse(false, "Forbidden request: Not the owner of this restaurant."));
-            return;
-        }
         if (!(authenticatedUser instanceof Seller) || !((Seller) authenticatedUser).isApproved()) {
             sendResponse(exchange, HttpURLConnection.HTTP_FORBIDDEN, new ApiResponse(false, "Forbidden request: Seller is not yet approved to manage food items."));
             return;
@@ -172,24 +171,25 @@ public class FoodItemHandler extends AbstractHttpHandler {
             sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "Invalid input: Request body is empty."));
             return;
         }
-        if (request.getVendor_id() != null && !request.getVendor_id().equals(restaurantIdFromPath)) {
-            throw new InvalidInputException("Vendor ID in request body must match restaurant ID in path.");
-        }
-        Food updatedFoodItem = foodManager.updateFoodItem(restaurantIdFromPath, itemId, request, String.valueOf(authenticatedUser.getId()));
+        Food updatedFoodItem = foodManager.updateFoodItem(itemId, request);
         sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, convertToFoodItemResponse(updatedFoodItem));
     }
 
-    private void handleDeleteFoodItem(HttpExchange exchange, User authenticatedUser, Integer restaurantId, Integer itemId) throws IOException {
+    private void handleDeleteFoodItem(HttpExchange exchange, User authenticatedUser, Integer itemId) throws IOException {
         if (!checkHttpMethod(exchange, "DELETE")) return;
-        if (!restaurantManager.isOwner(restaurantId, String.valueOf(authenticatedUser.getId()))) {
-            sendResponse(exchange, HttpURLConnection.HTTP_FORBIDDEN, new ApiResponse(false, "Forbidden request: Not the owner of this restaurant."));
-            return;
-        }
         if (!(authenticatedUser instanceof Seller) || !((Seller) authenticatedUser).isApproved()) {
             sendResponse(exchange, HttpURLConnection.HTTP_FORBIDDEN, new ApiResponse(false, "Forbidden request: Seller is not yet approved to manage food items."));
             return;
         }
-        foodManager.deleteFoodItem(restaurantId, itemId, String.valueOf(authenticatedUser.getId()));
+
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction tx = session.beginTransaction();
+        boolean success = foodManager.deleteFoodItem(session, itemId);
+        if (success)
+            tx.commit();
+        else if (tx != null)
+            tx.rollback();
+        session.close();
         sendResponse(exchange, HttpURLConnection.HTTP_OK, new ApiResponse(true, "Food item removed successfully"));
     }
 

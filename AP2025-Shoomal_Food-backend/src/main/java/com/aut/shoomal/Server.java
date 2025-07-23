@@ -87,7 +87,7 @@ public class Server
             finalServer.createContext("/auth/profile", new ProfileHandler(userManager, blacklistedTokenDao));
             finalServer.createContext("/auth/logout", new LogoutHandler(logoutManager));
 
-            finalServer.createContext("/restaurants", new RestaurantHandler(restaurantManager, foodManager, menuManager, userManager, blacklistedTokenDao, orderManager));
+            finalServer.createContext("/restaurants", new RestaurantHandler(restaurantManager, foodManager, menuManager, userManager, blacklistedTokenDao, orderManager, paymentTransactionManager));
 
             finalServer.createContext("/vendors", buyerBrowseHandler);
             finalServer.createContext("/items", buyerBrowseHandler);

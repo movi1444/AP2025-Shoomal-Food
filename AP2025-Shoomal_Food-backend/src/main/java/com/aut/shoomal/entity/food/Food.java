@@ -72,7 +72,7 @@ public class Food {
     @PrePersist
     @PreUpdate
     private void validateCategories() {
-        if (keywords == null || keywords.isEmpty()) {
+        if (keywords == null) {
             throw new IllegalStateException("Categories list must not be empty");
         }
     }

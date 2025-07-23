@@ -62,6 +62,7 @@ public class GenericDaoImpl<T> implements GenericDao<T>
                 transaction.rollback();
             System.err.println("Error deleting " + entityClass.getSimpleName() + ": " + e.getMessage());
             e.printStackTrace();
+            throw e;
         }
     }
 

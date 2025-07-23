@@ -33,10 +33,6 @@ public class MenuManager {
         this.menuDao.create(menu);
     }
 
-    public void removeMenu(Long id){
-        this.menuDao.delete(id);
-    }
-
     public Menu getMenuById(Long id){
         return this.menuDao.findById(id);
     }

@@ -18,11 +18,6 @@ public class UserManager
         userDao.create(user);
     }
 
-    public void deleteUser(Long id)
-    {
-        userDao.delete(id);
-    }
-
     public void updateUser(User user)
     {
         userDao.update(user);
