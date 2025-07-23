@@ -58,11 +58,6 @@ public class OrderManager
         orderDao.update(order, session);
     }
 
-    public void deleteOrder(Integer orderId)
-    {
-        orderDao.delete(Long.valueOf(orderId));
-    }
-
     public Order findOrderById(Integer orderId)
     {
         return orderDao.findById(Long.valueOf(orderId));

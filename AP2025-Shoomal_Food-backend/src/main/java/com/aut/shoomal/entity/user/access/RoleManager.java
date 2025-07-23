@@ -23,11 +23,6 @@ public class RoleManager
         roleDao.create(role);
     }
 
-    public void deleteRole(Long id)
-    {
-        roleDao.delete(id);
-    }
-
     public void updateRole(Role role)
     {
         roleDao.update(role);
