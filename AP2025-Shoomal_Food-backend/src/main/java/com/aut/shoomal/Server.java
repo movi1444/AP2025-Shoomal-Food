@@ -74,6 +74,7 @@ public class Server
         UserOrderHandler userOrderHandler = new UserOrderHandler(userManager, blacklistedTokenDao);
 
         try {
+            //signupManager.ensureAdminUserExists();
             final HttpServer finalServer = HttpServer.create(new InetSocketAddress(port), 0);
             server = finalServer;
 

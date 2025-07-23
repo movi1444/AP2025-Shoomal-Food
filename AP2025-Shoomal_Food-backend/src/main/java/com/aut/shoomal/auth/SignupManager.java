@@ -54,9 +54,6 @@ public class SignupManager
         else if (accountNumber != null && !accountNumber.trim().isEmpty())
             errors.append(" 'bank_name' is required if 'account_number' is provided.");
 
-        if (!errors.isEmpty())
-            throw new InvalidInputException("400 Invalid input:" + errors);
-
         try {
             userManager.getUserByPhoneNumber(phoneNumber);
             throw new DuplicateUserException("409 Phone Number Already Exists");
@@ -74,6 +71,9 @@ public class SignupManager
             userManager.getUserByName(name);
             throw new DuplicateUserException("409 Name Already Exists");
         } catch (NotFoundException ignored) {}
+
+        if (!errors.isEmpty())
+            throw new InvalidInputException("400 Invalid input:" + errors);
 
         Role userRole = this.getRole(types);
         if (userRole == null)
