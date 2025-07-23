@@ -82,6 +82,8 @@
                     <TableColumn fx:id="methodColumn" prefWidth="150" text="روش پرداخت">
                         <cellValueFactory><PropertyValueFactory property="paymentMethod" /></cellValueFactory>
                     </TableColumn>
+                    <TableColumn fx:id="amountColumn" prefWidth="100" text="مبلغ" />
+                    <TableColumn fx:id="dateColumn" prefWidth="190" text="تاریخ" />
                 </columns>
                 <columnResizePolicy>
                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

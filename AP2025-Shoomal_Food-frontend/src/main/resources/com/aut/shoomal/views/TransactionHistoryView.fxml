@@ -26,8 +26,10 @@
             <columns>
                 <TableColumn fx:id="userIdColumn" prefWidth="100" text="شناسه کاربر" />
                 <TableColumn fx:id="methodColumn" prefWidth="100" text="روش پرداخت" />
-                <TableColumn fx:id="statusColumn" prefWidth="100" text="وضعیت" />
-                <TableColumn fx:id="orderIdColumn" prefWidth="200" text="شناسه سفارش" />
+                <TableColumn fx:id="statusColumn" prefWidth="150" text="وضعیت" />
+                <TableColumn fx:id="orderIdColumn" prefWidth="150" text="شناسه سفارش" />
+                <TableColumn fx:id="amountColumn" prefWidth="100" text="مبلغ" />
+                <TableColumn fx:id="dateColumn" prefWidth="190" text="تاریخ" />
             </columns>
             <columnResizePolicy>
                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

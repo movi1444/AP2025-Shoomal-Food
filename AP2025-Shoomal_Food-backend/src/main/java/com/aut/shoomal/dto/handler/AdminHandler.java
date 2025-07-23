@@ -211,7 +211,9 @@ public class AdminHandler extends AbstractHttpHandler {
                                 transaction.getStatus().getStatus(),
                                 transaction.getMethod().getName(),
                                 orderId,
-                                (transactionUserId != null) ? Math.toIntExact(transactionUserId) : null
+                                (transactionUserId != null) ? Math.toIntExact(transactionUserId) : null,
+                                transaction.getTransactionTime().toString(),
+                                transaction.getAmount()
                         );
                     })
                     .collect(Collectors.toList());

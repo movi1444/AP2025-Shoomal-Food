@@ -14,16 +14,21 @@ public class TransactionResponse
     private Integer orderId;
     @JsonProperty("user_id")
     private Integer userId;
+    @JsonProperty("transaction_date")
+    private String transactionDate;
+    private BigDecimal amount;
 
     public TransactionResponse() {}
     public TransactionResponse(Integer id, String status, String paymentMethod,
-                               Integer orderId, Integer userId)
+                               Integer orderId, Integer userId, String transactionDate, BigDecimal amount)
     {
         this.id = id;
         this.status = status;
         this.paymentMethod = paymentMethod;
         this.orderId = orderId;
         this.userId = userId;
+        this.transactionDate = transactionDate;
+        this.amount = amount;
     }
 
     public Integer getId()
@@ -74,5 +79,25 @@ public class TransactionResponse
     public void setUserId(Integer userId)
     {
         this.userId = userId;
+    }
+
+    public String getTransactionDate()
+    {
+        return transactionDate;
+    }
+
+    public void setTransactionDate(String transactionDate)
+    {
+        this.transactionDate = transactionDate;
+    }
+
+    public BigDecimal getAmount()
+    {
+        return amount;
+    }
+
+    public void setAmount(BigDecimal amount)
+    {
+        this.amount = amount;
     }
 }

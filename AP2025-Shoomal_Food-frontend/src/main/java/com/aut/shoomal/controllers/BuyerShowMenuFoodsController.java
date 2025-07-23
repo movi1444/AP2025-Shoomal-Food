@@ -20,6 +20,7 @@ import javafx.scene.control.Hyperlink;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class BuyerShowMenuFoodsController extends AbstractBaseController
@@ -59,26 +60,32 @@ public class BuyerShowMenuFoodsController extends AbstractBaseController
                             menuTitleLabel.setText("عنوان منو:  " + menu.getTitle());
                         else
                             showAlert("Error", "Failed to load menu details.", Alert.AlertType.ERROR, null);
+
                         foodsContainerFlowPane.getChildren().clear();
+                        int count = 0;
                         if (foods != null && !foods.isEmpty())
                             for (ListItemResponse food : foods)
                             {
-                                try {
-                                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/aut/shoomal/views/components/FoodCard.fxml"));
-                                    VBox foodCard = loader.load();
-                                    FoodCardController foodCardController = loader.getController();
-                                    foodCardController.setFoodData(food,
-                                            this::handleAddToCart,
-                                            this::handleSeeComments
-                                    );
-                                    foodsContainerFlowPane.getChildren().add(foodCard);
-                                } catch (IOException e) {
-                                    System.err.println("Failed to load food card: " + e.getMessage());
-                                    e.printStackTrace();
-                                    showAlert("Load Error", "Could not load a food item card.", Alert.AlertType.ERROR, null);
+                                if (food.getSupply() > 0)
+                                {
+                                    count++;
+                                    try {
+                                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/aut/shoomal/views/components/FoodCard.fxml"));
+                                        VBox foodCard = loader.load();
+                                        FoodCardController foodCardController = loader.getController();
+                                        foodCardController.setFoodData(food,
+                                                this::handleAddToCart,
+                                                this::handleSeeComments
+                                        );
+                                        foodsContainerFlowPane.getChildren().add(foodCard);
+                                    } catch (IOException e) {
+                                        System.err.println("Failed to load food card: " + e.getMessage());
+                                        e.printStackTrace();
+                                        showAlert("Load Error", "Could not load a food item card.", Alert.AlertType.ERROR, null);
+                                    }
                                 }
                             }
-                        else
+                        if (foods == null || foods.isEmpty() || count == 0)
                             foodsContainerFlowPane.getChildren().add(new Label("هیچ غذایی در این منو موجود نیست."));
                     });
                     return null;
@@ -161,11 +168,6 @@ public class BuyerShowMenuFoodsController extends AbstractBaseController
                 });
     }
 
-    @Override
-    protected void handleSeeComments(Integer foodId) {
-        showAlert("مشاهده نظرات", "قابلیت مشاهده نظرات برای غذای با شناسه " + foodId + " هنوز پیاده‌سازی نشده است.", Alert.AlertType.INFORMATION, null);
-    }
-
     @FXML
     public void handleViewCart(ActionEvent event) {
         if (token == null || token.isEmpty()) {
@@ -185,7 +187,7 @@ public class BuyerShowMenuFoodsController extends AbstractBaseController
                 controller -> {
                     if (controller instanceof CartController cartController) {
                         cartController.setRestaurantId(this.restaurantId);
-                        cartController.setUserId(PreferencesManager.getUserData().getId().longValue());
+                        cartController.setUserId(Objects.requireNonNull(PreferencesManager.getUserData()).getId().longValue());
                     }
                 }
         );
