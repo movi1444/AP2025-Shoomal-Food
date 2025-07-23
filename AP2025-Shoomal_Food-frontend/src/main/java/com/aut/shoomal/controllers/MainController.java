@@ -141,7 +141,7 @@ public class MainController extends AbstractBaseController {
                     if (buyerController != null) {
                         buyerController.setLoggedInUser(this.currentUser);
                         buyerController.setNavigateToRestaurantDetailsCallback(this::navigateToRestaurantDetails);
-                        buyerController.loadBuyerDashboardContent();
+                        buyerController.loadBuyerDashboardContent(null);
                     }
                     buyerDashboardScrollPane.setContent(buyerContentRoot);
                 } catch (IOException e) {
