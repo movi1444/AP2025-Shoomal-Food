@@ -67,9 +67,6 @@ public class BuyerDashboardContentController extends AbstractBaseController {
 
     private BuyerActiveOrdersController activeOrdersController;
 
-    // This field is removed as navigation is handled directly within this controller
-    // private Consumer<Integer> navigateToRestaurantDetailsCallback;
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         super.initialize(url, resourceBundle);
@@ -124,11 +121,6 @@ public class BuyerDashboardContentController extends AbstractBaseController {
     public void setLoggedInUser(UserResponse user) {
         this.loggedInUser = user;
     }
-
-    // This method is removed as navigation is handled directly within this controller
-    // public void setNavigateToRestaurantDetailsCallback(Consumer<Integer> callback) {
-    //     this.navigateToRestaurantDetailsCallback = callback;
-    // }
 
     public void loadBuyerDashboardContent() {
         if (token == null || token.isEmpty()) {
@@ -193,18 +185,17 @@ public class BuyerDashboardContentController extends AbstractBaseController {
             VBox card = loader.load();
             FavoriteRestaurantCardController cardController = loader.getController();
 
-            // Directly handle the navigation logic here
             cardController.setRestaurantData(restaurant, (restaurantId) -> {
                 if (loggedInUser != null) {
                     navigateTo(
-                            card, // Use the card as the source node for navigation
-                            "/com/aut/shoomal/views/BuyerRestaurantView.fxml", // FXML for restaurant details
-                            "/com/aut/shoomal/styles/MainView.css", // A common CSS file for the new view
-                            TransitionType.SLIDE_RIGHT, // Consistent with the user's example transition
+                            card,
+                            "/com/aut/shoomal/views/BuyerRestaurantView.fxml",
+                            "/com/aut/shoomal/styles/MainView.css",
+                            TransitionType.SLIDE_RIGHT,
                             controller -> {
                                 if (controller instanceof BuyerShowRestaurantDetailsController detailsController) {
-                                    detailsController.setLoggedInUser(loggedInUser); // Pass loggedInUser
-                                    detailsController.setRestaurantId(restaurantId); // Pass restaurantId
+                                    detailsController.setLoggedInUser(loggedInUser);
+                                    detailsController.setRestaurantId(restaurantId);
                                 }
                             }
                     );
