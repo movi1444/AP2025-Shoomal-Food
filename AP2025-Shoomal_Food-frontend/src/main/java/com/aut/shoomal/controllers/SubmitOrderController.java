@@ -112,7 +112,7 @@ public class SubmitOrderController extends AbstractBaseController {
         summary.append("توجه: هزینه پیک (معمولا 500 تومان) در مرحله نهایی به مبلغ کل اضافه خواهد شد.\n");
 
         orderSummaryLabel.setText(summary.toString());
-        totalPriceLabel.setText("مبلغ کل: " + originalTotalOrderPrice + " تومان");
+        totalPriceLabel.setText("مبلغ کل: " + (originalTotalOrderPrice + 500) + " تومان");
     }
 
     private void loadWalletBalance() {
