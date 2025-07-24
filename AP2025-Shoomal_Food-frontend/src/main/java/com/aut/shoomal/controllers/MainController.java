@@ -140,7 +140,7 @@ public class MainController extends AbstractBaseController {
                     BuyerDashboardContentController buyerController = loader.getController();
                     if (buyerController != null) {
                         buyerController.setLoggedInUser(this.currentUser);
-                        buyerController.loadBuyerDashboardContent();
+                        buyerController.loadBuyerDashboardContent(null);
                     }
                     buyerDashboardScrollPane.setContent(buyerContentRoot);
                 } catch (IOException e) {

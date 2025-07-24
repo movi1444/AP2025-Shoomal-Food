@@ -19,6 +19,7 @@ import com.aut.shoomal.service.CartService;
 import javafx.scene.control.Hyperlink;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.Objects;
 import java.util.ResourceBundle;

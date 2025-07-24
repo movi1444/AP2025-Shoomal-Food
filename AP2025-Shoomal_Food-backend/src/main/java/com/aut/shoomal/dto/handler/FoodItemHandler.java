@@ -80,7 +80,7 @@ public class FoodItemHandler extends AbstractHttpHandler {
                 }
             } else if (requestPath.equals("/restaurants/" + restaurantId + "/items") && method.equalsIgnoreCase("GET") && restaurantId != -1) {
                 getFoodsByRestaurantId(exchange, (long) restaurantId);
-            } else if (requestPath.equals("/restaurants/" + restaurantId + "/items/" + menuTitle) && method.equalsIgnoreCase("GET") && restaurantId != -1 && menuTitle != null) {
+            } else if (GET_FOODS_TITLE_PATH_PATTERN.matcher(requestPath).matches() && method.equalsIgnoreCase("GET") && restaurantId != -1 && menuTitle != null) {
                 getFoodsByMenuTitle(exchange, (long) restaurantId, menuTitle);
             } else {
                 sendResponse(exchange, HttpURLConnection.HTTP_NOT_FOUND, new ApiResponse(false, "Resource not found"));
