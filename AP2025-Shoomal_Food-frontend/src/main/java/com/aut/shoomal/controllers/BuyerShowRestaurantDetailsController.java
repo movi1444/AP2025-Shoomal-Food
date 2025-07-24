@@ -1,6 +1,7 @@
 package com.aut.shoomal.controllers;
 
 import com.aut.shoomal.dto.response.ListItemResponse;
+import com.aut.shoomal.dto.response.UserResponse;
 import com.aut.shoomal.exceptions.FrontendServiceException;
 import com.aut.shoomal.service.RestaurantService;
 import com.aut.shoomal.utils.PreferencesManager;
@@ -34,6 +35,7 @@ public class BuyerShowRestaurantDetailsController extends AbstractBaseController
     @FXML private Button seeMenusButton;
     @FXML private FlowPane foodsContainerFlowPane;
     @FXML private Hyperlink viewCartButton;
+    private UserResponse loggedInUser;
 
     private RestaurantService restaurantService;
     private CartService cartService;
@@ -51,6 +53,10 @@ public class BuyerShowRestaurantDetailsController extends AbstractBaseController
         if (viewCartButton != null) {
             viewCartButton.setOnAction(this::handleViewCart);
         }
+    }
+
+    public void setLoggedInUser(UserResponse loggedInUser){
+        this.loggedInUser = loggedInUser;
     }
 
     public void setRestaurantId(Integer restaurantId)

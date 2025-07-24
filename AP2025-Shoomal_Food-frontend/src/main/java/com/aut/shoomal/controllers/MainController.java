@@ -140,8 +140,7 @@ public class MainController extends AbstractBaseController {
                     BuyerDashboardContentController buyerController = loader.getController();
                     if (buyerController != null) {
                         buyerController.setLoggedInUser(this.currentUser);
-                        buyerController.setNavigateToRestaurantDetailsCallback(this::navigateToRestaurantDetails);
-                        buyerController.loadBuyerDashboardContent(null);
+                        buyerController.loadBuyerDashboardContent();
                     }
                     buyerDashboardScrollPane.setContent(buyerContentRoot);
                 } catch (IOException e) {
@@ -343,29 +342,6 @@ public class MainController extends AbstractBaseController {
                         historyController.loadDeliveryHistory(null, null, null);
                 }
         );
-    }
-
-    public void navigateToRestaurantDetails(Integer restaurantId)
-    {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/aut/shoomal/views/BuyerRestaurantView.fxml"));
-            Parent root = loader.load();
-
-            BuyerShowRestaurantDetailsController showRestaurantDetailsController = loader.getController();
-            if (showRestaurantDetailsController != null)
-                showRestaurantDetailsController.setRestaurantId(restaurantId);
-
-            Stage stage = (Stage) welcomeUserLabel.getScene().getWindow();
-            Scene scene = new Scene(root, stage.getWidth(), stage.getHeight());
-            stage.setScene(scene);
-            stage.setTitle("جزئیات رستوران");
-            stage.show();
-
-        } catch (IOException e) {
-            System.err.println("Failed to load BuyerRestaurantView.fxml: " + e.getMessage());
-            e.printStackTrace();
-            showAlert("Navigation Error", "Failed to load restaurant details page.", Alert.AlertType.ERROR, null);
-        }
     }
 
     private void handleError()

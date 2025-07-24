@@ -67,8 +67,6 @@ public class BuyerDashboardContentController extends AbstractBaseController {
 
     private BuyerActiveOrdersController activeOrdersController;
 
-    private Consumer<Integer> navigateToRestaurantDetailsCallback;
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         super.initialize(url, resourceBundle);
@@ -124,11 +122,7 @@ public class BuyerDashboardContentController extends AbstractBaseController {
         this.loggedInUser = user;
     }
 
-    public void setNavigateToRestaurantDetailsCallback(Consumer<Integer> callback) {
-        this.navigateToRestaurantDetailsCallback = callback;
-    }
-
-    public void loadBuyerDashboardContent(Void unused) {
+    public void loadBuyerDashboardContent() {
         if (token == null || token.isEmpty()) {
             showAlert("Authentication Error", "User not logged in. Please log in first.", Alert.AlertType.ERROR, null);
             return;
@@ -191,7 +185,25 @@ public class BuyerDashboardContentController extends AbstractBaseController {
             VBox card = loader.load();
             FavoriteRestaurantCardController cardController = loader.getController();
 
-            cardController.setRestaurantData(restaurant, navigateToRestaurantDetailsCallback, isFavorite, this::loadBuyerDashboardContent);
+            cardController.setRestaurantData(restaurant, (restaurantId) -> {
+                if (loggedInUser != null) {
+                    navigateTo(
+                            card,
+                            "/com/aut/shoomal/views/BuyerRestaurantView.fxml",
+                            "/com/aut/shoomal/styles/MainView.css",
+                            TransitionType.SLIDE_RIGHT,
+                            controller -> {
+                                if (controller instanceof BuyerShowRestaurantDetailsController detailsController) {
+                                    detailsController.setLoggedInUser(loggedInUser);
+                                    detailsController.setRestaurantId(restaurantId);
+                                }
+                            }
+                    );
+                } else {
+                    showAlert("Authentication Error", "User not logged in. Cannot view restaurant details.", Alert.AlertType.ERROR, null);
+                }
+            });
+
             targetFlowPane.getChildren().add(card);
         } catch (IOException e) {
             System.err.println("Failed to load restaurant card: " + e.getMessage());
@@ -366,10 +378,21 @@ public class BuyerDashboardContentController extends AbstractBaseController {
 
         hbox.setOnMouseClicked(event -> {
             System.out.println("Restaurant clicked: " + restaurant.getName() + " (ID: " + restaurant.getId() + ")");
-            if (navigateToRestaurantDetailsCallback != null) {
-                navigateToRestaurantDetailsCallback.accept(restaurant.getId());
+            if (loggedInUser != null) {
+                navigateTo(
+                        (Node) event.getSource(),
+                        "/com/aut/shoomal/views/BuyerRestaurantView.fxml",
+                        "/com/aut/shoomal/styles/MainView.css",
+                        TransitionType.SLIDE_RIGHT,
+                        controller -> {
+                            if (controller instanceof BuyerShowRestaurantDetailsController detailsController) {
+                                detailsController.setLoggedInUser(loggedInUser);
+                                detailsController.setRestaurantId(restaurant.getId());
+                            }
+                        }
+                );
             } else {
-                showAlert("Navigation Error", "Navigation callback not set.", Alert.AlertType.ERROR, null);
+                showAlert("Authentication Error", "User not logged in. Cannot view restaurant details.", Alert.AlertType.ERROR, null);
             }
         });
 

@@ -1,26 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.Cursor?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
 
-<?import javafx.scene.layout.FlowPane?>
-<?import javafx.scene.text.Font?>
-
-<BorderPane prefHeight="729.0" prefWidth="693.0" stylesheets="@/com/aut/shoomal/styles/MainView.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.aut.shoomal.controllers.MainController">
+<BorderPane prefHeight="729.0" prefWidth="693.0" stylesheets="@/com/aut/shoomal/styles/MainView.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.aut.shoomal.controllers.MainController">
 
     <center>
         <StackPane fx:id="contentStackPane" styleClass="content-area">
@@ -78,7 +64,7 @@
 
             <ScrollPane fx:id="courierDashboardScrollPane" fitToWidth="true" styleClass="dashboard-scroll-pane">
                 <VBox alignment="CENTER" prefHeight="720.0" prefWidth="678.0">
-                    <MenuBar fx:id="courierMenuBar" prefHeight="40.0" prefWidth="600.0" styleClass="seller-menu-bar">
+                    <MenuBar fx:id="courierMenuBar" nodeOrientation="RIGHT_TO_LEFT" prefHeight="40.0" prefWidth="600.0" styleClass="seller-menu-bar">
                         <menus>
                             <Menu text="سفارشات آماده">
                                 <items>
@@ -121,7 +107,7 @@
             </ScrollPane>
             <ScrollPane fx:id="adminDashboardScrollPane" fitToWidth="true" styleClass="dashboard-scroll-pane">
             </ScrollPane>
-            <ScrollPane fx:id="buyerDashboardScrollPane" fitToWidth="true" fitToHeight="true" styleClass="dashboard-scroll-pane">
+            <ScrollPane fx:id="buyerDashboardScrollPane" fitToHeight="true" fitToWidth="true" styleClass="dashboard-scroll-pane">
             </ScrollPane>
         </StackPane>
     </center>
