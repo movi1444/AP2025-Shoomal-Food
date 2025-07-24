@@ -122,7 +122,7 @@ public class BuyerDashboardContentController extends AbstractBaseController {
         this.loggedInUser = user;
     }
 
-    public void loadBuyerDashboardContent() {
+    public void loadBuyerDashboardContent(Void unused) {
         if (token == null || token.isEmpty()) {
             showAlert("Authentication Error", "User not logged in. Please log in first.", Alert.AlertType.ERROR, null);
             return;
@@ -202,7 +202,7 @@ public class BuyerDashboardContentController extends AbstractBaseController {
                 } else {
                     showAlert("Authentication Error", "User not logged in. Cannot view restaurant details.", Alert.AlertType.ERROR, null);
                 }
-            });
+            }, isFavorite, this::loadBuyerDashboardContent);
 
             targetFlowPane.getChildren().add(card);
         } catch (IOException e) {

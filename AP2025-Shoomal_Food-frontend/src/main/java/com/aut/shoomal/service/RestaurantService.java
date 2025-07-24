@@ -4,7 +4,10 @@ import com.aut.shoomal.dto.request.*;
 import com.aut.shoomal.dto.response.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.net.http.HttpRequest;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -138,7 +141,8 @@ public class RestaurantService extends AbstractService
 
     public CompletableFuture<List<ListItemResponse>> getFoodsByMenuTitle(String token, Integer restaurantId, String title)
     {
-        String endpoint = "restaurants/" + restaurantId + "/items/" + title;
+        String encodedTitle = URLEncoder.encode(title, StandardCharsets.UTF_8);
+        String endpoint = "restaurants/" + restaurantId + "/items/" + encodedTitle;
         try {
             HttpRequest httpRequest = createAuthenticatedRequestBuilder(endpoint, token)
                     .GET()
@@ -166,7 +170,8 @@ public class RestaurantService extends AbstractService
 
     public CompletableFuture<ApiResponse> deleteMenu(String token, Integer restaurantId, String title)
     {
-        String endpoint = "restaurants/" + restaurantId + "/menu/" + title;
+        String encodedTitle = URLEncoder.encode(title, StandardCharsets.UTF_8);
+        String endpoint = "restaurants/" + restaurantId + "/menu/" + encodedTitle;
         try {
             HttpRequest httpRequest = createAuthenticatedRequestBuilder(endpoint, token)
                     .DELETE()
@@ -180,7 +185,8 @@ public class RestaurantService extends AbstractService
 
     public CompletableFuture<MenuTitleResponse> editMenu(AddMenuTitleRequest request, String token, Integer restaurantId, String title)
     {
-        String endpoint = "restaurants/" + restaurantId + "/menu/edit" + title;
+        String encodedTitle = URLEncoder.encode(title, StandardCharsets.UTF_8);
+        String endpoint = "restaurants/" + restaurantId + "/menu/edit/" + encodedTitle;
         try {
             HttpRequest httpRequest = createAuthenticatedRequestBuilder(endpoint, token)
                     .PUT(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(request)))
@@ -192,9 +198,9 @@ public class RestaurantService extends AbstractService
         }
     }
 
-    public CompletableFuture<MenuTitleResponse> getMenuByTitle(String token, Integer restaurantId, String title)
-    {
-        String endpoint = "restaurants/" + restaurantId + "/menu/" + title;
+    public CompletableFuture<MenuTitleResponse> getMenuByTitle(String token, Integer restaurantId, String title) {
+        String encodedTitle = URLEncoder.encode(title, StandardCharsets.UTF_8);
+        String endpoint = "restaurants/" + restaurantId + "/menu/" + encodedTitle;
         try {
             HttpRequest httpRequest = createAuthenticatedRequestBuilder(endpoint, token)
                     .GET()
@@ -222,7 +228,8 @@ public class RestaurantService extends AbstractService
 
     public  CompletableFuture<ApiResponse> addItemToMenu(AddMenuItemRequest request, String token, Integer restaurantId, String title)
     {
-        String endpoint = "restaurants/" + restaurantId + "/menu/" + title;
+        String encodedTitle = URLEncoder.encode(title, StandardCharsets.UTF_8);
+        String endpoint = "restaurants/" + restaurantId + "/menu/" + encodedTitle;
         try {
             HttpRequest httpRequest = createAuthenticatedRequestBuilder(endpoint, token)
                     .PUT(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(request)))
@@ -236,7 +243,8 @@ public class RestaurantService extends AbstractService
 
     public CompletableFuture<ApiResponse> deleteItemFromMenu(String token, Integer restaurantId, String title, Integer foodId)
     {
-        String endpoint = "restaurants/" + restaurantId + "/menu/" + title + "/" + foodId;
+        String encodedTitle = URLEncoder.encode(title, StandardCharsets.UTF_8);
+        String endpoint = "restaurants/" + restaurantId + "/menu/" + encodedTitle + "/" + foodId;
         try {
             HttpRequest httpRequest = createAuthenticatedRequestBuilder(endpoint, token)
                     .DELETE()

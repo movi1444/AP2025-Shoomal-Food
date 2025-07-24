@@ -228,8 +228,8 @@ public class ShowListFoodController extends AbstractBaseController
     public void setRestaurantId(Integer restaurantId)
     {
         this.restaurantId = restaurantId;
-        loadFoods();
         loadMenuTitles();
+        loadFoods();
     }
 
     private void loadMenuTitles()
