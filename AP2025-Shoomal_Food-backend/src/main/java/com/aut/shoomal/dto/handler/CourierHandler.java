@@ -175,7 +175,7 @@ public class CourierHandler extends AbstractHttpHandler {
             }
             order.setCourier(authenticatedUser);
         }
-        else if (order.getCourier() == null || !order.getCourier().getId().equals(authenticatedUser.getId())) {
+        else if (order.getCourier() != null && !order.getCourier().getId().equals(authenticatedUser.getId())) {
             if (transaction != null)
                 transaction.rollback();
             session.close();

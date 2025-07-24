@@ -94,9 +94,6 @@ public class RestaurantCoreHandler extends AbstractHttpHandler {
             sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "Invalid input: name, address, and phone are required."));
             return;
         }
-        if (request.getPhone().length() != 8 || !request.getPhone().matches("\\d+")) {
-            throw new InvalidInputException("Phone number must be exactly 8 digits.");
-        }
         Restaurant newRestaurant = restaurantManager.createRestaurant(request, String.valueOf(authenticatedUser.getId()));
         sendRawJsonResponse(exchange, HttpURLConnection.HTTP_CREATED, convertToRestaurantResponse(newRestaurant));
     }

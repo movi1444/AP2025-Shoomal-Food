@@ -22,81 +22,80 @@
         <padding>
             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
         </padding>
-      <GridPane prefHeight="134.0" prefWidth="728.0">
-        <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-        </columnConstraints>
-        <rowConstraints>
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        </rowConstraints>
-         <children>
-               <ImageView fx:id="restaurantLogoView" fitHeight="100" fitWidth="100" preserveRatio="true" styleClass="restaurant-logo" GridPane.columnIndex="1" GridPane.halignment="RIGHT">
-               <GridPane.margin>
-                  <Insets right="10.0" />
-               </GridPane.margin></ImageView>
-               <VBox alignment="CENTER_LEFT" spacing="5" GridPane.columnIndex="2" GridPane.halignment="RIGHT">
-                   <Label fx:id="restaurantNameLabel" styleClass="header-label" text="نام رستوران">
-                       <font>
-                           <Font size="28.0" />
-                       </font>
-                   </Label>
-                   <Label fx:id="restaurantAddressLabel" style="-fx-text-fill: white; -fx-font-size: 16px;" styleClass="sub-header-label" text="آدرس رستوران">
-                       <font>
-                           <Font size="16.0" />
-                       </font>
-                   </Label>
-               <GridPane.margin>
-                  <Insets left="10.0" />
-               </GridPane.margin>
-               </VBox>
-         </children>
-      </GridPane>
+        <GridPane prefHeight="134.0" prefWidth="728.0">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            </rowConstraints>
+            <children>
+                <ImageView fx:id="restaurantLogoView" fitHeight="100" fitWidth="100" preserveRatio="true" styleClass="restaurant-logo" GridPane.columnIndex="1" GridPane.halignment="RIGHT">
+                    <GridPane.margin>
+                        <Insets right="10.0" />
+                    </GridPane.margin></ImageView>
+                <VBox alignment="CENTER_LEFT" spacing="5" GridPane.columnIndex="2" GridPane.halignment="RIGHT">
+                    <Label fx:id="restaurantNameLabel" styleClass="header-label" text="نام رستوران">
+                        <font>
+                            <Font size="28.0" />
+                        </font>
+                    </Label>
+                    <Label fx:id="restaurantAddressLabel" style="-fx-text-fill: white; -fx-font-size: 16px;" styleClass="sub-header-label" text="آدرس رستوران">
+                        <font>
+                            <Font size="16.0" />
+                        </font>
+                    </Label>
+                    <GridPane.margin>
+                        <Insets left="10.0" />
+                    </GridPane.margin>
+                </VBox>
+            </children>
+        </GridPane>
 
         <HBox alignment="CENTER" spacing="20.0">
             <Button fx:id="backButton" onAction="#handleBack" styleClass="logout-button" text="بازگشت" />
-         <Hyperlink fx:id="viewCartButton" onAction="#handleViewCart" prefHeight="57.0" prefWidth="27.0" styleClass="sidebar-hyperlink">
-            <graphic>
-               <ImageView fitHeight="50.0" fitWidth="50.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
-                  <image>
-                     <Image url="@../images/shopping-basket.png" />
-                  </image>
-               </ImageView>
-            </graphic>
-            <tooltip>
-               <Tooltip text="سبد خرید" />
-            </tooltip>
-         </Hyperlink>
+            <Hyperlink fx:id="viewCartButton" onAction="#handleViewCart" prefHeight="57.0" prefWidth="27.0" styleClass="sidebar-hyperlink">
+                <graphic>
+                    <ImageView fitHeight="50.0" fitWidth="50.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                            <Image url="@../images/shopping-basket.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+                <tooltip>
+                    <Tooltip text="سبد خرید" />
+                </tooltip>
+            </Hyperlink>
             <Button fx:id="seeMenusButton" onAction="#handleSeeAllMenus" styleClass="primary-button" text="مشاهده منو ها" />
         </HBox>
-      <GridPane>
-        <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="100.0" />
-        </columnConstraints>
-        <rowConstraints>
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        </rowConstraints>
-         <children>
-              <Label style="-fx-text-fill: white; -fx-font-size: 22px;" styleClass="section-title" text="غذاهای موجود" GridPane.columnIndex="2" GridPane.halignment="CENTER">
-                  <font>
-                      <Font size="22.0" />
-                  </font>
-              </Label>
-         </children>
-      </GridPane>
+        <GridPane>
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="100.0" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            </rowConstraints>
+            <children>
+                <Label style="-fx-text-fill: white; -fx-font-size: 22px;" styleClass="section-title" text="غذاهای موجود" GridPane.columnIndex="2" GridPane.halignment="CENTER">
+                    <font>
+                        <Font size="22.0" />
+                    </font>
+                </Label>
+            </children>
+        </GridPane>
 
-        <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS">
-            <FlowPane fx:id="foodsContainerFlowPane" alignment="TOP_LEFT" hgap="20" vgap="20">
-                <padding>
-                    <Insets bottom="10" left="10" right="10" top="10" />
-                </padding>
-            </FlowPane>
+        <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="600.0"> <FlowPane fx:id="foodsContainerFlowPane" alignment="TOP_LEFT" hgap="20" vgap="20">
+            <padding>
+                <Insets bottom="10" left="10" right="10" top="10" />
+            </padding>
+        </FlowPane>
         </ScrollPane>
     </VBox>
 </AnchorPane>

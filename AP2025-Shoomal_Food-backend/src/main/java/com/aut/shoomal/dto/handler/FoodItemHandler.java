@@ -68,7 +68,7 @@ public class FoodItemHandler extends AbstractHttpHandler {
 
             if (requestPath.equals("/restaurants/" + restaurantId + "/item") && method.equalsIgnoreCase("POST") && restaurantId != -1) {
                 handleAddFoodItem(exchange, authenticatedUser, restaurantId);
-            } if (requestPath.equals("/restaurants/" + foodItemId + "/item") && foodItemId != -1) {
+            } else if (requestPath.equals("/restaurants/" + foodItemId + "/item") && foodItemId != -1) {
                 if (method.equalsIgnoreCase("PUT")) {
                     handleUpdateFoodItem(exchange, authenticatedUser, foodItemId);
                 } else if (method.equalsIgnoreCase("DELETE")) {
