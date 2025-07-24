@@ -20,6 +20,8 @@ import org.hibernate.Transaction;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -37,7 +39,7 @@ public class MenuHandler extends AbstractHttpHandler {
     private static final Pattern RESTAURANT_ID_FROM_MENU_PATH_PATTERN = Pattern.compile("/restaurants/(\\d+)/menu.*");
     private static final Pattern MENU_TITLE_FROM_PATH_PATTERN = Pattern.compile("/restaurants/\\d+/menu/([^/]+).*");
     private static final Pattern MENU_ITEM_ID_FROM_PATH_PATTERN = Pattern.compile("/restaurants/\\d+/menu/[^/]+/(\\d+).*");
-    private static final Pattern EDIT_MENU_PATH_PATTERN = Pattern.compile("/restaurants/\\d+/menu/edit(?:/[^/]+(?:/\\d+)?)?/?$");
+    private static final Pattern EDIT_MENU_PATH_PATTERN = Pattern.compile("/restaurants/\\d+/menu/edit/([^/]+).*");
 
     public MenuHandler(RestaurantManager restaurantManager, MenuManager menuManager, FoodManager foodManager, UserManager userManager, BlacklistedTokenDao blacklistedTokenDao) {
         this.restaurantManager = restaurantManager;
@@ -72,7 +74,11 @@ public class MenuHandler extends AbstractHttpHandler {
 
             if (requestPath.equals("/restaurants/" + restaurantId + "/menu") && method.equalsIgnoreCase("POST") && restaurantId != -1) {
                 handleAddMenuTitle(exchange, authenticatedUser, restaurantId);
-            } else if (requestPath.equals("/restaurants/" + restaurantId + "/menu/" + menuTitle) && restaurantId != -1 && menuTitle != null) {
+            } else if (EDIT_MENU_PATH_PATTERN.matcher(requestPath).matches() && method.equalsIgnoreCase("PUT") && restaurantId != -1 && newMenuTitle != null) {
+                editMenuTitle(exchange, restaurantId, newMenuTitle);
+            } else if (MENU_ITEM_ID_FROM_PATH_PATTERN.matcher(requestPath).matches() && method.equalsIgnoreCase("DELETE") && restaurantId != -1 && menuTitle != null && menuItemId != -1) {
+                handleDeleteMenuItemFromMenu(exchange, authenticatedUser, restaurantId, menuTitle, menuItemId);
+            } else if (MENU_TITLE_FROM_PATH_PATTERN.matcher(requestPath).matches() && restaurantId != -1 && menuTitle != null) {
                 if (method.equalsIgnoreCase("DELETE")) {
                     handleDeleteMenuTitle(exchange, authenticatedUser, restaurantId, menuTitle);
                 } else if (method.equalsIgnoreCase("PUT")) {
@@ -82,12 +88,8 @@ public class MenuHandler extends AbstractHttpHandler {
                 } else {
                     sendResponse(exchange, HttpURLConnection.HTTP_BAD_METHOD, new ApiResponse(false, "Method Not Allowed. Expected DELETE or PUT"));
                 }
-            } else if (requestPath.equals("/restaurants/" + restaurantId + "/menu/" + menuTitle + "/" + menuItemId) && method.equalsIgnoreCase("DELETE") && restaurantId != -1 && menuTitle != null && menuItemId != -1) {
-                handleDeleteMenuItemFromMenu(exchange, authenticatedUser, restaurantId, menuTitle, menuItemId);
             } else if (method.equalsIgnoreCase("GET") && requestPath.equals("/restaurants/" + restaurantId + "/menus") && restaurantId != -1) {
                 getMenusByRestaurantId(exchange, (long) restaurantId);
-            } else if (requestPath.equals("/restaurants/" + restaurantId + "/menu/edit/" + menuTitle) && method.equalsIgnoreCase("PUT") && restaurantId != -1 && newMenuTitle != null) {
-                editMenuTitle(exchange, restaurantId, newMenuTitle);
             } else {
                 sendResponse(exchange, HttpURLConnection.HTTP_NOT_FOUND, new ApiResponse(false, "Resource not found"));
             }
@@ -227,7 +229,14 @@ public class MenuHandler extends AbstractHttpHandler {
     private Optional<String> extractMenuTitleFromPath(String path, Pattern pattern) {
         Matcher matcher = pattern.matcher(path);
         if (matcher.matches() && matcher.groupCount() >= 1) {
-            return Optional.ofNullable(matcher.group(1));
+            String encodedValue = matcher.group(1);
+            try {
+                String decodedValue = URLDecoder.decode(encodedValue, StandardCharsets.UTF_8);
+                return Optional.ofNullable(decodedValue);
+            }  catch (Exception e) {
+                System.err.println("Error decoding path variable: " + e.getMessage());
+                return Optional.empty();
+            }
         }
         return Optional.empty();
     }
