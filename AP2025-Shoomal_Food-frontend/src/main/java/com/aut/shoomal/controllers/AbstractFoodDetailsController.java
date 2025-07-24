@@ -93,6 +93,7 @@ public abstract class AbstractFoodDetailsController extends AbstractBaseControll
         request.setPrice(price);
         request.setSupply(supply);
         request.setKeywords(convertToList(keywordsField.getText()));
+        request.setImageBase64(this.imageBase64String);
 
         saveFoodDetails(request)
                 .thenAccept(response -> Platform.runLater(() -> {

@@ -67,7 +67,8 @@ public class BuyerDashboardContentController extends AbstractBaseController {
 
     private BuyerActiveOrdersController activeOrdersController;
 
-    private Consumer<Integer> navigateToRestaurantDetailsCallback;
+    // This field is removed as navigation is handled directly within this controller
+    // private Consumer<Integer> navigateToRestaurantDetailsCallback;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -124,9 +125,10 @@ public class BuyerDashboardContentController extends AbstractBaseController {
         this.loggedInUser = user;
     }
 
-    public void setNavigateToRestaurantDetailsCallback(Consumer<Integer> callback) {
-        this.navigateToRestaurantDetailsCallback = callback;
-    }
+    // This method is removed as navigation is handled directly within this controller
+    // public void setNavigateToRestaurantDetailsCallback(Consumer<Integer> callback) {
+    //     this.navigateToRestaurantDetailsCallback = callback;
+    // }
 
     public void loadBuyerDashboardContent() {
         if (token == null || token.isEmpty()) {
@@ -191,7 +193,25 @@ public class BuyerDashboardContentController extends AbstractBaseController {
             VBox card = loader.load();
             FavoriteRestaurantCardController cardController = loader.getController();
 
-            cardController.setRestaurantData(restaurant, navigateToRestaurantDetailsCallback);
+            // Directly handle the navigation logic here
+            cardController.setRestaurantData(restaurant, (restaurantId) -> {
+                if (loggedInUser != null) {
+                    navigateTo(
+                            card, // Use the card as the source node for navigation
+                            "/com/aut/shoomal/views/BuyerRestaurantView.fxml", // FXML for restaurant details
+                            "/com/aut/shoomal/styles/MainView.css", // A common CSS file for the new view
+                            TransitionType.SLIDE_RIGHT, // Consistent with the user's example transition
+                            controller -> {
+                                if (controller instanceof BuyerShowRestaurantDetailsController detailsController) {
+                                    detailsController.setLoggedInUser(loggedInUser); // Pass loggedInUser
+                                    detailsController.setRestaurantId(restaurantId); // Pass restaurantId
+                                }
+                            }
+                    );
+                } else {
+                    showAlert("Authentication Error", "User not logged in. Cannot view restaurant details.", Alert.AlertType.ERROR, null);
+                }
+            });
             targetFlowPane.getChildren().add(card);
         } catch (IOException e) {
             System.err.println("Failed to load restaurant card: " + e.getMessage());
@@ -366,10 +386,21 @@ public class BuyerDashboardContentController extends AbstractBaseController {
 
         hbox.setOnMouseClicked(event -> {
             System.out.println("Restaurant clicked: " + restaurant.getName() + " (ID: " + restaurant.getId() + ")");
-            if (navigateToRestaurantDetailsCallback != null) {
-                navigateToRestaurantDetailsCallback.accept(restaurant.getId());
+            if (loggedInUser != null) {
+                navigateTo(
+                        (Node) event.getSource(),
+                        "/com/aut/shoomal/views/BuyerRestaurantView.fxml",
+                        "/com/aut/shoomal/styles/MainView.css",
+                        TransitionType.SLIDE_RIGHT,
+                        controller -> {
+                            if (controller instanceof BuyerShowRestaurantDetailsController detailsController) {
+                                detailsController.setLoggedInUser(loggedInUser);
+                                detailsController.setRestaurantId(restaurant.getId());
+                            }
+                        }
+                );
             } else {
-                showAlert("Navigation Error", "Navigation callback not set.", Alert.AlertType.ERROR, null);
+                showAlert("Authentication Error", "User not logged in. Cannot view restaurant details.", Alert.AlertType.ERROR, null);
             }
         });
 
