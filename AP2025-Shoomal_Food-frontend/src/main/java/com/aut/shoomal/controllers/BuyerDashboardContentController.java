@@ -140,7 +140,7 @@ public class BuyerDashboardContentController extends AbstractBaseController {
                     Platform.runLater(() -> {
                         if (favorites != null && !favorites.isEmpty()) {
                             for (RestaurantResponse restaurant : favorites) {
-                                addRestaurantCard(restaurant, buyerFavoriteRestaurantsFlowPane);
+                                addRestaurantCard(restaurant, buyerFavoriteRestaurantsFlowPane, true);
                             }
                         } else {
                             buyerFavoriteRestaurantsFlowPane.getChildren().add(new Label("شما رستوران مورد علاقه‌ای ندارید."));
@@ -156,7 +156,7 @@ public class BuyerDashboardContentController extends AbstractBaseController {
                                     .toList();
                             if (!otherRestaurants.isEmpty()) {
                                 for (RestaurantResponse restaurant : otherRestaurants) {
-                                    addRestaurantCard(restaurant, buyerOtherRestaurantsFlowPane);
+                                    addRestaurantCard(restaurant, buyerOtherRestaurantsFlowPane, false);
                                 }
                             } else {
                                 buyerOtherRestaurantsFlowPane.getChildren().add(new Label("سایر رستوران‌ها در دسترس نیستند."));
@@ -179,7 +179,7 @@ public class BuyerDashboardContentController extends AbstractBaseController {
                 });
     }
 
-    private void addRestaurantCard(RestaurantResponse restaurant, FlowPane targetFlowPane) {
+    private void addRestaurantCard(RestaurantResponse restaurant, FlowPane targetFlowPane, boolean isFavorite) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/aut/shoomal/views/components/FavoriteRestaurantCard.fxml"));
             VBox card = loader.load();
@@ -203,6 +203,7 @@ public class BuyerDashboardContentController extends AbstractBaseController {
                     showAlert("Authentication Error", "User not logged in. Cannot view restaurant details.", Alert.AlertType.ERROR, null);
                 }
             });
+
             targetFlowPane.getChildren().add(card);
         } catch (IOException e) {
             System.err.println("Failed to load restaurant card: " + e.getMessage());
