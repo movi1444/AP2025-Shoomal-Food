@@ -1,5 +1,6 @@
 package com.aut.shoomal.dto.handler;
 
+import com.aut.shoomal.entity.restaurant.Restaurant;
 import com.aut.shoomal.entity.restaurant.RestaurantOrderStatus;
 import com.aut.shoomal.entity.user.User;
 import com.aut.shoomal.entity.user.UserManager;
@@ -127,7 +128,11 @@ public class RestaurantOrderHandler extends AbstractHttpHandler {
         String courierIdStr = queryParams.get("courier");
         String statusString = queryParams.get("status");
 
-        List<Order> orders = orderManager.getAllOrders(search, String.valueOf(restaurantId), customerIdStr, courierIdStr, statusString);
+        Restaurant restaurant = restaurantManager.findById((long) restaurantId);
+        if (restaurant == null)
+            throw new NotFoundException("Restaurant not found");
+
+        List<Order> orders = orderManager.getAllOrders(search, restaurant.getName(), customerIdStr, courierIdStr, statusString);
 
         List<OrderResponse> orderResponses = orders.stream()
                 .map(this::convertToOrderResponse)

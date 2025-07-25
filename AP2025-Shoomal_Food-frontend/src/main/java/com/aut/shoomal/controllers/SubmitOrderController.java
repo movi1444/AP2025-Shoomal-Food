@@ -256,7 +256,7 @@ public class SubmitOrderController extends AbstractBaseController {
 
                         transactionService.onlinePayment(token, paymentRequest)
                                 .thenAccept(transactionResponse -> Platform.runLater(() -> {
-                                    if (transactionResponse != null && "success".equalsIgnoreCase(transactionResponse.getStatus())) {
+                                    if (transactionResponse != null && "completed".equalsIgnoreCase(transactionResponse.getStatus())) {
                                         showAlert("موفقیت", "سفارش شما با موفقیت ثبت و پرداخت شد! شناسه سفارش: " + orderResponse.getId(), Alert.AlertType.INFORMATION, null);
                                         UserResponse currentUser = PreferencesManager.getUserData();
                                         if (currentUser != null && currentUser.getId() != null) {
