@@ -272,7 +272,7 @@ public class RestaurantService extends AbstractService
             params.put("courier", courier);
             String query = buildQueryString(params);
 
-            String baseEndpoint = "restaurants/" + restaurantId + "/orders/";
+            String baseEndpoint = "restaurants/" + restaurantId + "/orders";
             String endpoint = baseEndpoint + query;
             HttpRequest httpRequest = createAuthenticatedRequestBuilder(endpoint, token)
                     .GET()
