@@ -206,32 +206,10 @@ public class AdminTransactionsController extends AbstractBaseController {
             return;
         }
 
-        adminDataService.getAllTransactions(token)
+        adminDataService.getAllTransactions(token, search, userId, method, status)
                 .thenAccept(transactions -> Platform.runLater(() -> {
                     if (transactions != null && !transactions.isEmpty()) {
                         ObservableList<TransactionResponse> filteredTransactions = FXCollections.observableArrayList(transactions);
-
-                        if (search != null && !search.isEmpty()) {
-                            filteredTransactions = filteredTransactions.stream()
-                                    .filter(t -> (t.getUserId() != null && String.valueOf(t.getUserId()).contains(search)) ||
-                                            (t.getOrderId() != null && String.valueOf(t.getOrderId()).contains(search)))
-                                    .collect(Collectors.toCollection(FXCollections::observableArrayList));
-                        }
-                        if (userId != null && !userId.isEmpty()) {
-                            filteredTransactions = filteredTransactions.stream()
-                                    .filter(t -> t.getUserId() != null && String.valueOf(t.getUserId()).equals(userId))
-                                    .collect(Collectors.toCollection(FXCollections::observableArrayList));
-                        }
-                        if (method != null && !method.isEmpty() && !method.equals("همه روش‌ها")) {
-                            filteredTransactions = filteredTransactions.stream()
-                                    .filter(t -> t.getPaymentMethod() != null && t.getPaymentMethod().equalsIgnoreCase(method))
-                                    .collect(Collectors.toCollection(FXCollections::observableArrayList));
-                        }
-                        if (status != null && !status.isEmpty() && !status.equals("همه وضعیت‌ها")) {
-                            filteredTransactions = filteredTransactions.stream()
-                                    .filter(t -> t.getStatus() != null && t.getStatus().equalsIgnoreCase(status))
-                                    .collect(Collectors.toCollection(FXCollections::observableArrayList));
-                        }
                         filteredTransactions.sort(Comparator.comparing(TransactionResponse::getId));
                         transactionsTableView.setItems(filteredTransactions);
                         transactionsTableView.sort();
