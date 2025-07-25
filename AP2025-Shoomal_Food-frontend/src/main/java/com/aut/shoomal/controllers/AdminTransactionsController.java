@@ -134,7 +134,8 @@ public class AdminTransactionsController extends AbstractBaseController {
         ObservableList<String> statuses = FXCollections.observableArrayList(
                 "همه وضعیت‌ها",
                 "Completed",
-                "Failed"
+                "Failed",
+                "Refunded"
         );
         statusFilterComboBox.setItems(statuses);
         statusFilterComboBox.getSelectionModel().selectFirst();
