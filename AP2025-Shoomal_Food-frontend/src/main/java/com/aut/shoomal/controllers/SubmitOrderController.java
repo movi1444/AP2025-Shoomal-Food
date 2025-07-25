@@ -4,7 +4,7 @@ import com.aut.shoomal.dto.request.OrderItemRequest;
 import com.aut.shoomal.dto.request.PaymentRequest;
 import com.aut.shoomal.dto.request.SubmitOrderRequest;
 import com.aut.shoomal.dto.response.CartItemResponse;
-import com.aut.shoomal.dto.response.CouponResponse;
+
 import com.aut.shoomal.dto.response.UserResponse;
 import com.aut.shoomal.exceptions.FrontendServiceException;
 import com.aut.shoomal.service.CartService;
@@ -108,11 +108,13 @@ public class SubmitOrderController extends AbstractBaseController {
                     .append(" = ").append(item.getItemTotalPrice()).append(" تومان\n");
         }
         summary.append(" هزینه بسته‌بندی: ").append(this.restaurantTaxFee).append(" تومان ");
-        summary.append(" هزینه اضافی: ").append(this.restaurantAdditionalFee).append(" تومان\n ");
-        summary.append("توجه: هزینه پیک (معمولا 500 تومان) در مرحله نهایی به مبلغ کل اضافه خواهد شد.\n");
+        summary.append(" هزینه اضافی: ").append(this.restaurantAdditionalFee).append(" تومان ");
+        summary.append(" (توجه: هزینه پیک (معمولا 500 تومان) در مرحله نهایی به مبلغ کل اضافه خواهد شد.)\n");
+
+        this.originalTotalOrderPrice += 500;
 
         orderSummaryLabel.setText(summary.toString());
-        totalPriceLabel.setText("مبلغ کل: " + (originalTotalOrderPrice + 500) + " تومان");
+        totalPriceLabel.setText("مبلغ کل: " + originalTotalOrderPrice + " تومان");
     }
 
     private void loadWalletBalance() {
