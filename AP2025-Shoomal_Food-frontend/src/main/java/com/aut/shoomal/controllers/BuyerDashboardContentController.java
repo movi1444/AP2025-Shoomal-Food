@@ -266,7 +266,10 @@ public class BuyerDashboardContentController extends AbstractBaseController {
 
         buyerService.searchAllRestaurants(token, searchText)
                 .thenAccept(restaurants -> Platform.runLater(() -> {
-                    displaySearchResults(restaurants, List.of(), false);
+                    if (restaurants != null && !restaurants.isEmpty())
+                        displaySearchResults(restaurants, List.of(), false);
+                    else
+                        showAlert("خالی", "هیچ رستورانی با این کلمات پیدا نشد.", Alert.AlertType.INFORMATION, null);
                 }))
                 .exceptionally(e -> {
                     Platform.runLater(() -> {
@@ -293,7 +296,10 @@ public class BuyerDashboardContentController extends AbstractBaseController {
 
         buyerService.searchAllFoods(token, searchText)
                 .thenAccept(foods -> Platform.runLater(() -> {
-                    displaySearchResults(List.of(), foods, false);
+                    if (foods != null && !foods.isEmpty())
+                        displaySearchResults(List.of(), foods, false);
+                    else
+                        showAlert("خالی", "هیچ غذایی با این کلمات پیدا نشد.", Alert.AlertType.INFORMATION, null);
                 }))
                 .exceptionally(e -> {
                     Platform.runLater(() -> {
@@ -422,7 +428,19 @@ public class BuyerDashboardContentController extends AbstractBaseController {
 
         hbox.setOnMouseClicked(event -> {
             System.out.println("Food clicked: " + food.getName() + " (ID: " + food.getId() + ", Vendor ID: " + food.getVendorId() + ")");
-            showAlert("غذا", "صفحه جزئیات غذا " + food.getName() + " هنوز پیاده‌سازی نشده است.", Alert.AlertType.INFORMATION, null);
+            if (loggedInUser != null)
+                navigateTo(
+                        (Node) event.getSource(),
+                        "/com/aut/shoomal/views/BuyerRestaurantView.fxml",
+                        "/com/aut/shoomal/styles/MainView.css",
+                        TransitionType.SLIDE_RIGHT,
+                        controller -> {
+                            if (controller instanceof BuyerShowRestaurantDetailsController detailsController) {
+                                detailsController.setLoggedInUser(loggedInUser);
+                                detailsController.setRestaurantId(food.getVendorId());
+                            }
+                        }
+                );
         });
         return hbox;
     }
