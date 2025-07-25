@@ -39,7 +39,7 @@ public class RestaurantHandler extends AbstractHttpHandler {
         this.restaurantCoreHandler = new RestaurantCoreHandler(restaurantManager, userManager, blacklistedTokenDao);
         this.foodItemHandler = new FoodItemHandler(restaurantManager, foodManager, userManager, blacklistedTokenDao);
         this.menuHandler = new MenuHandler(restaurantManager, menuManager, foodManager, userManager, blacklistedTokenDao);
-        this.restaurantOrderHandler = new RestaurantOrderHandler(restaurantManager, orderManager, userManager, blacklistedTokenDao, paymentTransactionManager);
+        this.restaurantOrderHandler = new RestaurantOrderHandler(restaurantManager, orderManager, userManager, blacklistedTokenDao, paymentTransactionManager,foodManager);
     }
 
     @Override

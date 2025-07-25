@@ -32,6 +32,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import com.aut.shoomal.entity.food.Food;
+import com.aut.shoomal.entity.food.FoodManager;
+import com.aut.shoomal.payment.order.OrderItem;
 
 public class RestaurantOrderHandler extends AbstractHttpHandler {
 
@@ -40,17 +43,21 @@ public class RestaurantOrderHandler extends AbstractHttpHandler {
     protected final UserManager userManager;
     private final PaymentTransactionManager paymentTransactionManager;
     protected final BlacklistedTokenDao blacklistedTokenDao;
+    private final FoodManager foodManager;
 
     private static final Pattern RESTAURANT_ID_ORDERS_PATH = Pattern.compile("/restaurants/(\\d+)/orders/?$");
     private static final Pattern RESTAURANT_ORDER_ID_PATH = Pattern.compile("/restaurants/orders/(\\d+)$");
 
     public RestaurantOrderHandler(RestaurantManager restaurantManager, OrderManager orderManager,
-                                  UserManager userManager, BlacklistedTokenDao blacklistedTokenDao, PaymentTransactionManager paymentTransactionManager) {
+                                  UserManager userManager, BlacklistedTokenDao blacklistedTokenDao,
+                                  PaymentTransactionManager paymentTransactionManager,
+                                  FoodManager foodManager) {
         this.restaurantManager = restaurantManager;
         this.orderManager = orderManager;
         this.userManager = userManager;
         this.blacklistedTokenDao = blacklistedTokenDao;
         this.paymentTransactionManager = paymentTransactionManager;
+        this.foodManager = foodManager;
     }
 
     @Override
@@ -144,32 +151,37 @@ public class RestaurantOrderHandler extends AbstractHttpHandler {
     private void handleChangeOrderStatus(HttpExchange exchange, User authenticatedUser, int orderId) throws IOException {
         if (!checkContentType(exchange)) return;
 
-        if (!restaurantManager.isOwner(orderManager.findOrderById(orderId).getRestaurant().getId().intValue(), String.valueOf(authenticatedUser.getId()))) {
-            throw new ForbiddenException("403 Forbidden: You are not authorized to change the status of this order.");
-        }
-        if (!(authenticatedUser instanceof Seller) || !((Seller) authenticatedUser).isApproved()) {
-            sendResponse(exchange, HttpURLConnection.HTTP_FORBIDDEN, new ApiResponse(false, "Forbidden request: Seller is not yet approved to manage restaurant orders."));
-            return;
-        }
-
-        UpdateOrderStatusRequest requestBody;
+        Session session = null;
+        Transaction tx = null;
         try {
-            requestBody = parseRequestBody(exchange, UpdateOrderStatusRequest.class);
-            if (requestBody == null || requestBody.getStatus() == null || requestBody.getStatus().trim().isEmpty()) {
-                sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid input: 'status' is required."));
-                return;
-            }
-        } catch (IOException e) {
-            System.err.println("Error parsing request body for PATCH /restaurants/orders/{order_id}: " + e.getMessage());
-            e.printStackTrace();
-            sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid input: Malformed JSON in request body."));
-            return;
-        }
+            session = HibernateUtil.getSessionFactory().openSession();
+            tx = session.beginTransaction();
 
-        try {
-            Order order = orderManager.findOrderById(orderId);
+            Order order = session.get(Order.class, (long) orderId);
             if (order == null) {
                 throw new NotFoundException("404 Not Found: Order with ID " + orderId + " not found.");
+            }
+
+            if (!restaurantManager.isOwner(order.getRestaurant().getId().intValue(), String.valueOf(authenticatedUser.getId()))) {
+                throw new ForbiddenException("403 Forbidden: You are not authorized to change the status of this order.");
+            }
+            if (!(authenticatedUser instanceof Seller) || !((Seller) authenticatedUser).isApproved()) {
+                sendResponse(exchange, HttpURLConnection.HTTP_FORBIDDEN, new ApiResponse(false, "Forbidden request: Seller is not yet approved to manage restaurant orders."));
+                return;
+            }
+
+            UpdateOrderStatusRequest requestBody;
+            try {
+                requestBody = parseRequestBody(exchange, UpdateOrderStatusRequest.class);
+                if (requestBody == null || requestBody.getStatus() == null || requestBody.getStatus().trim().isEmpty()) {
+                    sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid input: 'status' is required."));
+                    return;
+                }
+            } catch (IOException e) {
+                System.err.println("Error parsing request body for PATCH /restaurants/orders/{order_id}: " + e.getMessage());
+                e.printStackTrace();
+                sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid input: Malformed JSON in request body."));
+                return;
             }
 
             OrderStatus internalOrderStatus = switch (RestaurantOrderStatus.fromValue(requestBody.getStatus())) {
@@ -178,11 +190,17 @@ public class RestaurantOrderHandler extends AbstractHttpHandler {
                 case SERVED -> OrderStatus.FINDING_COURIER;
             };
 
-            Session session = HibernateUtil.getSessionFactory().openSession();
-            Transaction tx = session.beginTransaction();
             boolean success = true;
-            if (internalOrderStatus == OrderStatus.CANCELLED)
+            if (internalOrderStatus == OrderStatus.CANCELLED) {
                 success = refundTransaction(exchange, session, order);
+                if (success) {
+                    for (OrderItem item : order.getOrderItems()) {
+                        Food food = item.getFood();
+                        food.setSupply(food.getSupply() + item.getQuantity());
+                        foodManager.updateFood(food, session);
+                    }
+                }
+            }
 
             if (success)
             {
@@ -197,18 +215,24 @@ public class RestaurantOrderHandler extends AbstractHttpHandler {
             sendResponse(exchange, HttpURLConnection.HTTP_OK, new ApiResponse(true, "200 Order status changed successfully."));
 
         } catch (NotFoundException e) {
+            if (tx != null) tx.rollback();
             System.err.println(e.getMessage());
             sendResponse(exchange, HttpURLConnection.HTTP_NOT_FOUND, new ApiResponse(false, e.getMessage()));
         } catch (ForbiddenException e) {
+            if (tx != null) tx.rollback();
             System.err.println(e.getMessage());
             sendResponse(exchange, HttpURLConnection.HTTP_FORBIDDEN, new ApiResponse(false, e.getMessage()));
         } catch (InvalidInputException e) {
+            if (tx != null) tx.rollback();
             System.err.println(e.getMessage());
             sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, e.getMessage()));
         } catch (Exception e) {
+            if (tx != null) tx.rollback();
             System.err.println("An unexpected error occurred during PATCH /restaurants/orders/" + orderId + ": " + e.getMessage());
             e.printStackTrace();
             sendResponse(exchange, HttpURLConnection.HTTP_INTERNAL_ERROR, new ApiResponse(false, "500 Internal Server Error: An unexpected error occurred."));
+        } finally {
+            if (session != null) session.close();
         }
     }
 
@@ -270,3 +294,4 @@ public class RestaurantOrderHandler extends AbstractHttpHandler {
         );
     }
 }
+
