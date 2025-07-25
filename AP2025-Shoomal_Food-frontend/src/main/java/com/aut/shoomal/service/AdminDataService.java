@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 public class AdminDataService extends AbstractService {
 
@@ -58,8 +60,21 @@ public class AdminDataService extends AbstractService {
     }
 
     public CompletableFuture<List<TransactionResponse>> getAllTransactions(String token) {
+        return getAllTransactions(token, null, null, null, null);
+    }
+
+    public CompletableFuture<List<TransactionResponse>> getAllTransactions(String token, String search, String userId, String method, String status) {
         try {
-            HttpRequest request = createAuthenticatedRequestBuilder("admin/transactions", token)
+            Map<String, String> params = new HashMap<>();
+            if (search != null) params.put("search", search);
+            if (userId != null) params.put("user", userId);
+            if (method != null && !method.equals("همه روش‌ها")) params.put("method", method);
+            if (status != null && !status.equals("همه وضعیت‌ها")) params.put("status", status);
+
+            String query = buildQueryString(params);
+            String endpoint = "admin/transactions" + query;
+
+            HttpRequest request = createAuthenticatedRequestBuilder(endpoint, token)
                     .GET()
                     .build();
             return sendListRequest(request, new TypeReference<>() {});
