@@ -20,7 +20,7 @@ public class Rating
 
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "rating_images", joinColumns = @JoinColumn(name = "rating_id"))
-    @Column(name = "image_base64_url", columnDefinition = "TEXT")
+    @Column(name = "image_base64_url", columnDefinition = "LONGTEXT")
     private List<String> imageBase64 = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
