@@ -149,17 +149,17 @@ public abstract class AbstractService
         switch (code)
         {
             case 400:
-                throw new InvalidInputException(backendErrorMessage, "Invalid input provided. Please check your data.");
+                throw new InvalidInputException(backendErrorMessage, "ورودی وارد شده اشتباه است:" + "\n" + backendErrorMessage);
             case 401:
-                throw new UnauthorizedException(backendErrorMessage, "Authentication failed. Please log in again.");
+                throw new UnauthorizedException(backendErrorMessage, "کاربر احراز هویت نشده است.");
             case 403:
-                throw new ForbiddenException(backendErrorMessage, "Permission denied.");
+                throw new ForbiddenException(backendErrorMessage, "دسترسی غیر مجاز: " + "\n" + backendErrorMessage);
             case 404:
-                throw new NotFoundException(backendErrorMessage, "Resource not found.");
+                throw new NotFoundException(backendErrorMessage, "منابع مورد نیاز پیدا نشدند: " + "\n" + backendErrorMessage);
             case 409:
-                throw new ConflictException(backendErrorMessage, "Conflict occurred. The request could not be completed due to a conflict with the current state of the resource.");
+                throw new ConflictException(backendErrorMessage, "تداخل در وضعیت منابع موجود: " + "\n" + backendErrorMessage);
             case 500:
-                throw new ServiceUnavailableException(backendErrorMessage, "Service is temporarily unavailable. Please try again later.");
+                throw new ServiceUnavailableException(backendErrorMessage, "خطای داخلی در سرور رخ داد.");
             default:
                 throw new FrontendServiceException(code, backendErrorMessage, "An unexpected server error occurred. Status: " + code);
         }

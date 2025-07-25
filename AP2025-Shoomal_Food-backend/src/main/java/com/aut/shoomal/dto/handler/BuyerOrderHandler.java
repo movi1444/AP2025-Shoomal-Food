@@ -28,11 +28,9 @@ import com.aut.shoomal.dto.request.RemoveItemFromCartRequest;
 import com.aut.shoomal.dto.response.CartResponse;
 import com.aut.shoomal.dto.response.CartItemResponse;
 import com.aut.shoomal.entity.cart.Cart;
-import com.aut.shoomal.entity.cart.CartItem;
 import com.aut.shoomal.payment.coupon.Coupon;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.util.List;
 import java.util.Map;
@@ -214,11 +212,15 @@ public class BuyerOrderHandler extends AbstractHttpHandler
                 }
                 if (coupon.getUserCount() != null && coupon.getUserCount() > 0) {
                     coupon.setUserCount(coupon.getUserCount() - 1);
-                    session.update(coupon);
+                    session.merge(coupon);
                 } else {
                     throw new InvalidInputException("Coupon " + requestBody.getCouponId() + " has no remaining uses.");
                 }
             }
+            Cart cart = cartManager.getCartByUserIdAndRestaurantId(customerId, (long) requestBody.getVendorId());
+            if (cart == null)
+                throw new NotFoundException("Cart not found.");
+            session.remove(cart);
 
             transaction.commit();
             OrderResponse response = this.createOrderResponse(order);
@@ -410,7 +412,7 @@ public class BuyerOrderHandler extends AbstractHttpHandler
                 throw new InvalidInputException("Invalid payment method: " + request.getMethod());
             }
 
-            String redirectUrl = null;
+            String redirectUrl;
             if (paymentMethod == PaymentMethod.WALLET) {
                 walletManager.processWalletPaymentForOrder(session, userId, request.getOrderId());
             }
