@@ -33,7 +33,7 @@ public class AdminTransactionsController extends AbstractBaseController {
 
     @FXML private TableView<TransactionResponse> transactionsTableView;
     @FXML private TableColumn<TransactionResponse, Integer> transactionIdColumn;
-    @FXML private TableColumn<TransactionResponse, Integer> userIdColumn;
+    @FXML private TableColumn<TransactionResponse, String> userNameColumn;
     @FXML private TableColumn<TransactionResponse, Integer> orderIdColumn;
     @FXML private TableColumn<TransactionResponse, String> statusColumn;
     @FXML private TableColumn<TransactionResponse, String> methodColumn;
@@ -79,7 +79,7 @@ public class AdminTransactionsController extends AbstractBaseController {
         transactionsTableView.setEditable(false);
 
         transactionIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-        userIdColumn.setCellValueFactory(new PropertyValueFactory<>("userId"));
+        userNameColumn.setCellValueFactory(new PropertyValueFactory<>("userName"));
         orderIdColumn.setCellValueFactory(new PropertyValueFactory<>("orderId"));
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
         methodColumn.setCellValueFactory(new PropertyValueFactory<>("paymentMethod"));

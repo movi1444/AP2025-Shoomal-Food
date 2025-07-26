@@ -552,9 +552,9 @@ public class BuyerOrderHandler extends AbstractHttpHandler
         return new OrderResponse(
                 order.getId(),
                 order.getDeliveryAddress(),
-                Math.toIntExact(order.getCustomer().getId()),
-                Math.toIntExact(order.getRestaurant().getId()),
-                (order.getCourier() != null) ? Math.toIntExact(order.getCourier().getId()) : null,
+                order.getCustomer().getName(),
+                order.getRestaurant().getName(),
+                (order.getCourier() != null) ? order.getCourier().getName() : null,
                 (order.getCoupon() != null) ? order.getCoupon().getId() : null,
                 order.getOrderItems().stream().map(item -> item.getFood().getName()).toList(),
                 order.getRawPrice(),
@@ -575,7 +575,7 @@ public class BuyerOrderHandler extends AbstractHttpHandler
                 transaction.getStatus().getStatus(),
                 transaction.getMethod().getName(),
                 (transaction.getOrder() != null) ? transaction.getOrder().getId() : null,
-                Math.toIntExact(transaction.getUser().getId()),
+                transaction.getUser().getName(),
                 transaction.getTransactionTime().toString(),
                 transaction.getAmount()
         );

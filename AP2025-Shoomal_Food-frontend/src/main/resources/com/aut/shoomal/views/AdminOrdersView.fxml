@@ -34,9 +34,9 @@
                 <columns>
                     <TableColumn fx:id="orderIdColumn" prefWidth="75.0" style="-fx-alignment: center-right;" text="شناسه" />
                     <TableColumn fx:id="orderStatusColumn" prefWidth="100.0" style="-fx-alignment: center-right;" text="وضعیت" />
-                    <TableColumn fx:id="orderCustomerColumn" prefWidth="100.0" style="-fx-alignment: center-right;" text="شناسه مشتری" />
-                    <TableColumn fx:id="orderVendorColumn" prefWidth="100.0" style="-fx-alignment: center-right;" text="شناسه فروشنده" />
-                    <TableColumn fx:id="orderCourierColumn" prefWidth="100.0" style="-fx-alignment: center-right;" text="شناسه پیک" />
+                    <TableColumn fx:id="orderCustomerColumn" prefWidth="100.0" style="-fx-alignment: center-right;" text="نام مشتری" />
+                    <TableColumn fx:id="orderVendorColumn" prefWidth="100.0" style="-fx-alignment: center-right;" text="نام رستوران" />
+                    <TableColumn fx:id="orderCourierColumn" prefWidth="100.0" style="-fx-alignment: center-right;" text="نام پیک" />
                     <TableColumn fx:id="orderDeliveryAddressColumn" prefWidth="200.0" style="-fx-alignment: center-right;" text="آدرس تحویل" />
                     <TableColumn fx:id="orderRawPriceColumn" prefWidth="100.0" style="-fx-alignment: center-right;" text="قیمت اولیه" />
                     <TableColumn fx:id="orderPayPriceColumn" prefWidth="100.0" style="-fx-alignment: center-right;" text="قیمت نهایی" />
