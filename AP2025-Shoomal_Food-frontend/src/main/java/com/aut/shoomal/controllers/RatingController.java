@@ -74,7 +74,7 @@ public class RatingController extends AbstractBaseController
                     if (ratings != null && !ratings.isEmpty())
                     {
                         commentTextArea.setText(ratings.getFirst().getComment());
-                        ratingChoiceBox.getSelectionModel().select(ratings.getFirst().getRating());
+                        ratingChoiceBox.getSelectionModel().select(String.valueOf(ratings.getFirst().getRating()));
                         uploadedImageBase64s.clear();
                         for (RatingResponse rating : ratings)
                             if (rating.getImageBase64() != null)
