@@ -11,7 +11,11 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
+import com.aut.shoomal.payment.order.Order;
+import com.aut.shoomal.payment.order.OrderItem;
+import com.aut.shoomal.entity.food.Food;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -68,13 +72,18 @@ public class TransactionDaoImpl extends GenericDaoImpl<PaymentTransaction> imple
             List<Predicate> predicates = new ArrayList<>();
 
             transactionRoot.fetch("user", JoinType.LEFT);
-            transactionRoot.fetch("order", JoinType.LEFT);
+            Join<PaymentTransaction, Order> orderJoin = transactionRoot.join("order", JoinType.LEFT);
 
             if (search != null && !search.trim().isEmpty()) {
                 String likePattern = "%" + search.toLowerCase() + "%";
                 Predicate userSearch = cb.like(cb.lower(transactionRoot.get("user").get("name")), likePattern);
                 Predicate orderIdSearch = cb.like(cb.lower(transactionRoot.get("order").get("id").as(String.class)), likePattern);
-                predicates.add(cb.or(userSearch, orderIdSearch));
+
+                Join<Order, OrderItem> orderItemJoin = orderJoin.join("orderItems", JoinType.LEFT);
+                Join<OrderItem, Food> foodJoin = orderItemJoin.join("food", JoinType.LEFT);
+                Predicate foodNameSearch = cb.like(cb.lower(foodJoin.get("name")), likePattern);
+
+                predicates.add(cb.or(userSearch, orderIdSearch, foodNameSearch));
             }
             if (userId != null) {
                 predicates.add(cb.equal(transactionRoot.get("user").get("id"), userId));
