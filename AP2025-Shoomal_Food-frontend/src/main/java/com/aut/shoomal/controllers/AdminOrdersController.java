@@ -34,9 +34,9 @@ public class AdminOrdersController extends AbstractBaseController {
     @FXML private TableView<OrderResponse> ordersTableView;
     @FXML private TableColumn<OrderResponse, Integer> orderIdColumn;
     @FXML private TableColumn<OrderResponse, String> orderStatusColumn;
-    @FXML private TableColumn<OrderResponse, Integer> orderCustomerColumn;
-    @FXML private TableColumn<OrderResponse, Integer> orderVendorColumn;
-    @FXML private TableColumn<OrderResponse, Integer> orderCourierColumn;
+    @FXML private TableColumn<OrderResponse, String> orderCustomerColumn;
+    @FXML private TableColumn<OrderResponse, String> orderVendorColumn;
+    @FXML private TableColumn<OrderResponse, String> orderCourierColumn;
     @FXML private TableColumn<OrderResponse, String> orderDeliveryAddressColumn;
     @FXML private TableColumn<OrderResponse, Integer> orderRawPriceColumn;
     @FXML private TableColumn<OrderResponse, Integer> orderPayPriceColumn;
@@ -85,9 +85,9 @@ public class AdminOrdersController extends AbstractBaseController {
 
         orderIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         orderStatusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
-        orderCustomerColumn.setCellValueFactory(new PropertyValueFactory<>("customerId"));
-        orderVendorColumn.setCellValueFactory(new PropertyValueFactory<>("vendorId"));
-        orderCourierColumn.setCellValueFactory(new PropertyValueFactory<>("courierId"));
+        orderCustomerColumn.setCellValueFactory(new PropertyValueFactory<>("customerName"));
+        orderVendorColumn.setCellValueFactory(new PropertyValueFactory<>("vendorName"));
+        orderCourierColumn.setCellValueFactory(new PropertyValueFactory<>("courierName"));
         orderDeliveryAddressColumn.setCellValueFactory(new PropertyValueFactory<>("deliveryAddress"));
         orderRawPriceColumn.setCellValueFactory(new PropertyValueFactory<>("rawPrice"));
         orderPayPriceColumn.setCellValueFactory(new PropertyValueFactory<>("payPrice"));

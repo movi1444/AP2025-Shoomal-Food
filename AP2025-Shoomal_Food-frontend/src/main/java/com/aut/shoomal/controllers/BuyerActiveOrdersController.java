@@ -107,7 +107,7 @@ public class BuyerActiveOrdersController extends AbstractBaseController {
         Label addressLabel = new Label("آدرس تحویل: " + order.getDeliveryAddress());
         addressLabel.getStyleClass().add("card-text");
 
-        Label vendorLabel = new Label("شناسه فروشنده: " + order.getVendorId());
+        Label vendorLabel = new Label("نام رستوران: " + order.getVendorName());
         vendorLabel.getStyleClass().add("card-text");
 
         Label priceLabel = new Label("قیمت نهایی: " + order.getPayPrice() + " تومان");

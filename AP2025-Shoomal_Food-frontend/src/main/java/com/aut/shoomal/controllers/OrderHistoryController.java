@@ -4,7 +4,6 @@ import com.aut.shoomal.dto.response.OrderResponse;
 import com.aut.shoomal.dto.response.RestaurantResponse;
 import com.aut.shoomal.dto.response.UserResponse;
 import com.aut.shoomal.exceptions.FrontendServiceException;
-import com.aut.shoomal.service.BuyerFavoriteService;
 import com.aut.shoomal.service.BuyerRatingService;
 import com.aut.shoomal.service.OrderService;
 import com.aut.shoomal.service.BuyerService;
@@ -40,7 +39,7 @@ public class OrderHistoryController extends AbstractBaseController {
     @FXML private TableView<OrderResponse> orderTable;
     @FXML private TableColumn<OrderResponse, Integer> idColumn;
     @FXML private TableColumn<OrderResponse, String> deliveryAddressColumn;
-    @FXML private TableColumn<OrderResponse, Integer> vendorIdColumn;
+    @FXML private TableColumn<OrderResponse, String> vendorNameColumn;
     @FXML private TableColumn<OrderResponse, Integer> rawPriceColumn;
     @FXML private TableColumn<OrderResponse, String> statusColumn;
     @FXML private TableColumn<OrderResponse, String> createdAtColumn;
@@ -92,7 +91,7 @@ public class OrderHistoryController extends AbstractBaseController {
 
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         deliveryAddressColumn.setCellValueFactory(new PropertyValueFactory<>("deliveryAddress"));
-        vendorIdColumn.setCellValueFactory(new PropertyValueFactory<>("vendorId"));
+        vendorNameColumn.setCellValueFactory(new PropertyValueFactory<>("vendorName"));
         rawPriceColumn.setCellValueFactory(new PropertyValueFactory<>("rawPrice"));
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
         createdAtColumn.setCellValueFactory(new PropertyValueFactory<>("createdAt"));
