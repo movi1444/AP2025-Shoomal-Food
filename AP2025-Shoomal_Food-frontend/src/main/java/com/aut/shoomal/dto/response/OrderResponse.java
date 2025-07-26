@@ -1,7 +1,6 @@
 package com.aut.shoomal.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.List;
 
 public class OrderResponse {
@@ -16,8 +15,7 @@ public class OrderResponse {
     private Integer courierId;
     @JsonProperty("coupon_id")
     private Integer couponId;
-    @JsonProperty("item_ids")
-    private List<Integer> items;
+    private List<String> items;
     @JsonProperty("raw_price")
     private Integer rawPrice;
     @JsonProperty("tax_fee")
@@ -37,7 +35,7 @@ public class OrderResponse {
     public OrderResponse() {}
 
     public OrderResponse(Integer id, String deliveryAddress, Integer customerId, Integer vendorId,
-                         Integer courierId, Integer couponId, List<Integer> items, Integer rawPrice, Integer additionalFee,
+                         Integer courierId, Integer couponId, List<String> items, Integer rawPrice, Integer additionalFee,
                          Integer taxFee, Integer courierFee, Integer payPrice,
                          String status, String createdAt, String updatedAt) {
         this.id = id;
@@ -85,10 +83,10 @@ public class OrderResponse {
     public void setCouponId(Integer couponId) {
         this.couponId = couponId;
     }
-    public List<Integer> getItems() {
+    public List<String> getItems() {
         return items;
     }
-    public void setItems(List<Integer> items) {
+    public void setItems(List<String> items) {
         this.items = items;
     }
     public Integer getRawPrice() { return rawPrice; }

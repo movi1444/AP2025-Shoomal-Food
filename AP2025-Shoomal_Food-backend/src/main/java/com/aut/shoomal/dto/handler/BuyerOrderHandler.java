@@ -556,7 +556,7 @@ public class BuyerOrderHandler extends AbstractHttpHandler
                 Math.toIntExact(order.getRestaurant().getId()),
                 (order.getCourier() != null) ? Math.toIntExact(order.getCourier().getId()) : null,
                 (order.getCoupon() != null) ? order.getCoupon().getId() : null,
-                order.getOrderItems().stream().map(item -> Math.toIntExact(item.getFood().getId())).toList(),
+                order.getOrderItems().stream().map(item -> item.getFood().getName()).toList(),
                 order.getRawPrice(),
                 order.getAdditionalFee(),
                 order.getTaxFee(),

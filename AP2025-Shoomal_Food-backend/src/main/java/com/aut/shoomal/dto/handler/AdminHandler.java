@@ -303,7 +303,7 @@ public class AdminHandler extends AbstractHttpHandler {
                 Math.toIntExact(order.getRestaurant().getId()),
                 (order.getCourier() != null) ? Math.toIntExact(order.getCourier().getId()) : null,
                 (order.getCoupon() != null) ? order.getCoupon().getId() : null,
-                order.getOrderItems().stream().map(item -> item.getFood().getId().intValue()).toList(),
+                order.getOrderItems().stream().map(item -> item.getFood().getName()).toList(),
                 order.getRawPrice(),
                 order.getAdditionalFee(),
                 order.getTaxFee(),

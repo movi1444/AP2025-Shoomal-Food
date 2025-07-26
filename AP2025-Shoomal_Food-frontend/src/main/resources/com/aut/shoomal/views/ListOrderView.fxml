@@ -28,7 +28,7 @@
             <TableColumn fx:id="customerIdColumn" text="شناسه خریدار" prefWidth="160" />
             <TableColumn fx:id="vendorIdColumn" text="شناسه فروشنده" prefWidth="160" />
             <TableColumn fx:id="couponIdColumn" text="شناسه کوپن" prefWidth="160" />
-            <TableColumn fx:id="itemIdsColumn" text="شناسه غذا ها" prefWidth="160" />
+            <TableColumn fx:id="itemIdsColumn" text="نام غذا ها" prefWidth="240" />
             <TableColumn fx:id="rawPriceColumn" text="قیمت اولیه" prefWidth="160" />
             <TableColumn fx:id="taxFeeColumn" text="مالیات" prefWidth="130" />
             <TableColumn fx:id="additionalFeeColumn" text="هزینه اضافی" prefWidth="160" />
