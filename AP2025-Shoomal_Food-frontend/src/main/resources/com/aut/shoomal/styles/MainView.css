@@ -515,7 +515,7 @@
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 5, 0, 0, 2);
     -fx-padding: 15px;
     -fx-pref-width: 700px;
-    -fx-max-width: 700px;
+    -fx-max-width: 900px;
 }
 
 .comment-card .label {
@@ -542,8 +542,8 @@
 }
 
 .comment-card .comment-image-view {
-    -fx-fit-width: 100px;
-    -fx-fit-height: 100px;
+    -fx-fit-width: 300px;
+    -fx-fit-height: 300px;
     -fx-preserve-ratio: true;
     -fx-border-color: #ddd;
     -fx-border-width: 1px;
