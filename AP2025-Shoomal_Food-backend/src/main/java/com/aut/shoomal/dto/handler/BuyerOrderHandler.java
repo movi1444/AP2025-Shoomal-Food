@@ -28,11 +28,9 @@ import com.aut.shoomal.dto.request.RemoveItemFromCartRequest;
 import com.aut.shoomal.dto.response.CartResponse;
 import com.aut.shoomal.dto.response.CartItemResponse;
 import com.aut.shoomal.entity.cart.Cart;
-import com.aut.shoomal.entity.cart.CartItem;
 import com.aut.shoomal.payment.coupon.Coupon;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.util.List;
 import java.util.Map;
@@ -214,11 +212,15 @@ public class BuyerOrderHandler extends AbstractHttpHandler
                 }
                 if (coupon.getUserCount() != null && coupon.getUserCount() > 0) {
                     coupon.setUserCount(coupon.getUserCount() - 1);
-                    session.update(coupon);
+                    session.merge(coupon);
                 } else {
                     throw new InvalidInputException("Coupon " + requestBody.getCouponId() + " has no remaining uses.");
                 }
             }
+            Cart cart = cartManager.getCartByUserIdAndRestaurantId(customerId, (long) requestBody.getVendorId());
+            if (cart == null)
+                throw new NotFoundException("Cart not found.");
+            session.remove(cart);
 
             transaction.commit();
             OrderResponse response = this.createOrderResponse(order);
@@ -410,7 +412,7 @@ public class BuyerOrderHandler extends AbstractHttpHandler
                 throw new InvalidInputException("Invalid payment method: " + request.getMethod());
             }
 
-            String redirectUrl = null;
+            String redirectUrl;
             if (paymentMethod == PaymentMethod.WALLET) {
                 walletManager.processWalletPaymentForOrder(session, userId, request.getOrderId());
             }
@@ -550,11 +552,11 @@ public class BuyerOrderHandler extends AbstractHttpHandler
         return new OrderResponse(
                 order.getId(),
                 order.getDeliveryAddress(),
-                Math.toIntExact(order.getCustomer().getId()),
-                Math.toIntExact(order.getRestaurant().getId()),
-                (order.getCourier() != null) ? Math.toIntExact(order.getCourier().getId()) : null,
+                order.getCustomer().getName(),
+                order.getRestaurant().getName(),
+                (order.getCourier() != null) ? order.getCourier().getName() : null,
                 (order.getCoupon() != null) ? order.getCoupon().getId() : null,
-                order.getOrderItems().stream().map(item -> Math.toIntExact(item.getFood().getId())).toList(),
+                order.getOrderItems().stream().map(item -> item.getFood().getName()).toList(),
                 order.getRawPrice(),
                 order.getAdditionalFee(),
                 order.getTaxFee(),
@@ -573,7 +575,7 @@ public class BuyerOrderHandler extends AbstractHttpHandler
                 transaction.getStatus().getStatus(),
                 transaction.getMethod().getName(),
                 (transaction.getOrder() != null) ? transaction.getOrder().getId() : null,
-                Math.toIntExact(transaction.getUser().getId()),
+                transaction.getUser().getName(),
                 transaction.getTransactionTime().toString(),
                 transaction.getAmount()
         );

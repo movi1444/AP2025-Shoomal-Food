@@ -1,23 +1,21 @@
 package com.aut.shoomal.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.List;
 
 public class OrderResponse {
     private Integer id;
     @JsonProperty("delivery_address")
     private String deliveryAddress;
-    @JsonProperty("customer_id")
-    private Integer customerId;
-    @JsonProperty("vendor_id")
-    private Integer vendorId;
-    @JsonProperty("courier_id")
-    private Integer courierId;
+    @JsonProperty("customer_name")
+    private String customerName;
+    @JsonProperty("vendor_name")
+    private String vendorName;
+    @JsonProperty("courier_name")
+    private String courierName;
     @JsonProperty("coupon_id")
     private Integer couponId;
-    @JsonProperty("item_ids")
-    private List<Integer> items;
+    private List<String> items;
     @JsonProperty("raw_price")
     private Integer rawPrice;
     @JsonProperty("tax_fee")
@@ -36,15 +34,15 @@ public class OrderResponse {
 
     public OrderResponse() {}
 
-    public OrderResponse(Integer id, String deliveryAddress, Integer customerId, Integer vendorId,
-                         Integer courierId, Integer couponId, List<Integer> items, Integer rawPrice, Integer additionalFee,
+    public OrderResponse(Integer id, String deliveryAddress, String customerName, String vendorName,
+                         String courierName, Integer couponId, List<String> items, Integer rawPrice, Integer additionalFee,
                          Integer taxFee, Integer courierFee, Integer payPrice,
                          String status, String createdAt, String updatedAt) {
         this.id = id;
         this.deliveryAddress = deliveryAddress;
-        this.customerId = customerId;
-        this.vendorId = vendorId;
-        this.courierId = courierId;
+        this.customerName = customerName;
+        this.vendorName = vendorName;
+        this.courierName = courierName;
         this.couponId = couponId;
         this.items = items;
         this.rawPrice = rawPrice;
@@ -61,23 +59,23 @@ public class OrderResponse {
     public void setId(Integer id) { this.id = id; }
     public String getDeliveryAddress() { return deliveryAddress; }
     public void setDeliveryAddress(String deliveryAddress) { this.deliveryAddress = deliveryAddress; }
-    public Integer getCustomerId() {
-        return customerId;
+    public String getCustomerName() {
+        return customerName;
     }
-    public void setCustomerId(Integer customerId) {
-        this.customerId = customerId;
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
     }
-    public Integer getVendorId() {
-        return vendorId;
+    public String getVendorName() {
+        return vendorName;
     }
-    public void setVendorId(Integer vendorId) {
-        this.vendorId = vendorId;
+    public void setVendorName(String vendorName) {
+        this.vendorName = vendorName;
     }
-    public Integer getCourierId() {
-        return courierId;
+    public String getCourierName() {
+        return courierName;
     }
-    public void setCourierId(Integer courierId) {
-        this.courierId = courierId;
+    public void setCourierName(String courierName) {
+        this.courierName = courierName;
     }
     public Integer getCouponId() {
         return couponId;
@@ -85,10 +83,10 @@ public class OrderResponse {
     public void setCouponId(Integer couponId) {
         this.couponId = couponId;
     }
-    public List<Integer> getItems() {
+    public List<String> getItems() {
         return items;
     }
-    public void setItems(List<Integer> items) {
+    public void setItems(List<String> items) {
         this.items = items;
     }
     public Integer getRawPrice() { return rawPrice; }

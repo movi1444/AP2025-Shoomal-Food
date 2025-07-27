@@ -24,7 +24,7 @@
          </VBox.margin></Label>
         <TableView fx:id="transactionTable" nodeOrientation="RIGHT_TO_LEFT" styleClass="dashboard-card" VBox.vgrow="ALWAYS">
             <columns>
-                <TableColumn fx:id="userIdColumn" prefWidth="100" text="شناسه کاربر" />
+                <TableColumn fx:id="userNameColumn" prefWidth="100" text="نام کاربر" />
                 <TableColumn fx:id="methodColumn" prefWidth="100" text="روش پرداخت" />
                 <TableColumn fx:id="statusColumn" prefWidth="150" text="وضعیت" />
                 <TableColumn fx:id="orderIdColumn" prefWidth="150" text="شناسه سفارش" />

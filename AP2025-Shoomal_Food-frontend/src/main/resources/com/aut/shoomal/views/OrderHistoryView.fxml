@@ -50,7 +50,7 @@
         <columns>
             <TableColumn fx:id="idColumn" prefWidth="75" text="شناسه" />
             <TableColumn fx:id="deliveryAddressColumn" prefWidth="150" text="آدرس تحویل" />
-            <TableColumn fx:id="vendorIdColumn" prefWidth="100" text="شناسه رستوران" />
+            <TableColumn fx:id="vendorNameColumn" prefWidth="140" text="نام رستوران" />
             <TableColumn fx:id="rawPriceColumn" prefWidth="100" text="قیمت کل" />
             <TableColumn fx:id="statusColumn" prefWidth="120" text="وضعیت" />
             <TableColumn fx:id="createdAtColumn" prefWidth="150" text="تاریخ ثبت" />

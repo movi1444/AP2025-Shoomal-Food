@@ -14,7 +14,7 @@
             <Label nodeOrientation="RIGHT_TO_LEFT" styleClass="head-label" text="فیلتر تراکنش‌ها" />
             <VBox alignment="TOP_RIGHT" spacing="5">
                 <Label nodeOrientation="RIGHT_TO_LEFT" styleClass="my-label" text="جستجو" />
-                <TextField fx:id="searchTextField" nodeOrientation="RIGHT_TO_LEFT" promptText="جستجو بر اساس اسم ایتم" styleClass="text-field" />
+                <TextField fx:id="searchTextField" nodeOrientation="RIGHT_TO_LEFT" promptText="جستجو بر اساس اسم آیتم" styleClass="text-field" />
             </VBox>
             <VBox alignment="TOP_RIGHT" spacing="5">
                 <Label nodeOrientation="RIGHT_TO_LEFT" styleClass="my-label" text="کاربر" />
@@ -70,7 +70,7 @@
                     <TableColumn fx:id="transactionIdColumn" prefWidth="100" text="شناسه تراکنش">
                         <cellValueFactory><PropertyValueFactory property="id" /></cellValueFactory>
                     </TableColumn>
-                    <TableColumn fx:id="userIdColumn" prefWidth="100" text="شناسه کاربر">
+                    <TableColumn fx:id="userNameColumn" prefWidth="100" text="نام کاربر">
                         <cellValueFactory><PropertyValueFactory property="userId" /></cellValueFactory>
                     </TableColumn>
                     <TableColumn fx:id="orderIdColumn" prefWidth="100" text="شناسه سفارش">

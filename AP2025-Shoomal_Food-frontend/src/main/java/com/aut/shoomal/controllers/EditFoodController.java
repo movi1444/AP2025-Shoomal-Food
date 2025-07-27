@@ -70,6 +70,8 @@ public class EditFoodController extends AbstractFoodDetailsController
                         priceField.setText(String.valueOf(food.getPrice()));
                         supplyField.setText(String.valueOf(food.getSupply()));
                         keywordsField.setText(convertToTextField(food.getKeywords()));
+                        if (food.getImageBase64() != null && !food.getImageBase64().isEmpty())
+                            super.setProfileImage(foodImageView, food.getImageBase64());
                     }
                     else
                         showAlert("Error", "Failed to load food details.", Alert.AlertType.ERROR, null);

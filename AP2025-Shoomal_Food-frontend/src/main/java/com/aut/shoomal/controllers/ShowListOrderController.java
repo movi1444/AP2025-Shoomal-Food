@@ -21,6 +21,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -29,16 +30,16 @@ public class ShowListOrderController extends AbstractBaseController implements O
     @FXML private TableView<OrderResponse> orderTable;
     @FXML private TableColumn<OrderResponse, String> deliveryColumn;
     @FXML private TableColumn<OrderResponse, Integer> idColumn;
-    @FXML private TableColumn<OrderResponse, Integer> customerIdColumn;
-    @FXML private TableColumn<OrderResponse, Integer> vendorIdColumn;
+    @FXML private TableColumn<OrderResponse, String> customerNameColumn;
+    @FXML private TableColumn<OrderResponse, String> vendorNameColumn;
     @FXML private TableColumn<OrderResponse, Integer> couponIdColumn;
-    @FXML private TableColumn<OrderResponse, List<Integer>> itemIdsColumn;
+    @FXML private TableColumn<OrderResponse, List<String>> itemNamesColumn;
     @FXML private TableColumn<OrderResponse, Integer> rawPriceColumn;
     @FXML private TableColumn<OrderResponse, Integer> taxFeeColumn;
     @FXML private TableColumn<OrderResponse, Integer> additionalFeeColumn;
     @FXML private TableColumn<OrderResponse, Integer> courierFeeColumn;
     @FXML private TableColumn<OrderResponse, Integer> payPriceColumn;
-    @FXML private TableColumn<OrderResponse, Integer> courierIdColumn;
+    @FXML private TableColumn<OrderResponse, String> courierNameColumn;
     @FXML private TableColumn<OrderResponse, String> statusColumn;
     @FXML private TableColumn<OrderResponse, String> createdAtColumn;
     @FXML private TableColumn<OrderResponse, String> updatedAtColumn;
@@ -153,7 +154,9 @@ public class ShowListOrderController extends AbstractBaseController implements O
                     if (orders != null)
                     {
                         ObservableList<OrderResponse> ordersList = FXCollections.observableArrayList(orders);
+                        ordersList.sort(Comparator.comparing(OrderResponse::getId));
                         orderTable.setItems(ordersList);
+                        orderTable.sort();
                     }
                     else
                         showAlert("Error", "Cannot load order list.", Alert.AlertType.ERROR, null);
@@ -201,16 +204,16 @@ public class ShowListOrderController extends AbstractBaseController implements O
     {
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         deliveryColumn.setCellValueFactory(new PropertyValueFactory<>("deliveryAddress"));
-        customerIdColumn.setCellValueFactory(new PropertyValueFactory<>("customerId"));
-        vendorIdColumn.setCellValueFactory(new PropertyValueFactory<>("vendorId"));
+        customerNameColumn.setCellValueFactory(new PropertyValueFactory<>("customerName"));
+        vendorNameColumn.setCellValueFactory(new PropertyValueFactory<>("vendorName"));
         couponIdColumn.setCellValueFactory(new PropertyValueFactory<>("couponId"));
-        itemIdsColumn.setCellValueFactory(new PropertyValueFactory<>("items"));
+        itemNamesColumn.setCellValueFactory(new PropertyValueFactory<>("items"));
         rawPriceColumn.setCellValueFactory(new PropertyValueFactory<>("rawPrice"));
         taxFeeColumn.setCellValueFactory(new PropertyValueFactory<>("taxFee"));
         additionalFeeColumn.setCellValueFactory(new PropertyValueFactory<>("additionalFee"));
         courierFeeColumn.setCellValueFactory(new PropertyValueFactory<>("courierFee"));
         payPriceColumn.setCellValueFactory(new PropertyValueFactory<>("payPrice"));
-        courierIdColumn.setCellValueFactory(new PropertyValueFactory<>("courierId"));
+        courierNameColumn.setCellValueFactory(new PropertyValueFactory<>("courierName"));
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
         createdAtColumn.setCellValueFactory(new PropertyValueFactory<>("createdAt"));
         updatedAtColumn.setCellValueFactory(new PropertyValueFactory<>("updatedAt"));

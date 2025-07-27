@@ -43,7 +43,7 @@ public class BuyerActiveOrdersController extends AbstractBaseController {
         token = PreferencesManager.getJwtToken();
 
         if (backButton != null) {
-            backButton.setOnAction(event -> handleBackButton(event));
+            backButton.setOnAction(this::handleBackButton);
         }
     }
 
@@ -67,7 +67,7 @@ public class BuyerActiveOrdersController extends AbstractBaseController {
                     if (orders != null && !orders.isEmpty()) {
                         List<OrderResponse> activeOrders = orders.stream()
                                 .filter(order -> !INACTIVE_STATUSES.contains(order.getStatus().toLowerCase()))
-                                .collect(Collectors.toList());
+                                .toList();
 
                         if (activeOrders.isEmpty()) {
                             ordersContainer.getChildren().add(createNoOrdersMessage("سفارش فعال یا در حال انجامی یافت نشد."));
@@ -107,7 +107,7 @@ public class BuyerActiveOrdersController extends AbstractBaseController {
         Label addressLabel = new Label("آدرس تحویل: " + order.getDeliveryAddress());
         addressLabel.getStyleClass().add("card-text");
 
-        Label vendorLabel = new Label("شناسه فروشنده: " + order.getVendorId());
+        Label vendorLabel = new Label("نام رستوران: " + order.getVendorName());
         vendorLabel.getStyleClass().add("card-text");
 
         Label priceLabel = new Label("قیمت نهایی: " + order.getPayPrice() + " تومان");
@@ -119,7 +119,7 @@ public class BuyerActiveOrdersController extends AbstractBaseController {
         card.getChildren().addAll(idLabel, statusLabel, addressLabel, vendorLabel, priceLabel, createdAtLabel);
 
         if (order.getItems() != null && !order.getItems().isEmpty()) {
-            Label itemsLabel = new Label("شناسه آیتم‌ها: " +
+            Label itemsLabel = new Label("نام آیتم‌ها: " +
                     order.getItems().stream().map(String::valueOf).collect(Collectors.joining(", ")));
             itemsLabel.getStyleClass().add("card-text");
             card.getChildren().add(itemsLabel);

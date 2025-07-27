@@ -242,16 +242,16 @@ public class BuyerRatingHandler extends AbstractHttpHandler
             transaction.commit();
             sendResponse(exchange, HttpURLConnection.HTTP_OK, new ApiResponse(true, "200 Rating deleted."));
         } catch (NotFoundException e) {
-            if (transaction != null)
-                transaction.rollback();
             System.err.println("404 Resource not found: " + e.getMessage());
             sendResponse(exchange, HttpURLConnection.HTTP_NOT_FOUND, new ApiResponse(false, "404 Resource not found: " + e.getMessage()));
-        } catch (Exception e) {
             if (transaction != null)
                 transaction.rollback();
+        } catch (Exception e) {
             System.err.println("An unexpected error occurred during DELETE /ratings/" + orderId + ": " + e.getMessage());
             e.printStackTrace();
             sendResponse(exchange, HttpURLConnection.HTTP_INTERNAL_ERROR, new ApiResponse(false, "500 Internal Server Error."));
+            if (transaction != null)
+                transaction.rollback();
         }
     }
 

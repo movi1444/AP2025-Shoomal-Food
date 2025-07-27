@@ -203,7 +203,7 @@ public class AdminHandler extends AbstractHttpHandler {
             List<PaymentTransaction> transactions = transactionManager.getAllTransactions(search, userId, methodStr, statusStr);
             List<TransactionResponse> transactionResponses = transactions.stream()
                     .map(transaction -> {
-                        Long transactionUserId = (transaction.getUser() != null) ? transaction.getUser().getId() : null;
+                        String transactionUserName = (transaction.getUser() != null) ? transaction.getUser().getName() : null;
                         Integer orderId = (transaction.getOrder() != null) ? transaction.getOrder().getId() : null;
 
                         return new TransactionResponse(
@@ -211,7 +211,7 @@ public class AdminHandler extends AbstractHttpHandler {
                                 transaction.getStatus().getStatus(),
                                 transaction.getMethod().getName(),
                                 orderId,
-                                (transactionUserId != null) ? Math.toIntExact(transactionUserId) : null,
+                                transactionUserName,
                                 transaction.getTransactionTime().toString(),
                                 transaction.getAmount()
                         );
@@ -299,11 +299,11 @@ public class AdminHandler extends AbstractHttpHandler {
         return new OrderResponse(
                 order.getId(),
                 order.getDeliveryAddress(),
-                Math.toIntExact(order.getCustomer().getId()),
-                Math.toIntExact(order.getRestaurant().getId()),
-                (order.getCourier() != null) ? Math.toIntExact(order.getCourier().getId()) : null,
+                order.getCustomer().getName(),
+                order.getRestaurant().getName(),
+                (order.getCourier() != null) ? order.getCourier().getName() : null,
                 (order.getCoupon() != null) ? order.getCoupon().getId() : null,
-                order.getOrderItems().stream().map(item -> item.getFood().getId().intValue()).toList(),
+                order.getOrderItems().stream().map(item -> item.getFood().getName()).toList(),
                 order.getRawPrice(),
                 order.getAdditionalFee(),
                 order.getTaxFee(),

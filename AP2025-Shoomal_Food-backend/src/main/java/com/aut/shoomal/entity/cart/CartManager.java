@@ -48,18 +48,11 @@ public class CartManager {
                 cart.setUser(user);
                 cart.setRestaurant(restaurant);
                 session.persist(cart);
-                // Flush the session immediately to detect unique constraint violations
-                // early, before the transaction is committed.
                 session.flush();
             } catch (ConstraintViolationException e) {
-                // This exception indicates a race condition where a concurrent transaction
-                // created the cart after this session checked for its existence.
-                // Clear the session's state to avoid stale objects and re-fetch the existing cart.
                 session.clear();
                 cart = cartDao.findByUserAndRestaurant(session, user, restaurant);
                 if (cart == null) {
-                    // If, after catching the unique constraint violation and clearing the session,
-                    // we still cannot find the cart, it indicates a deeper issue.
                     throw new RuntimeException("Race condition detected, but existing cart could not be retrieved. Original error: " + e.getMessage(), e);
                 }
             }
@@ -74,7 +67,6 @@ public class CartManager {
             session = HibernateUtil.getSessionFactory().openSession();
             transaction = session.beginTransaction();
 
-            // The getOrCreateCartForUserAndRestaurant method now handles the race condition internally.
             Cart cart = getOrCreateCartForUserAndRestaurant(session, userId, restaurantId);
 
             Food foodItem = session.get(Food.class, foodItemId);
