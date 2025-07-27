@@ -21,6 +21,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -153,7 +154,9 @@ public class ShowListOrderController extends AbstractBaseController implements O
                     if (orders != null)
                     {
                         ObservableList<OrderResponse> ordersList = FXCollections.observableArrayList(orders);
+                        ordersList.sort(Comparator.comparing(OrderResponse::getId));
                         orderTable.setItems(ordersList);
+                        orderTable.sort();
                     }
                     else
                         showAlert("Error", "Cannot load order list.", Alert.AlertType.ERROR, null);
