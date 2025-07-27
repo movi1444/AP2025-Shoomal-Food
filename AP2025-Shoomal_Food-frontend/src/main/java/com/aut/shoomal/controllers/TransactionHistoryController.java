@@ -18,13 +18,14 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.math.BigDecimal;
 import java.net.URL;
+import java.util.Comparator;
 import java.util.ResourceBundle;
 
 
 public class TransactionHistoryController extends AbstractBaseController
 {
     @FXML private TableView<TransactionResponse> transactionTable;
-    @FXML private TableColumn<TransactionResponse, Integer> userIdColumn;
+    @FXML private TableColumn<TransactionResponse, String> userNameColumn;
     @FXML private TableColumn<TransactionResponse, String> methodColumn;
     @FXML private TableColumn<TransactionResponse, String> statusColumn;
     @FXML private TableColumn<TransactionResponse, String> dateColumn;
@@ -41,7 +42,7 @@ public class TransactionHistoryController extends AbstractBaseController
     {
         transactionService = new TransactionService();
         token = PreferencesManager.getJwtToken();
-        userIdColumn.setCellValueFactory(new PropertyValueFactory<>("userId"));
+        userNameColumn.setCellValueFactory(new PropertyValueFactory<>("userName"));
         methodColumn.setCellValueFactory(new PropertyValueFactory<>("paymentMethod"));
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
         orderIdColumn.setCellValueFactory(new PropertyValueFactory<>("orderId"));
@@ -65,7 +66,9 @@ public class TransactionHistoryController extends AbstractBaseController
                     if (transactions != null)
                     {
                         ObservableList<TransactionResponse> transactionList = FXCollections.observableArrayList(transactions);
+                        transactionList.sort(Comparator.comparing(TransactionResponse::getId));
                         transactionTable.setItems(transactionList);
+                        transactionTable.sort();
                     }
                     else
                         showAlert("Error", "Failed to load transaction history.", Alert.AlertType.ERROR, null);
