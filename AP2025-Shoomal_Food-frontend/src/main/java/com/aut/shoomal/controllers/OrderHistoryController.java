@@ -22,10 +22,13 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.util.StringConverter;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.geometry.Insets;
 
 import java.io.IOException;
 import java.net.URL;
@@ -33,6 +36,7 @@ import java.util.Comparator;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
+import java.util.List;
 
 public class OrderHistoryController extends AbstractBaseController {
 
@@ -40,6 +44,7 @@ public class OrderHistoryController extends AbstractBaseController {
     @FXML private TableColumn<OrderResponse, Integer> idColumn;
     @FXML private TableColumn<OrderResponse, String> deliveryAddressColumn;
     @FXML private TableColumn<OrderResponse, String> vendorNameColumn;
+    @FXML private TableColumn<OrderResponse, String> itemsColumn;
     @FXML private TableColumn<OrderResponse, Integer> rawPriceColumn;
     @FXML private TableColumn<OrderResponse, String> statusColumn;
     @FXML private TableColumn<OrderResponse, String> createdAtColumn;
@@ -95,6 +100,35 @@ public class OrderHistoryController extends AbstractBaseController {
         rawPriceColumn.setCellValueFactory(new PropertyValueFactory<>("rawPrice"));
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
         createdAtColumn.setCellValueFactory(new PropertyValueFactory<>("createdAt"));
+
+        itemsColumn.setCellValueFactory(cellData -> {
+            List<String> items = cellData.getValue().getItems();
+            String joinedItems = (items != null && !items.isEmpty()) ? String.join(", ", items) : "";
+            return new SimpleStringProperty(joinedItems);
+        });
+
+        itemsColumn.setCellFactory(tc -> new TableCell<OrderResponse, String>() {
+            private final Text text;
+            private final HBox container;
+            {
+                text = new Text();
+                container = new HBox(text);
+                container.setPadding(new Insets(0, 0, 0, 20));
+                setGraphic(container);
+                setPrefHeight(Control.USE_COMPUTED_SIZE);
+            }
+
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    text.setText(null);
+                } else {
+                    text.setText(item);
+                    text.setWrappingWidth(itemsColumn.getWidth() - container.getPadding().getLeft() - container.getPadding().getRight());
+                }
+            }
+        });
 
         orderTable.getSortOrder().clear();
         orderTable.getSortOrder().add(idColumn);
