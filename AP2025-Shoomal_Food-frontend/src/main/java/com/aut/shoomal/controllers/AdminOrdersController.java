@@ -26,16 +26,17 @@ import javafx.util.StringConverter;
 
 import java.net.URL;
 import java.util.Comparator;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 public class AdminOrdersController extends AbstractBaseController {
-
     @FXML private TableView<OrderResponse> ordersTableView;
     @FXML private TableColumn<OrderResponse, Integer> orderIdColumn;
     @FXML private TableColumn<OrderResponse, String> orderStatusColumn;
     @FXML private TableColumn<OrderResponse, String> orderCustomerColumn;
     @FXML private TableColumn<OrderResponse, String> orderVendorColumn;
+    @FXML private TableColumn<OrderResponse, List<String>> orderItemsColumn;
     @FXML private TableColumn<OrderResponse, String> orderCourierColumn;
     @FXML private TableColumn<OrderResponse, String> orderDeliveryAddressColumn;
     @FXML private TableColumn<OrderResponse, Integer> orderRawPriceColumn;
@@ -87,6 +88,7 @@ public class AdminOrdersController extends AbstractBaseController {
         orderStatusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
         orderCustomerColumn.setCellValueFactory(new PropertyValueFactory<>("customerName"));
         orderVendorColumn.setCellValueFactory(new PropertyValueFactory<>("vendorName"));
+        orderItemsColumn.setCellValueFactory(new PropertyValueFactory<>("items"));
         orderCourierColumn.setCellValueFactory(new PropertyValueFactory<>("courierName"));
         orderDeliveryAddressColumn.setCellValueFactory(new PropertyValueFactory<>("deliveryAddress"));
         orderRawPriceColumn.setCellValueFactory(new PropertyValueFactory<>("rawPrice"));
