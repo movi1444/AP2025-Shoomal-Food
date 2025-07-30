@@ -30,7 +30,7 @@
                 <TableColumn fx:id="priceColumn" text="قیمت" prefWidth="80" />
                 <TableColumn fx:id="supplyColumn" text="تعداد" prefWidth="60" />
                 <TableColumn fx:id="keywordsColumn" text="کلمات کلیدی" prefWidth="220" />
-                <TableColumn fx:id="actionsColumn" text="عملیات" prefWidth="320" resizable="false" sortable="false" />
+                <TableColumn fx:id="actionsColumn" text="عملیات" prefWidth="360" resizable="false" sortable="false" />
             </columns>
             <columnResizePolicy>
                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
