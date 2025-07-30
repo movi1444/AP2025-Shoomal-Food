@@ -9,15 +9,25 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
 import java.security.Key;
+import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class JwtUtil
 {
-    private static final String SECRET = "bXktdXJsLXNlY3JldC1rZXktdGhhdC1pcy1iYXNlNjQtZW5jb2RlZA==";
+    private static final String SECRET = secretKeyGenerator();
     private static final Key key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(SECRET));
-    private static final long EXPIRATION_MS = 3 * 60 * 60 * 1000; // 3 hours
+    private static final long EXPIRATION_MS = 8 * 60 * 60 * 1000; // 8 hours
+
+    private static String secretKeyGenerator()
+    {
+        SecureRandom secureRandom = new SecureRandom();
+        byte[] keyBytes = new byte[64];
+        secureRandom.nextBytes(keyBytes);
+        return Base64.getEncoder().encodeToString(keyBytes);
+    }
 
     public static String generateToken(User user)
     {
@@ -81,16 +91,6 @@ public class JwtUtil
             throw new UnauthorizedException("401 Unauthorized: Token is invalid.");
 
         return user;
-    }
-
-    public static Long getUserIdFromToken(String token, UserManager userManager) throws UnauthorizedException
-    {
-        return validateToken(token, userManager).getId();
-    }
-
-    public static String getRoleFromToken(String token, UserManager userManager) throws UnauthorizedException
-    {
-        return validateToken(token, userManager).getRole().getName();
     }
 
     public static Key getKey()
