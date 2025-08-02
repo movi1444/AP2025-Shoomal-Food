@@ -29,7 +29,7 @@
             <padding>
                 <Insets bottom="20" left="10" right="20" top="20" />
             </padding>
-            <Hyperlink fx:id="updateRestaurantLink" onAction="#handleUpdateRestaurant" styleClass="sidebar-hyperlink" text="بروزرسانی رستوران" />
+            <Hyperlink fx:id="updateRestaurantLink" onAction="#handleUpdateRestaurant" styleClass="sidebar-hyperlink1" text="بروزرسانی رستوران" />
             <Region VBox.vgrow="ALWAYS" />
             <Button onAction="#handleBackToMain" styleClass="my-button2" text="برگشت به صفحه اصلی" />
         </VBox>

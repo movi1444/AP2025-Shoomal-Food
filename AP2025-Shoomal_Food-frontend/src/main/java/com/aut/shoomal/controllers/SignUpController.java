@@ -224,7 +224,7 @@ public class SignUpController extends AbstractBaseController {
                 registerRequest,
                 UserRegisterResponse.class,
                 response -> {
-                    showAlert("موفقیت", "ثبت نام با موفقیت انجام شد! شناسه کاربری: " + response.getUserId() + "\nتوکن: " + response.getToken(), AlertType.INFORMATION, null);
+                    showAlert("موفقیت", "ثبت نام با موفقیت انجام شد! شناسه کاربری: " + response.getUserId(), AlertType.INFORMATION, null);
                     navigateTo(submitButton, "/com/aut/shoomal/views/SignInView.fxml", "/com/aut/shoomal/styles/SignInUpStyles.css", TransitionType.SLIDE_LEFT);
                 },
                 (statusCode, errorMessage) -> {
