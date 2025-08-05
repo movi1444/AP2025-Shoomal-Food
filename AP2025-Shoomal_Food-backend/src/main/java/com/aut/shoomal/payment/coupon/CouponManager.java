@@ -2,6 +2,7 @@ package com.aut.shoomal.payment.coupon;
 
 import com.aut.shoomal.dao.CouponDao;
 import com.aut.shoomal.exceptions.InvalidCouponException;
+import com.aut.shoomal.exceptions.InvalidInputException;
 import com.aut.shoomal.exceptions.ServiceUnavailableException;
 import org.hibernate.Session;
 
@@ -18,11 +19,6 @@ public class CouponManager
     public CouponManager(CouponDao couponDao)
     {
         this.couponDao = couponDao;
-    }
-
-    public void addCoupon(Coupon coupon)
-    {
-        couponDao.create(coupon);
     }
 
     public void updateCoupon(Coupon coupon)
@@ -96,7 +92,7 @@ public class CouponManager
 
         LocalDate start;
         if (startDate == null || startDate.trim().isEmpty())
-            errors.append(" 'startDate' is required.");
+            throw new InvalidInputException(" 'startDate' is required.");
         try {
             start = LocalDate.parse(startDate);
         } catch (DateTimeParseException e) {
@@ -105,7 +101,7 @@ public class CouponManager
 
         LocalDate end;
         if (endDate == null || endDate.trim().isEmpty())
-            errors.append(" 'endDate' is required.");
+            throw new InvalidInputException(" 'endDate' is required.");
         try {
             end = LocalDate.parse(endDate);
         } catch (DateTimeParseException e) {

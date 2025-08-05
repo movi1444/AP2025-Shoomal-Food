@@ -5,9 +5,7 @@ import com.aut.shoomal.dto.request.OrderItemRequest;
 import com.aut.shoomal.entity.food.Food;
 import com.aut.shoomal.entity.food.FoodManager;
 import com.aut.shoomal.entity.restaurant.Restaurant;
-import com.aut.shoomal.entity.restaurant.RestaurantManager;
 import com.aut.shoomal.entity.user.User;
-import com.aut.shoomal.entity.user.UserManager;
 import com.aut.shoomal.exceptions.InvalidCouponException;
 import com.aut.shoomal.exceptions.InvalidInputException;
 import com.aut.shoomal.exceptions.NotFoundException;
@@ -18,39 +16,23 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 public class OrderManager
 {
     private final OrderDao orderDao;
-    private final UserManager userManager;
-    private final RestaurantManager restaurantManager;
     private final FoodManager foodManager;
     private final CouponManager couponManager;
-    public OrderManager(OrderDao orderDao, UserManager userManager, CouponManager couponManager,
-                        RestaurantManager restaurantManager, FoodManager foodManager)
+    public OrderManager(OrderDao orderDao, CouponManager couponManager, FoodManager foodManager)
     {
         this.orderDao = orderDao;
-        this.userManager = userManager;
         this.couponManager = couponManager;
-        this.restaurantManager = restaurantManager;
         this.foodManager = foodManager;
-    }
-
-    public void createOrder(Order order)
-    {
-        orderDao.create(order);
     }
 
     public void createOrder(Order order, Session session)
     {
         orderDao.create(order, session);
-    }
-
-    public void updateOrder(Order order)
-    {
-        orderDao.update(order);
     }
 
     public void updateOrder(Order order, Session session)

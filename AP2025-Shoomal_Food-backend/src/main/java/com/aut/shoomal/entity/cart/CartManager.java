@@ -1,33 +1,23 @@
-// shoomal/entity/cart/CartManager.java
 package com.aut.shoomal.entity.cart;
 
 import com.aut.shoomal.entity.food.Food;
 import com.aut.shoomal.entity.user.User;
 import com.aut.shoomal.entity.restaurant.Restaurant;
 import com.aut.shoomal.dao.CartDao;
-import com.aut.shoomal.dao.FoodDao;
-import com.aut.shoomal.dao.UserDao;
-import com.aut.shoomal.dao.RestaurantDao;
 import com.aut.shoomal.exceptions.InvalidInputException;
 import com.aut.shoomal.exceptions.NotFoundException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import com.aut.shoomal.util.HibernateUtil;
-import org.hibernate.exception.ConstraintViolationException; // Import added
+import org.hibernate.exception.ConstraintViolationException;
 
 import java.util.Optional;
 
 public class CartManager {
     private final CartDao cartDao;
-    private final FoodDao foodDao;
-    private final UserDao userDao;
-    private final RestaurantDao restaurantDao;
 
-    public CartManager(CartDao cartDao, FoodDao foodDao, UserDao userDao, RestaurantDao restaurantDao) {
+    public CartManager(CartDao cartDao) {
         this.cartDao = cartDao;
-        this.foodDao = foodDao;
-        this.userDao = userDao;
-        this.restaurantDao = restaurantDao;
     }
 
     public Cart getOrCreateCartForUserAndRestaurant(Session session, Long userId, Long restaurantId) throws NotFoundException {
@@ -130,60 +120,6 @@ public class CartManager {
         }
     }
 
-    public Cart updateCartItemQuantity(Long userId, Long restaurantId, Long foodItemId, int newQuantity) throws NotFoundException, InvalidInputException {
-        Session session = null;
-        Transaction transaction = null;
-        try {
-            session = HibernateUtil.getSessionFactory().openSession();
-            transaction = session.beginTransaction();
-
-            Cart cart = cartDao.findByUserIdAndRestaurantId(session, userId, restaurantId);
-            if (cart == null) {
-                throw new NotFoundException("Cart not found for user " + userId + " and restaurant " + restaurantId);
-            }
-
-            CartItem itemToUpdate = cart.getItems().stream()
-                    .filter(item -> item.getFoodItem().getId().equals(foodItemId))
-                    .findFirst()
-                    .orElseThrow(() -> new NotFoundException("Food item not found in cart."));
-
-            Food foodItem = session.get(Food.class, foodItemId);
-            if (foodItem == null) {
-                throw new NotFoundException("Food item not found with ID: " + foodItemId);
-            }
-            if (newQuantity > foodItem.getSupply()) {
-                throw new InvalidInputException("New quantity (" + newQuantity + ") exceeds available supply (" + foodItem.getSupply() + ") for " + foodItem.getName());
-            }
-
-            if (newQuantity == 0) {
-                cart.removeCartItem(itemToUpdate);
-                session.remove(itemToUpdate);
-            } else {
-                itemToUpdate.setQuantity(newQuantity);
-                session.merge(itemToUpdate);
-            }
-
-            session.merge(cart);
-            transaction.commit();
-            return cart;
-        } catch (NotFoundException | InvalidInputException e) {
-            if (transaction != null && transaction.isActive()) {
-                transaction.rollback();
-            }
-            throw e;
-        } catch (Exception e) {
-            if (transaction != null && transaction.isActive()) {
-                transaction.rollback();
-            }
-            System.err.println("Error updating cart item quantity: " + e.getMessage());
-            throw new RuntimeException("Error updating cart item quantity: " + e.getMessage(), e);
-        } finally {
-            if (session != null && session.isOpen()) {
-                session.close();
-            }
-        }
-    }
-
     public void removeCartItem(Long userId, Long restaurantId, Long foodItemId) throws NotFoundException {
         Session session = null;
         Transaction transaction = null;
@@ -267,10 +203,10 @@ public class CartManager {
                 throw new NotFoundException("Cart not found for user " + userId + " and restaurant " + restaurantId);
             }
 
-            cart.getItems().size();
+            /*cart.getItems().size();
             for (CartItem item : cart.getItems()) {
                 item.getFoodItem().getName();
-            }
+            }*/
             return cart;
         } catch (NotFoundException e) {
             throw e;
