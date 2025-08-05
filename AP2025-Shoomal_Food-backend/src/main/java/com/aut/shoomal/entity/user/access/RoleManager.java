@@ -23,28 +23,8 @@ public class RoleManager
         roleDao.create(role);
     }
 
-    public void updateRole(Role role)
-    {
-        roleDao.update(role);
-    }
-
-    public Role getRoleById(Long id)
-    {
-        return roleDao.findById(id);
-    }
-
     public Role findRoleByName(String roleName)
     {
         return roleDao.findByName(roleName);
-    }
-
-    public void addPermissionToRole(Long roleId, Long permissionId)
-    {
-        roleDao.addPermissionToRole(roleId, permissionId);
-    }
-
-    public void removePermissionFromRole(Long roleId, Long permissionId)
-    {
-        roleDao.removePermissionFromRole(roleId, permissionId);
     }
 }

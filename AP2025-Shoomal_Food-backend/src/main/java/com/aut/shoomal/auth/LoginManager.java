@@ -20,8 +20,7 @@ public class LoginManager
             throw new InvalidInputException("400 Invalid input: 'password' is required.");
         }
 
-        User user = null;
-
+        User user;
         if ("admin".equalsIgnoreCase(phone) && "admin".equals(password)) {
             try {
                 user = userManager.getUserByName("admin");

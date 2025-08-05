@@ -11,9 +11,7 @@ import com.aut.shoomal.payment.order.OrderStatus;
 import com.aut.shoomal.payment.transaction.PaymentTransaction;
 import com.aut.shoomal.payment.transaction.PaymentTransactionManager;
 import com.aut.shoomal.payment.transaction.PaymentTransactionStatus;
-import com.aut.shoomal.util.HibernateUtil;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 
 import java.math.BigDecimal;
 import java.util.function.BiConsumer;

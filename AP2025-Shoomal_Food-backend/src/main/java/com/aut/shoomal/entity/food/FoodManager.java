@@ -1,7 +1,6 @@
 package com.aut.shoomal.entity.food;
 
 import com.aut.shoomal.entity.menu.Menu;
-import com.aut.shoomal.entity.menu.MenuManager;
 import com.aut.shoomal.entity.restaurant.Restaurant;
 import com.aut.shoomal.entity.restaurant.RestaurantManager;
 import com.aut.shoomal.dao.FoodDao;
@@ -15,7 +14,6 @@ import com.aut.shoomal.exceptions.InvalidInputException;
 import com.aut.shoomal.exceptions.NotFoundException;
 import org.hibernate.Session;
 
-import java.net.ConnectException;
 import java.util.List;
 
 public class FoodManager {
@@ -24,22 +22,12 @@ public class FoodManager {
     private final RestaurantManager restaurantManager;
     private final RestaurantDao restaurantDao;
     private final MenuDao menuDao;
-    private final MenuManager menuManager;
 
-    public FoodManager(FoodDao foodDao, RestaurantManager restaurantManager, RestaurantDao restaurantDao, MenuDao menuDao, MenuManager menuManager) {
+    public FoodManager(FoodDao foodDao, RestaurantManager restaurantManager, RestaurantDao restaurantDao, MenuDao menuDao) {
         this.foodDao = foodDao;
         this.restaurantManager = restaurantManager;
         this.restaurantDao = restaurantDao;
         this.menuDao = menuDao;
-        this.menuManager = menuManager;
-    }
-
-    public void addFood(Food food){
-        this.foodDao.create(food);
-    }
-
-    public void updateFood(Food food){
-        this.foodDao.update(food);
     }
 
     public void updateFood(Food food, Session session) {
@@ -62,16 +50,8 @@ public class FoodManager {
         return this.foodDao.findByRestaurantId(restaurantId);
     }
 
-    public Food getByIdAndRestaurantId(Session session, Long id, Long restaurantId) {
-        return foodDao.getFoodByIdAndRestaurantId(session, id, restaurantId);
-    }
-
     public List<Food> getFoodsByMenuTitle(Session session, Long restaurantId, String title) {
         return foodDao.getFoodsByMenuTitle(session, restaurantId, title);
-    }
-
-    public List<Food> searchByCategory(String category) {
-        return this.foodDao.findByKeyword(category);
     }
 
     public Food addFoodItem(int restaurantId, AddFoodItemRequest request, String userId) throws NotFoundException, InvalidInputException, ForbiddenException {
