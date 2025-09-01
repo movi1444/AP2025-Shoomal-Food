@@ -1,6 +1,9 @@
 package com.aut.shoomal.controllers;
 
+import com.aut.shoomal.exceptions.FrontendServiceException;
+import com.aut.shoomal.service.AuthService;
 import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
@@ -13,7 +16,6 @@ import java.util.*;
 import javafx. scene. control. Alert. AlertType;
 
 import com.aut.shoomal.dto.request.UserRegisterRequest;
-import com.aut.shoomal.dto.response.UserRegisterResponse;
 import com.aut.shoomal.dto.response.BankInfoResponse;
 
 public class SignUpController extends AbstractBaseController {
@@ -34,16 +36,17 @@ public class SignUpController extends AbstractBaseController {
     @FXML private TextField accountNumberField;
     @FXML private Button uploadImageButton;
     @FXML private Button backButton;
-    private String profileImageBase64String;
+    @FXML private ImageView profileImageView;
 
-    @FXML
-    private ImageView profileImageView;
+    private String profileImageBase64String;
+    private AuthService authService;
 
     private final Map<String, String> roleMapping = new HashMap<>();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         super.initialize(url, resourceBundle);
+        authService = new AuthService();
 
         roleMapping.put("خریدار", "buyer");
         roleMapping.put("فروشنده", "seller");
@@ -119,9 +122,7 @@ public class SignUpController extends AbstractBaseController {
                 slideInOptional.setFromY(fullHeight);
                 slideInOptional.setToY(0);
 
-                slideInOptional.setOnFinished(event -> {
-                    optionalFieldsSection.setTranslateY(0);
-                });
+                slideInOptional.setOnFinished(event -> optionalFieldsSection.setTranslateY(0));
 
                 slideInOptional.play();
             });
@@ -153,9 +154,7 @@ public class SignUpController extends AbstractBaseController {
                 slideInRequired.setFromY(fullHeight);
                 slideInRequired.setToY(0);
 
-                slideInRequired.setOnFinished(event -> {
-                    requiredFieldsSection.setTranslateY(0);
-                });
+                slideInRequired.setOnFinished(event -> requiredFieldsSection.setTranslateY(0));
 
                 slideInRequired.play();
             });
@@ -218,30 +217,29 @@ public class SignUpController extends AbstractBaseController {
             registerRequest.setBankInfo(bankInfo);
         }
 
-        sendHttpRequest(
-                "http://localhost:8080/auth/register",
-                "POST",
-                registerRequest,
-                UserRegisterResponse.class,
-                response -> {
-                    showAlert("موفقیت", "ثبت نام با موفقیت انجام شد! شناسه کاربری: " + response.getUserId(), AlertType.INFORMATION, null);
-                    navigateTo(submitButton, "/com/aut/shoomal/views/SignInView.fxml", "/com/aut/shoomal/styles/SignInUpStyles.css", TransitionType.SLIDE_LEFT);
-                },
-                (statusCode, errorMessage) -> {
-                    String displayMessage;
-                    if (statusCode == -1) {
-                        displayMessage = "نمی توان به سرور متصل شد. لطفا اتصال اینترنت خود را بررسی کنید.";
-                    } else if (statusCode == 409) {
-                        displayMessage = "شماره تلفن از قبل موجود است. " + errorMessage;
-                    } else if (statusCode == 400) {
-                        displayMessage = "ورودی نامعتبر: " + errorMessage;
-                    } else {
-                        displayMessage = "هنگام ثبت نام خطای غیرمنتظره ای رخ داد: " + errorMessage;
+        authService.register(registerRequest)
+                .thenAccept(registerResponse -> Platform.runLater(() -> {
+                    if (registerResponse != null)
+                    {
+                        showAlert("موفقیت", "ثبت نام با موفقیت انجام شد.", Alert.AlertType.INFORMATION, null);
+                        navigateTo(
+                                submitButton,
+                                "/com/aut/shoomal/views/SignInView.fxml",
+                                "/com/aut/shoomal/styles/SignInUpStyles.css",
+                                TransitionType.SLIDE_LEFT
+                        );
                     }
-                    showAlert("ثبت نام ناموفق", displayMessage, AlertType.ERROR, null);
-                    System.err.println("Registration failed: Status " + statusCode + ", Error: " + errorMessage);
-                },
-                null
-        );
+                    else
+                        showAlert("خطا", "خطا در ثبت نام.", Alert.AlertType.ERROR, null);
+                }))
+                .exceptionally(e -> {
+                    Platform.runLater(() -> {
+                        if (e.getCause() instanceof FrontendServiceException fsException)
+                            showAlert(fsException);
+                        else
+                            showAlert("خطا", "خطای غیرمنتظره در ثبت نام: " + e.getMessage(), Alert.AlertType.ERROR, null);
+                    });
+                    return null;
+                });
     }
 }

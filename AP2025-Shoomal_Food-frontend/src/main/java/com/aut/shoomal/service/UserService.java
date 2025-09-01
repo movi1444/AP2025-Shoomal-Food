@@ -3,7 +3,6 @@ package com.aut.shoomal.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import java.net.http.HttpRequest;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 

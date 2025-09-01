@@ -5,7 +5,6 @@ import com.aut.shoomal.utils.PreferencesManager;
 import javafx.animation.TranslateTransition;
 import javafx.animation.ParallelTransition;
 import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -26,18 +25,12 @@ import javafx.util.Duration;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URL;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.Base64;
 import java.util.Objects;
 import java.util.ResourceBundle;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.aut.shoomal.utils.ImageToBase64Converter;
 
 public abstract class AbstractBaseController implements Initializable {
@@ -198,9 +191,7 @@ public abstract class AbstractBaseController implements Initializable {
                 "/com/aut/shoomal/views/MainView.fxml",
                 "/com/aut/shoomal/styles/MainView.css",
                 TransitionType.SLIDE_LEFT,
-                (MainController controller) -> {
-                    controller.setLoggedInUser(PreferencesManager.getUserData());
-                }
+                (MainController controller) -> controller.setLoggedInUser(PreferencesManager.getUserData())
         );
     }
 
@@ -322,92 +313,6 @@ public abstract class AbstractBaseController implements Initializable {
         return null;
     }
 
-    protected <T, R> void sendHttpRequest(String uri, String method, T requestBody, Class<R> responseClass,
-                                          Consumer<R> onSuccess,
-                                          BiConsumer<Integer, String> onFailure,
-                                          String authToken) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        String requestBodyJson = null;
-        if (requestBody != null) {
-            try {
-                requestBodyJson = objectMapper.writeValueAsString(requestBody);
-                System.out.println("HTTP Request Body: " + requestBodyJson);
-            } catch (IOException e) {
-                System.err.println("Error serializing request body: " + e.getMessage());
-                e.printStackTrace();
-                javafx.application.Platform.runLater(() ->
-                        onFailure.accept(0, "Failed to prepare request data. Please try again.")
-                );
-                return;
-            }
-        }
-
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
-                .uri(URI.create(uri))
-                .header("Content-Type", "application/json");
-
-        if (authToken != null && !authToken.isEmpty()) {
-            requestBuilder.header("Authorization", "Bearer " + authToken);
-        }
-
-        if (method.equalsIgnoreCase("POST")) {
-            requestBuilder.POST(HttpRequest.BodyPublishers.ofString(requestBodyJson != null ? requestBodyJson : ""));
-        } else if (method.equalsIgnoreCase("PUT")) {
-            requestBuilder.PUT(HttpRequest.BodyPublishers.ofString(requestBodyJson != null ? requestBodyJson : ""));
-        } else if (method.equalsIgnoreCase("GET")) {
-            requestBuilder.GET();
-        } else if (method.equalsIgnoreCase("DELETE")) {
-            requestBuilder.DELETE();
-        } else {
-            javafx.application.Platform.runLater(() ->
-                    onFailure.accept(405, "Unsupported HTTP method: " + method)
-            );
-            return;
-        }
-
-        HttpRequest request = requestBuilder.build();
-
-        new Thread(() -> {
-            try {
-                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-                javafx.application.Platform.runLater(() -> {
-                    System.out.println("HTTP Response Status Code: " + response.statusCode());
-                    System.out.println("HTTP Response Body: " + response.body());
-
-                    if (response.statusCode() >= 200 && response.statusCode() < 300) {
-                        try {
-                            R successResponse = objectMapper.readValue(response.body(), responseClass);
-                            onSuccess.accept(successResponse);
-                        } catch (IOException e) {
-                            System.err.println("Error deserializing success response: " + e.getMessage());
-                            e.printStackTrace();
-                            onFailure.accept(response.statusCode(), "Failed to process server response.");
-                        }
-                    } else {
-                        try {
-                            @SuppressWarnings("unchecked")
-                            java.util.Map<String, String> errorResponse = objectMapper.readValue(response.body(), java.util.Map.class);
-                            String errorMessage = errorResponse.getOrDefault("error", "An unknown error occurred.");
-                            onFailure.accept(response.statusCode(), errorMessage);
-                        } catch (IOException e) {
-                            System.err.println("Error parsing error response: " + e.getMessage());
-                            e.printStackTrace();
-                            onFailure.accept(response.statusCode(), "Server returned an unreadable error. Status: " + response.statusCode());
-                        }
-                    }
-                });
-            } catch (IOException | InterruptedException e) {
-                System.err.println("Network or API call failed: " + e.getMessage());
-                e.printStackTrace();
-                javafx.application.Platform.runLater(() -> {
-                    onFailure.accept(-1, "Failed to connect to server. Please check your internet connection.");
-                });
-            }
-        }).start();
-    }
-
     protected void setProfileImage(ImageView imageView, String base64Image) {
         if (imageView != null) {
             if (base64Image != null && !base64Image.isEmpty()) {
@@ -458,11 +363,6 @@ public abstract class AbstractBaseController implements Initializable {
             e.printStackTrace();
             showAlert("Navigation Error", "Failed to load food comments page.", Alert.AlertType.ERROR, null);
         }
-    }
-
-    protected void handleAddToCart(Integer foodId)
-    {
-
     }
 
     @Override

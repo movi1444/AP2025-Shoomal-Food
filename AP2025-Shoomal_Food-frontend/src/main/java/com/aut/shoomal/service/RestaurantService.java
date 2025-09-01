@@ -4,7 +4,6 @@ import com.aut.shoomal.dto.request.*;
 import com.aut.shoomal.dto.response.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.net.http.HttpRequest;
 import java.nio.charset.StandardCharsets;

@@ -20,7 +20,6 @@ import java.util.concurrent.CompletableFuture;
 
 public abstract class AbstractService
 {
-    protected final String BASE_URL = "http://localhost:8080/";
     protected final HttpClient httpClient;
     protected final ObjectMapper objectMapper;
     public AbstractService()
@@ -31,6 +30,7 @@ public abstract class AbstractService
 
     protected HttpRequest.Builder createRequestBuilder(String endpoint)
     {
+        String BASE_URL = "http://localhost:8080/";
         return HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + endpoint))
                 .header("Content-Type", "application/json");
