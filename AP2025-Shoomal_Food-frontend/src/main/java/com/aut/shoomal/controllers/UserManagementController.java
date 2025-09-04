@@ -26,7 +26,6 @@ import java.util.Map;
 import java.util.HashMap;
 
 public class UserManagementController extends AbstractBaseController {
-
     @FXML private TableView<AdminUserResponse> userTable;
     @FXML private TableColumn<AdminUserResponse, String> approvalStatusColumn;
     @FXML private Button saveChangesButton;
@@ -35,7 +34,7 @@ public class UserManagementController extends AbstractBaseController {
 
     private AdminDataService adminDataService;
     private String token;
-    private Map<Long, String> pendingApprovalChanges = new HashMap<>();
+    private final Map<Long, String> pendingApprovalChanges = new HashMap<>();
     private UserResponse loggedInUser;
 
     @Override
@@ -56,7 +55,7 @@ public class UserManagementController extends AbstractBaseController {
         userTable.setEditable(true);
         userTable.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
 
-        idColumn = (TableColumn<AdminUserResponse, Long>) userTable.getColumns().get(0);
+        idColumn = (TableColumn<AdminUserResponse, Long>) userTable.getColumns().getFirst();
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         idColumn.setStyle("-fx-alignment: center-right;");
 
@@ -87,7 +86,7 @@ public class UserManagementController extends AbstractBaseController {
         });
 
         approvalStatusColumn.setCellFactory(column -> {
-            ComboBoxTableCell<AdminUserResponse, String> cell = new ComboBoxTableCell<AdminUserResponse, String>(FXCollections.observableArrayList("approved", "rejected")) {
+            ComboBoxTableCell<AdminUserResponse, String> cell = new ComboBoxTableCell<>(FXCollections.observableArrayList("approved", "rejected")) {
                 @Override
                 public void updateItem(String item, boolean empty) {
                     super.updateItem(item, empty);
@@ -206,9 +205,7 @@ public class UserManagementController extends AbstractBaseController {
                 "/com/aut/shoomal/views/MainView.fxml",
                 "/com/aut/shoomal/styles/MainView.css",
                 TransitionType.SLIDE_LEFT,
-                (MainController controller) -> {
-                    controller.setLoggedInUser(loggedInUser);
-                }
+                (MainController controller) -> controller.setLoggedInUser(loggedInUser)
         );
     }
 }

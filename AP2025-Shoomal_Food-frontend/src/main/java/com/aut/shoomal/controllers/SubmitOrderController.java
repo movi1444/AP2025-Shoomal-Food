@@ -308,7 +308,7 @@ public class SubmitOrderController extends AbstractBaseController {
                 controller -> {
                     if (controller instanceof CartController cartController) {
                         cartController.setRestaurantId(restaurantId);
-                        cartController.setUserId(PreferencesManager.getUserData().getId());
+                        cartController.setUserId(Objects.requireNonNull(PreferencesManager.getUserData()).getId());
                     }
                 }
         );

@@ -69,23 +69,21 @@ public class CreateRestaurantController extends AbstractBaseController
         CreateRestaurantRequest request = getRequest();
 
         restaurantService.createRestaurant(request, token)
-                .thenAccept(restaurant -> {
-                    Platform.runLater(() -> {
-                        if (restaurant != null)
-                        {
-                            showAlert("Success", "Restaurant created.", Alert.AlertType.INFORMATION, null);
-                            navigateTo(
-                                    (Node) actionEvent.getSource(),
-                                    "/com/aut/shoomal/views/ShowRestaurantView.fxml",
-                                    "/com/aut/shoomal/styles/MainView.css",
-                                    TransitionType.SLIDE_LEFT,
-                                    ShowRestaurantController::loadInfo
-                            );
-                        }
-                        else
-                            showAlert("Error", "Restaurant creation failed.", Alert.AlertType.ERROR, null);
-                    });
-                })
+                .thenAccept(restaurant -> Platform.runLater(() -> {
+                    if (restaurant != null)
+                    {
+                        showAlert("Success", "Restaurant created.", Alert.AlertType.INFORMATION, null);
+                        navigateTo(
+                                (Node) actionEvent.getSource(),
+                                "/com/aut/shoomal/views/ShowRestaurantView.fxml",
+                                "/com/aut/shoomal/styles/MainView.css",
+                                TransitionType.SLIDE_LEFT,
+                                ShowRestaurantController::loadInfo
+                        );
+                    }
+                    else
+                        showAlert("Error", "Restaurant creation failed.", Alert.AlertType.ERROR, null);
+                }))
                 .exceptionally(e -> {
                     Platform.runLater(() -> {
                        if (e.getCause() instanceof FrontendServiceException fsException)

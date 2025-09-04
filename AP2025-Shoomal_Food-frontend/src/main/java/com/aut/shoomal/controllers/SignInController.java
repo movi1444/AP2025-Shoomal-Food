@@ -25,7 +25,6 @@ import com.aut.shoomal.dto.request.UserLoginRequest;
 import com.aut.shoomal.utils.PreferencesManager;
 
 public class SignInController extends AbstractBaseController {
-
     @FXML private TextField phoneNumberField;
     @FXML private TextField passwordField;
     @FXML private Button enterButton;

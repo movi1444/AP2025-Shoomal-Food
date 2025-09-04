@@ -35,7 +35,7 @@ public class RatingController extends AbstractBaseController
     private Integer orderId;
     private String token, mode;
     private BuyerRatingService buyerRatingService;
-    private List<String> uploadedImageBase64s = new ArrayList<>();
+    private final List<String> uploadedImageBase64s = new ArrayList<>();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle)

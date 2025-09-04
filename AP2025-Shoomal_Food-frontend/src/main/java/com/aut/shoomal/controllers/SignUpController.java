@@ -19,7 +19,6 @@ import com.aut.shoomal.dto.request.UserRegisterRequest;
 import com.aut.shoomal.dto.response.BankInfoResponse;
 
 public class SignUpController extends AbstractBaseController {
-
     @FXML private GridPane requiredFieldsSection;
     @FXML private TextField fullNameField;
     @FXML private TextField phoneNumberField;
