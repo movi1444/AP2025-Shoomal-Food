@@ -1,7 +1,7 @@
 package com.aut.shoomal.controllers;
 
 import com.aut.shoomal.exceptions.FrontendServiceException;
-import com.aut.shoomal.service.LogoutService;
+import com.aut.shoomal.service.AuthService;
 import com.aut.shoomal.service.ProfileService;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -35,14 +35,14 @@ public class UserProfileController extends AbstractBaseController {
 
     private UserResponse loggedInUser;
     private String token;
-    private LogoutService logoutService;
+    private AuthService authService;
     private ProfileService profileService;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         super.initialize(url, resourceBundle);
         this.token = PreferencesManager.getJwtToken();
-        logoutService = new LogoutService();
+        authService = new AuthService();
         profileService = new ProfileService();
 
         transactionHistoryLink.setVisible(false);
@@ -135,9 +135,7 @@ public class UserProfileController extends AbstractBaseController {
                 "/com/aut/shoomal/views/MainView.fxml",
                 "/com/aut/shoomal/styles/MainView.css",
                 TransitionType.SLIDE_LEFT,
-                (MainController controller) -> {
-                    controller.setLoggedInUser(this.loggedInUser);
-                }
+                (MainController controller) -> controller.setLoggedInUser(this.loggedInUser)
         );
     }
 
@@ -148,19 +146,17 @@ public class UserProfileController extends AbstractBaseController {
 
     @FXML
     private void handleSignOut(ActionEvent event) {
-        logoutService.logout(token)
-                .thenAccept(response -> {
-                    Platform.runLater(() -> {
-                        if (response.isSuccess())
-                        {
-                            PreferencesManager.clearAuthInfo();
-                            navigateToSignInView(signOutButton);
-                            showAlert("Sign Out", "You have been successfully signed out.", Alert.AlertType.INFORMATION, null);
-                        }
-                        else
-                            showAlert("Error", "Failed to logout: " + response.getError(), Alert.AlertType.ERROR, null);
-                    });
-                })
+        authService.logout(token)
+                .thenAccept(response -> Platform.runLater(() -> {
+                    if (response.isSuccess())
+                    {
+                        PreferencesManager.clearAuthInfo();
+                        navigateToSignInView(signOutButton);
+                        showAlert("Sign Out", "You have been successfully signed out.", Alert.AlertType.INFORMATION, null);
+                    }
+                    else
+                        showAlert("Error", "Failed to logout: " + response.getError(), Alert.AlertType.ERROR, null);
+                }))
                 .exceptionally(e -> {
                     Platform.runLater(() -> {
                         if (e.getCause() instanceof FrontendServiceException fsException)
@@ -187,8 +183,6 @@ public class UserProfileController extends AbstractBaseController {
     @FXML
     public void handleOrderHistory(ActionEvent actionEvent)
     {
-        navigateTo(orderHistoryLink, "/com/aut/shoomal/views/OrderHistoryView.fxml", "/com/aut/shoomal/styles/AdminDashboardStyles.css", TransitionType.SLIDE_RIGHT, (OrderHistoryController controller) -> {
-            controller.setLoggedInUser(loggedInUser);
-        });
+        navigateTo(orderHistoryLink, "/com/aut/shoomal/views/OrderHistoryView.fxml", "/com/aut/shoomal/styles/AdminDashboardStyles.css", TransitionType.SLIDE_RIGHT, (OrderHistoryController controller) -> controller.setLoggedInUser(loggedInUser));
     }
 }

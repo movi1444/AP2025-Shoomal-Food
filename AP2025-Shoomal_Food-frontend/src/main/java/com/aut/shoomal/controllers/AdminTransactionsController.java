@@ -52,7 +52,7 @@ public class AdminTransactionsController extends AbstractBaseController {
     private UserResponse loggedInUser;
     private boolean isFilterSidebarVisible = false;
 
-    private ObservableList<UserResponse> allUsers = FXCollections.observableArrayList();
+    private final ObservableList<UserResponse> allUsers = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -92,21 +92,21 @@ public class AdminTransactionsController extends AbstractBaseController {
     }
 
     private void setupFilterComboBoxes() {
-        userComboBox.setCellFactory(lv -> new ListCell<UserResponse>() {
+        userComboBox.setCellFactory(lv -> new ListCell<>() {
             @Override
             protected void updateItem(UserResponse item, boolean empty) {
                 super.updateItem(item, empty);
                 setText(empty ? "" : item.getName());
             }
         });
-        userComboBox.setButtonCell(new ListCell<UserResponse>() {
+        userComboBox.setButtonCell(new ListCell<>() {
             @Override
             protected void updateItem(UserResponse item, boolean empty) {
                 super.updateItem(item, empty);
                 setText(empty ? "انتخاب کاربر" : item.getName());
             }
         });
-        userComboBox.setConverter(new StringConverter<UserResponse>() {
+        userComboBox.setConverter(new StringConverter<>() {
             @Override
             public String toString(UserResponse user) {
                 return user == null ? "" : user.getName();
@@ -284,9 +284,7 @@ public class AdminTransactionsController extends AbstractBaseController {
                 "/com/aut/shoomal/views/MainView.fxml",
                 "/com/aut/shoomal/styles/MainView.css",
                 TransitionType.SLIDE_LEFT,
-                (MainController controller) -> {
-                    controller.setLoggedInUser(loggedInUser);
-                }
+                (MainController controller) -> controller.setLoggedInUser(loggedInUser)
         );
     }
 }
