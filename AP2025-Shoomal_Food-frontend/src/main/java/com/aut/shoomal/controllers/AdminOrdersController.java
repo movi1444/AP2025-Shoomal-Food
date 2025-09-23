@@ -56,9 +56,9 @@ public class AdminOrdersController extends AbstractBaseController {
     private UserResponse loggedInUser;
     private boolean isFilterSidebarVisible = false;
 
-    private ObservableList<UserResponse> allCustomers = FXCollections.observableArrayList();
-    private ObservableList<RestaurantResponse> allRestaurants = FXCollections.observableArrayList();
-    private ObservableList<UserResponse> allCouriers = FXCollections.observableArrayList();
+    private final ObservableList<UserResponse> allCustomers = FXCollections.observableArrayList();
+    private final ObservableList<RestaurantResponse> allRestaurants = FXCollections.observableArrayList();
+    private final ObservableList<UserResponse> allCouriers = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -116,21 +116,21 @@ public class AdminOrdersController extends AbstractBaseController {
     }
 
     private void setupFilterComboBoxes() {
-        customerComboBox.setCellFactory(lv -> new ListCell<UserResponse>() {
+        customerComboBox.setCellFactory(lv -> new ListCell<>() {
             @Override
             protected void updateItem(UserResponse item, boolean empty) {
                 super.updateItem(item, empty);
                 setText(empty ? "" : item.getName());
             }
         });
-        customerComboBox.setButtonCell(new ListCell<UserResponse>() {
+        customerComboBox.setButtonCell(new ListCell<>() {
             @Override
             protected void updateItem(UserResponse item, boolean empty) {
                 super.updateItem(item, empty);
                 setText(empty ? "انتخاب مشتری" : item.getName());
             }
         });
-        customerComboBox.setConverter(new StringConverter<UserResponse>() {
+        customerComboBox.setConverter(new StringConverter<>() {
             @Override
             public String toString(UserResponse user) {
                 return user == null ? "" : user.getName();
@@ -165,21 +165,21 @@ public class AdminOrdersController extends AbstractBaseController {
             }
         });
 
-        restaurantComboBox.setCellFactory(lv -> new ListCell<RestaurantResponse>() {
+        restaurantComboBox.setCellFactory(lv -> new ListCell<>() {
             @Override
             protected void updateItem(RestaurantResponse item, boolean empty) {
                 super.updateItem(item, empty);
                 setText(empty ? "" : item.getName());
             }
         });
-        restaurantComboBox.setButtonCell(new ListCell<RestaurantResponse>() {
+        restaurantComboBox.setButtonCell(new ListCell<>() {
             @Override
             protected void updateItem(RestaurantResponse item, boolean empty) {
                 super.updateItem(item, empty);
                 setText(empty ? "انتخاب رستوران" : item.getName());
             }
         });
-        restaurantComboBox.setConverter(new StringConverter<RestaurantResponse>() {
+        restaurantComboBox.setConverter(new StringConverter<>() {
             @Override
             public String toString(RestaurantResponse restaurant) {
                 return restaurant == null ? "" : restaurant.getName();
@@ -214,7 +214,7 @@ public class AdminOrdersController extends AbstractBaseController {
             }
         });
 
-        courierComboBox.setCellFactory(lv -> new ListCell<UserResponse>() {
+        courierComboBox.setCellFactory(lv -> new ListCell<>() {
             @Override
             protected void updateItem(UserResponse item, boolean empty) {
                 super.updateItem(item, empty);
@@ -222,14 +222,14 @@ public class AdminOrdersController extends AbstractBaseController {
             }
         });
 
-        courierComboBox.setButtonCell(new ListCell<UserResponse>() {
+        courierComboBox.setButtonCell(new ListCell<>() {
             @Override
             protected void updateItem(UserResponse item, boolean empty) {
                 super.updateItem(item, empty);
                 setText(empty || item == null ? "" : item.getName());
             }
         });
-        courierComboBox.setConverter(new StringConverter<UserResponse>() {
+        courierComboBox.setConverter(new StringConverter<>() {
             @Override
             public String toString(UserResponse user) {
                 return user == null ? "" : user.getName();
@@ -459,9 +459,7 @@ public class AdminOrdersController extends AbstractBaseController {
                 "/com/aut/shoomal/views/MainView.fxml",
                 "/com/aut/shoomal/styles/MainView.css",
                 TransitionType.SLIDE_LEFT,
-                (MainController controller) -> {
-                    controller.setLoggedInUser(loggedInUser);
-                }
+                (MainController controller) -> controller.setLoggedInUser(loggedInUser)
         );
     }
 }

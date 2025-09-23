@@ -5,7 +5,6 @@ import com.aut.shoomal.service.RestaurantService;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.StackPane;
@@ -23,7 +22,6 @@ import java.io.IOException;
 
 import javafx.scene.Cursor;
 import javafx.scene.shape.Circle;
-import javafx.stage.Stage;
 
 public class MainController extends AbstractBaseController {
     @FXML private Label welcomeUserLabel;

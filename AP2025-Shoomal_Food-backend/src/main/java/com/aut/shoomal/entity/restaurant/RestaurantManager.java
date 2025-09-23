@@ -1,37 +1,26 @@
 package com.aut.shoomal.entity.restaurant;
 
 import com.aut.shoomal.dao.RestaurantDao;
-import com.aut.shoomal.dao.FoodDao;
-import com.aut.shoomal.dao.MenuDao;
 import com.aut.shoomal.dao.UserDao;
 import com.aut.shoomal.dto.request.CreateRestaurantRequest;
 import com.aut.shoomal.dto.request.UpdateRestaurantRequest;
-import com.aut.shoomal.dto.request.AddFoodItemRequest;
-import com.aut.shoomal.dto.request.UpdateFoodItemRequest;
 import com.aut.shoomal.exceptions.ConflictException;
 import com.aut.shoomal.exceptions.ForbiddenException;
 import com.aut.shoomal.exceptions.InvalidInputException;
 import com.aut.shoomal.exceptions.NotFoundException;
 import com.aut.shoomal.entity.user.Seller;
 import com.aut.shoomal.entity.user.User;
-import com.aut.shoomal.entity.food.Food;
-import com.aut.shoomal.entity.menu.Menu;
 import org.hibernate.Session;
 
 import java.util.List;
-import java.util.Optional;
 
 public class RestaurantManager {
 
     private final RestaurantDao restaurantDao;
-    private final FoodDao foodDao;
-    private final MenuDao menuDao;
     private final UserDao userDao;
 
-    public RestaurantManager(RestaurantDao restaurantDao, FoodDao foodDao, MenuDao menuDao, UserDao userDao) {
+    public RestaurantManager(RestaurantDao restaurantDao, UserDao userDao) {
         this.restaurantDao = restaurantDao;
-        this.foodDao = foodDao;
-        this.menuDao = menuDao;
         this.userDao = userDao;
     }
 
@@ -124,160 +113,6 @@ public class RestaurantManager {
         return existingRestaurant;
     }
 
-    public Food addFoodItem(int restaurantId, AddFoodItemRequest request, String userId) throws NotFoundException, InvalidInputException, ForbiddenException {
-        Restaurant restaurant = restaurantDao.findById((long) restaurantId);
-        if (restaurant == null) {
-            throw new NotFoundException("Restaurant not found.");
-        }
-        if (!isOwner(restaurantId, userId)) {
-            throw new ForbiddenException("Not authorized to add food item to this restaurant.");
-        }
-
-        Food newFood = new Food();
-        newFood.setName(request.getName());
-        newFood.setDescription(request.getDescription());
-        newFood.setPrice(request.getPrice().doubleValue());
-        newFood.setSupply(request.getSupply());
-        newFood.setKeywords(request.getKeywords());
-        newFood.setVendor(restaurant);
-
-        foodDao.create(newFood);
-        return newFood;
-    }
-
-    public Food updateFoodItem(int restaurantId, int itemId, UpdateFoodItemRequest request, String userId) throws NotFoundException, InvalidInputException, ForbiddenException {
-        Restaurant restaurant = restaurantDao.findById((long) restaurantId);
-        if (restaurant == null) {
-            throw new NotFoundException("Restaurant not found.");
-        }
-        if (!isOwner(restaurantId, userId)) {
-            throw new ForbiddenException("Not authorized to update food item in this restaurant.");
-        }
-
-        Food existingFood = foodDao.findById((long) itemId);
-        if (existingFood == null || !existingFood.getVendor().getId().equals(restaurant.getId())) {
-            throw new NotFoundException("Food item not found in this restaurant.");
-        }
-
-        if (request.getName() != null) existingFood.setName(request.getName());
-        if (request.getDescription() != null) existingFood.setDescription(request.getDescription());
-        if (request.getPrice() != null) existingFood.setPrice(request.getPrice().doubleValue());
-        if (request.getSupply() != null) existingFood.setSupply(request.getSupply());
-        if (request.getImageBase64() != null) existingFood.setImageBase64(request.getImageBase64());
-        if (request.getKeywords() != null && !request.getKeywords().isEmpty()) existingFood.setKeywords(request.getKeywords());
-
-        foodDao.update(existingFood);
-        return existingFood;
-    }
-
-    public void deleteFoodItem(int restaurantId, int itemId, String userId) throws NotFoundException, ForbiddenException {
-        Restaurant restaurant = restaurantDao.findById((long) restaurantId);
-        if (restaurant == null) {
-            throw new NotFoundException("Restaurant not found.");
-        }
-        if (!isOwner(restaurantId, userId)) {
-            throw new ForbiddenException("Not authorized to delete food item from this restaurant.");
-        }
-
-        Food foodToDelete = foodDao.findById((long) itemId);
-        if (foodToDelete == null || !foodToDelete.getVendor().getId().equals(restaurant.getId())) {
-            throw new NotFoundException("Food item not found in this restaurant.");
-        }
-        foodDao.delete((long) itemId);
-    }
-
-    public void addMenuTitle(int restaurantId, String title, String userId) throws NotFoundException, ConflictException, ForbiddenException {
-        Restaurant restaurant = restaurantDao.findById((long) restaurantId);
-        if (restaurant == null) {
-            throw new NotFoundException("Restaurant not found.");
-        }
-        if (!isOwner(restaurantId, userId)) {
-            throw new ForbiddenException("Not authorized to add menu to this restaurant.");
-        }
-
-        Optional<Menu> existingMenu = menuDao.findByRestaurantIdAndTitle((long) restaurantId, title);
-        if (existingMenu.isPresent()) {
-            throw new ConflictException("Menu with title '" + title + "' already exists for this restaurant.");
-        }
-
-        Menu newMenu = new Menu();
-        newMenu.setTitle(title);
-        newMenu.setRestaurant(restaurant);
-
-        menuDao.create(newMenu);
-    }
-
-    public void deleteMenuTitle(int restaurantId, String menuTitle, String userId) throws NotFoundException, ForbiddenException {
-        Restaurant restaurant = restaurantDao.findById((long) restaurantId);
-        if (restaurant == null) {
-            throw new NotFoundException("Restaurant not found.");
-        }
-        if (!isOwner(restaurantId, userId)) {
-            throw new ForbiddenException("Not authorized to delete menu from this restaurant.");
-        }
-
-        Optional<Menu> menuToDelete = menuDao.findByRestaurantIdAndTitle((long) restaurantId, menuTitle);
-        if (menuToDelete.isEmpty()) {
-            throw new NotFoundException("Menu with title '" + menuTitle + "' not found for this restaurant.");
-        }
-
-        menuDao.delete(menuToDelete.get().getId());
-    }
-
-    public void addItemToMenu(int restaurantId, String menuTitle, int itemId, String userId) throws NotFoundException, ForbiddenException, InvalidInputException, ConflictException {
-        Restaurant restaurant = restaurantDao.findById((long) restaurantId);
-        if (restaurant == null) {
-            throw new NotFoundException("Restaurant not found.");
-        }
-        if (!isOwner(restaurantId, userId)) {
-            throw new ForbiddenException("Not authorized to add item to menu of this restaurant.");
-        }
-
-        Optional<Menu> menu = menuDao.findByRestaurantIdAndTitle((long) restaurantId, menuTitle);
-        if (menu.isEmpty()) {
-            throw new NotFoundException("Menu with title '" + menuTitle + "' not found for this restaurant.");
-        }
-
-        Food foodItem = foodDao.findById((long) itemId);
-        if (foodItem == null || !foodItem.getVendor().getId().equals(restaurant.getId())) {
-            throw new NotFoundException("Food item not found or does not belong to this restaurant.");
-        }
-
-        if (menu.get().getFoodItems().contains(foodItem)) {
-            throw new ConflictException("Food item is already in this menu.");
-        }
-
-        menu.get().addFoodItem(foodItem);
-        menuDao.update(menu.get());
-    }
-
-    public void deleteItemFromMenu(int restaurantId, String menuTitle, int itemId, String userId) throws NotFoundException, ForbiddenException {
-        Restaurant restaurant = restaurantDao.findById((long) restaurantId);
-        if (restaurant == null) {
-            throw new NotFoundException("Restaurant not found.");
-        }
-        if (!isOwner(restaurantId, userId)) {
-            throw new ForbiddenException("Not authorized to remove item from menu of this restaurant.");
-        }
-
-        Optional<Menu> menu = menuDao.findByRestaurantIdAndTitle((long) restaurantId, menuTitle);
-        if (menu.isEmpty()) {
-            throw new NotFoundException("Menu with title '" + menuTitle + "' not found for this restaurant.");
-        }
-
-        Food foodItemToRemove = foodDao.findById((long) itemId);
-        if (foodItemToRemove == null) {
-            throw new NotFoundException("Food item not found.");
-        }
-
-        if (!menu.get().getFoodItems().contains(foodItemToRemove)) {
-            throw new NotFoundException("Food item is not present in this menu.");
-        }
-
-        menu.get().removeFoodItem(foodItemToRemove);
-        menuDao.update(menu.get());
-    }
-
     public List<Restaurant> getAllApprovedRestaurants() {
         return restaurantDao.findAll();
     }
@@ -287,7 +122,6 @@ public class RestaurantManager {
     }
 
     public Restaurant findById(Long restaurantId) {
-        Restaurant restaurant = restaurantDao.findById(restaurantId);
-        return restaurant;
+        return restaurantDao.findById(restaurantId);
     }
 }

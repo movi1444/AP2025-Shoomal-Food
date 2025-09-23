@@ -63,25 +63,23 @@ public class UpdateRestaurantController extends AbstractBaseController
         }
 
         restaurantService.getRestaurants(token)
-                .thenAccept(responses -> {
-                    Platform.runLater(() -> {
-                        if (responses != null && !responses.isEmpty())
-                        {
-                            RestaurantResponse restaurant = responses.getFirst();
-                            if (nameField != null)
-                                nameField.setText(restaurant.getName());
-                            if (addressField != null)
-                                addressField.setText(restaurant.getAddress());
-                            if (phoneField != null)
-                                phoneField.setText(restaurant.getPhone());
-                            if (taxFeeField != null)
-                                taxFeeField.setText(String.valueOf(restaurant.getTaxFee()));
-                            if (additionalFeeField != null)
-                                additionalFeeField.setText(String.valueOf(restaurant.getAdditionalFee()));
-                            super.setProfileImage(restaurantLogoImageView, logoImageBase64String);
-                        }
-                    });
-                })
+                .thenAccept(responses -> Platform.runLater(() -> {
+                    if (responses != null && !responses.isEmpty())
+                    {
+                        RestaurantResponse restaurant = responses.getFirst();
+                        if (nameField != null)
+                            nameField.setText(restaurant.getName());
+                        if (addressField != null)
+                            addressField.setText(restaurant.getAddress());
+                        if (phoneField != null)
+                            phoneField.setText(restaurant.getPhone());
+                        if (taxFeeField != null)
+                            taxFeeField.setText(String.valueOf(restaurant.getTaxFee()));
+                        if (additionalFeeField != null)
+                            additionalFeeField.setText(String.valueOf(restaurant.getAdditionalFee()));
+                        super.setProfileImage(restaurantLogoImageView, logoImageBase64String);
+                    }
+                }))
                 .exceptionally(e -> {
                     Platform.runLater(() -> {
                        if (e.getCause() instanceof FrontendServiceException fsException)
@@ -104,17 +102,15 @@ public class UpdateRestaurantController extends AbstractBaseController
     {
         UpdateRestaurantRequest request = getUpdateRestaurantRequest();
         restaurantService.updateRestaurant(request, token, restaurantId)
-                .thenAccept(restaurant -> {
-                    Platform.runLater(() -> {
-                        if (restaurant != null)
-                        {
-                            showAlert("Success", "Restaurant updated successfully.", Alert.AlertType.INFORMATION, null);
-                            handleBackToPreviousPage(actionEvent);
-                        }
-                        else
-                            showAlert("Error", "Failed to update restaurant.", Alert.AlertType.ERROR, null);
-                    });
-                })
+                .thenAccept(restaurant -> Platform.runLater(() -> {
+                    if (restaurant != null)
+                    {
+                        showAlert("Success", "Restaurant updated successfully.", Alert.AlertType.INFORMATION, null);
+                        handleBackToPreviousPage(actionEvent);
+                    }
+                    else
+                        showAlert("Error", "Failed to update restaurant.", Alert.AlertType.ERROR, null);
+                }))
                 .exceptionally(e -> {
                     Platform.runLater(() -> {
                         if (e.getCause() instanceof FrontendServiceException fsException)

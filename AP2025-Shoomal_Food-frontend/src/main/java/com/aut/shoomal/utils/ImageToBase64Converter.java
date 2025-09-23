@@ -6,14 +6,12 @@ import java.io.IOException;
 import java.util.Base64;
 
 public class ImageToBase64Converter {
-
     public static String convertImageFileToBase64(String imagePath) throws IOException {
         File file = new File(imagePath);
         try (FileInputStream imageInFile = new FileInputStream(file)) {
             byte[] imageData = new byte[(int) file.length()];
-            imageInFile.read(imageData);
+            int ignored = imageInFile.read(imageData);
             return Base64.getEncoder().encodeToString(imageData);
         }
     }
-
 }

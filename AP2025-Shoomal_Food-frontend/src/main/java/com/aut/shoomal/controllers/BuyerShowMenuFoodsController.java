@@ -19,7 +19,6 @@ import com.aut.shoomal.service.CartService;
 import javafx.scene.control.Hyperlink;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.Objects;
 import java.util.ResourceBundle;
@@ -154,9 +153,7 @@ public class BuyerShowMenuFoodsController extends AbstractBaseController
         request.setQuantity(quantity);
 
         cartService.addItemToCart(request, token)
-                .thenAccept(cartResponse -> Platform.runLater(() -> {
-                    showAlert("موفقیت", "آیتم به سبد خرید اضافه شد! مجموع: " + cartResponse.getTotalPrice() + " تومان", Alert.AlertType.INFORMATION, null);
-                }))
+                .thenAccept(cartResponse -> Platform.runLater(() -> showAlert("موفقیت", "آیتم به سبد خرید اضافه شد! مجموع: " + cartResponse.getTotalPrice() + " تومان", Alert.AlertType.INFORMATION, null)))
                 .exceptionally(e -> {
                     Platform.runLater(() -> {
                         if (e.getCause() instanceof FrontendServiceException exception) {
@@ -188,7 +185,7 @@ public class BuyerShowMenuFoodsController extends AbstractBaseController
                 controller -> {
                     if (controller instanceof CartController cartController) {
                         cartController.setRestaurantId(this.restaurantId);
-                        cartController.setUserId(Objects.requireNonNull(PreferencesManager.getUserData()).getId().longValue());
+                        cartController.setUserId(Objects.requireNonNull(PreferencesManager.getUserData()).getId());
                     }
                 }
         );

@@ -7,7 +7,6 @@ import com.aut.shoomal.payment.transaction.PaymentTransaction;
 import com.aut.shoomal.rating.Rating;
 import jakarta.persistence.*;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

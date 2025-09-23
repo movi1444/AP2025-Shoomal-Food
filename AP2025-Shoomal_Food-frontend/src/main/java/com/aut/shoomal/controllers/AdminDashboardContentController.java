@@ -97,7 +97,7 @@ public class AdminDashboardContentController extends AbstractBaseController {
                         yAxis.setTickUnit(1.0);
                         yAxis.setLowerBound(0);
                         yAxis.setMinorTickVisible(false);
-                        yAxis.setTickLabelFormatter(new StringConverter<Number>() {
+                        yAxis.setTickLabelFormatter(new StringConverter<>() {
                             @Override
                             public String toString(Number object) {
                                 if (object.doubleValue() == object.longValue()) {
@@ -105,6 +105,7 @@ public class AdminDashboardContentController extends AbstractBaseController {
                                 }
                                 return "";
                             }
+
                             @Override
                             public Number fromString(String string) {
                                 return Double.parseDouble(string);
@@ -150,7 +151,7 @@ public class AdminDashboardContentController extends AbstractBaseController {
                         yAxis.setTickUnit(1.0);
                         yAxis.setLowerBound(0);
                         yAxis.setMinorTickVisible(false);
-                        yAxis.setTickLabelFormatter(new StringConverter<Number>() {
+                        yAxis.setTickLabelFormatter(new StringConverter<>() {
                             @Override
                             public String toString(Number object) {
                                 if (object.doubleValue() == object.longValue()) {
@@ -158,6 +159,7 @@ public class AdminDashboardContentController extends AbstractBaseController {
                                 }
                                 return "";
                             }
+
                             @Override
                             public Number fromString(String string) {
                                 return Double.parseDouble(string);
@@ -199,9 +201,7 @@ public class AdminDashboardContentController extends AbstractBaseController {
                 "/com/aut/shoomal/views/AdminOrdersView.fxml",
                 "/com/aut/shoomal/styles/AdminDashboardStyles.css",
                 TransitionType.SLIDE_RIGHT,
-                (AdminOrdersController controller) -> {
-                    controller.setLoggedInUser(loggedInUser);
-                }
+                (AdminOrdersController controller) -> controller.setLoggedInUser(loggedInUser)
         );
     }
 
@@ -212,9 +212,7 @@ public class AdminDashboardContentController extends AbstractBaseController {
                 "/com/aut/shoomal/views/AdminTransactionsView.fxml",
                 "/com/aut/shoomal/styles/AdminDashboardStyles.css",
                 TransitionType.SLIDE_RIGHT,
-                (AdminTransactionsController controller) -> {
-                    controller.setLoggedInUser(loggedInUser);
-                }
+                (AdminTransactionsController controller) -> controller.setLoggedInUser(loggedInUser)
         );
     }
 
@@ -225,9 +223,7 @@ public class AdminDashboardContentController extends AbstractBaseController {
                 "/com/aut/shoomal/views/CouponListView.fxml",
                 "/com/aut/shoomal/styles/AdminDashboardStyles.css",
                 TransitionType.SLIDE_RIGHT,
-                (CouponListController controller) -> {
-                    controller.setLoggedInUser(this.loggedInUser);
-                }
+                (CouponListController controller) -> controller.setLoggedInUser(this.loggedInUser)
         );
     }
 
@@ -238,9 +234,7 @@ public class AdminDashboardContentController extends AbstractBaseController {
                 "/com/aut/shoomal/views/CreateEditCouponView.fxml",
                 "/com/aut/shoomal/styles/AdminDashboardStyles.css",
                 TransitionType.SLIDE_RIGHT,
-                (CreateEditCouponController controller) -> {
-                    controller.setLoggedInUser(this.loggedInUser);
-                }
+                (CreateEditCouponController controller) -> controller.setLoggedInUser(this.loggedInUser)
         );
     }
 
@@ -250,9 +244,7 @@ public class AdminDashboardContentController extends AbstractBaseController {
                 "/com/aut/shoomal/views/UserManagementView.fxml",
                 "/com/aut/shoomal/styles/AdminDashboardStyles.css",
                 TransitionType.SLIDE_RIGHT,
-                (UserManagementController controller) -> {
-                    controller.setLoggedInUser(this.loggedInUser);
-                }
+                (UserManagementController controller) -> controller.setLoggedInUser(this.loggedInUser)
         );
     }
 }

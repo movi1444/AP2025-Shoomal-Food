@@ -24,11 +24,6 @@ public class RatingManager
         this.userManager = userManager;
     }
 
-    public void addRating(Rating rating)
-    {
-        ratingDao.create(rating);
-    }
-
     public void addRating(Rating rating, Session session)
     {
         ratingDao.create(rating, session);

@@ -25,10 +25,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import java.net.URL;
 
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 
 public class CartController extends AbstractBaseController {
 
@@ -194,7 +194,7 @@ public class CartController extends AbstractBaseController {
         }
 
         Integer currentQuantity = currentItemOpt.get().getQuantity();
-        Integer quantityDelta = desiredNewQuantity - currentQuantity;
+        int quantityDelta = desiredNewQuantity - currentQuantity;
 
         if (quantityDelta == 0) {
             return;
@@ -306,8 +306,8 @@ public class CartController extends AbstractBaseController {
                                     if (controller instanceof SubmitOrderController submitOrderController) {
                                         submitOrderController.setOrderDetails(
                                                 restaurantId,
-                                                cartTableView.getItems().stream().collect(Collectors.toList()),
-                                                (Integer) (int)Double.parseDouble(totalPriceLabel.getText().replaceAll("[^\\d.]", "")),
+                                                new ArrayList<>(cartTableView.getItems()),
+                                                (int)Double.parseDouble(totalPriceLabel.getText().replaceAll("[^\\d.]", "")),
                                                 restaurantResponse.getTaxFee(),
                                                 restaurantResponse.getAdditionalFee()
                                         );

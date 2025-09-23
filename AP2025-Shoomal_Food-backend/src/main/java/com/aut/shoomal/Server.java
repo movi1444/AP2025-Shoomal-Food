@@ -53,15 +53,15 @@ public class Server
         SignupManager signupManager = new SignupManager(userManager, roleManager);
         LoginManager loginManager = new LoginManager(userManager);
         LogoutManager logoutManager = new LogoutManager(blacklistedTokenDao);
-        RestaurantManager restaurantManager = new RestaurantManager(restaurantDao, foodDao, menuDao, userDao);
+        RestaurantManager restaurantManager = new RestaurantManager(restaurantDao, userDao);
         MenuManager menuManager = new MenuManager(menuDao, restaurantManager, restaurantDao, foodDao);
-        FoodManager foodManager = new FoodManager(foodDao, restaurantManager, restaurantDao, menuDao, menuManager);
+        FoodManager foodManager = new FoodManager(foodDao, restaurantManager, restaurantDao, menuDao);
         CouponManager couponManager = new CouponManager(couponDao);
-        OrderManager orderManager = new OrderManager(orderDao, userManager, couponManager, restaurantManager, foodManager);
+        OrderManager orderManager = new OrderManager(orderDao, couponManager, foodManager);
         RatingManager ratingManager = new RatingManager(ratingDao, orderManager, userManager);
         PaymentTransactionManager paymentTransactionManager = new PaymentTransactionManager(transactionDao, orderManager);
         WalletManager walletManager = new WalletManager(walletDao, paymentTransactionManager, orderManager);
-        CartManager cartManager = new CartManager(cartDao, foodDao, userDao, restaurantDao);
+        CartManager cartManager = new CartManager(cartDao);
 
 
         BuyerBrowseHandler buyerBrowseHandler = new BuyerBrowseHandler(userManager, restaurantManager,couponManager, foodManager, blacklistedTokenDao, orderManager);
@@ -72,6 +72,7 @@ public class Server
         AdminCouponHandler adminCouponHandler = new AdminCouponHandler(userManager, blacklistedTokenDao, couponManager);
         CourierHandler courierHandler = new CourierHandler(userManager,orderManager,blacklistedTokenDao, restaurantManager);
         UserOrderHandler userOrderHandler = new UserOrderHandler(userManager, blacklistedTokenDao);
+        LoginHandler loginHandler = new LoginHandler(loginManager, userManager);
 
         try {
             //signupManager.ensureAdminUserExists();
@@ -83,7 +84,9 @@ public class Server
             System.out.println("Available CPU cores: " + numberOfCores);
 
             finalServer.createContext("/auth/register", new RegisterHandler(signupManager));
-            finalServer.createContext("/auth/login", new LoginHandler(loginManager));
+            finalServer.createContext("/auth/login", loginHandler);
+            finalServer.createContext("/auth/forgot/confirm", loginHandler);
+            finalServer.createContext("/auth/forgot/change", loginHandler);
             finalServer.createContext("/auth/profile", new ProfileHandler(userManager, blacklistedTokenDao));
             finalServer.createContext("/auth/logout", new LogoutHandler(logoutManager));
 

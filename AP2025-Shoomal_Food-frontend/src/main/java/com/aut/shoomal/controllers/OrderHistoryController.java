@@ -65,7 +65,7 @@ public class OrderHistoryController extends AbstractBaseController {
     private UserResponse loggedInUser;
     private boolean isFilterSidebarVisible = false;
 
-    private ObservableList<RestaurantResponse> allVendors = FXCollections.observableArrayList();
+    private final ObservableList<RestaurantResponse> allVendors = FXCollections.observableArrayList();
 
 
     @Override
@@ -107,9 +107,10 @@ public class OrderHistoryController extends AbstractBaseController {
             return new SimpleStringProperty(joinedItems);
         });
 
-        itemsColumn.setCellFactory(tc -> new TableCell<OrderResponse, String>() {
+        itemsColumn.setCellFactory(tc -> new TableCell<>() {
             private final Text text;
             private final HBox container;
+
             {
                 text = new Text();
                 container = new HBox(text);
@@ -240,21 +241,21 @@ public class OrderHistoryController extends AbstractBaseController {
     }
 
     private void setupFilterComboBoxes() {
-        vendorFilterComboBox.setCellFactory(lv -> new ListCell<RestaurantResponse>() {
+        vendorFilterComboBox.setCellFactory(lv -> new ListCell<>() {
             @Override
             protected void updateItem(RestaurantResponse item, boolean empty) {
                 super.updateItem(item, empty);
                 setText(empty ? "" : item.getName());
             }
         });
-        vendorFilterComboBox.setButtonCell(new ListCell<RestaurantResponse>() {
+        vendorFilterComboBox.setButtonCell(new ListCell<>() {
             @Override
             protected void updateItem(RestaurantResponse item, boolean empty) {
                 super.updateItem(item, empty);
                 setText(empty ? "انتخاب رستوران" : item.getName());
             }
         });
-        vendorFilterComboBox.setConverter(new StringConverter<RestaurantResponse>() {
+        vendorFilterComboBox.setConverter(new StringConverter<>() {
             @Override
             public String toString(RestaurantResponse restaurant) {
                 return restaurant == null ? "" : restaurant.getName();

@@ -46,6 +46,7 @@ public class Main extends Application {
             Image icon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/com/aut/shoomal/images/icon.png")));
             Scene scene = new Scene(root, 1280, 720);
             scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/aut/shoomal/styles/SignInUpStyles.css")).toExternalForm());
+            primaryStage.getIcons().add(icon);
             primaryStage.setScene(scene);
             primaryStage.show();
         }

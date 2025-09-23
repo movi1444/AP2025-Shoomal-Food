@@ -151,9 +151,7 @@ public class BuyerShowRestaurantDetailsController extends AbstractBaseController
         request.setQuantity(quantity);
 
         cartService.addItemToCart(request, token)
-                .thenAccept(cartResponse -> Platform.runLater(() -> {
-                    showAlert("موفقیت", "آیتم به سبد خرید اضافه شد! مجموع: " + cartResponse.getTotalPrice() + " تومان", Alert.AlertType.INFORMATION, null);
-                }))
+                .thenAccept(cartResponse -> Platform.runLater(() -> showAlert("موفقیت", "آیتم به سبد خرید اضافه شد! مجموع: " + cartResponse.getTotalPrice() + " تومان", Alert.AlertType.INFORMATION, null)))
                 .exceptionally(e -> {
                     Platform.runLater(() -> {
                         if (e.getCause() instanceof FrontendServiceException exception) {
@@ -185,7 +183,7 @@ public class BuyerShowRestaurantDetailsController extends AbstractBaseController
                 controller -> {
                     if (controller instanceof CartController cartController) {
                         cartController.setRestaurantId(this.restaurantId);
-                        cartController.setUserId(PreferencesManager.getUserData().getId().longValue());
+                        cartController.setUserId(Objects.requireNonNull(PreferencesManager.getUserData()).getId());
                     }
                 }
         );

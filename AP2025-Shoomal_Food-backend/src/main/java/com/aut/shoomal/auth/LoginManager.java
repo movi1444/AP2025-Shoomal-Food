@@ -20,8 +20,7 @@ public class LoginManager
             throw new InvalidInputException("400 Invalid input: 'password' is required.");
         }
 
-        User user = null;
-
+        User user;
         if ("admin".equalsIgnoreCase(phone) && "admin".equals(password)) {
             try {
                 user = userManager.getUserByName("admin");
@@ -67,5 +66,19 @@ public class LoginManager
         } catch (Exception e) {
             throw new ServiceUnavailableException("500 Internal Server Error: Error during phone number authentication. " + e.getMessage());
         }
+    }
+
+    public User ConfirmToChangePassword(String name, String phone)
+    {
+        User user;
+        try {
+            user = userManager.getUserByPhoneNumber(phone);
+        } catch (NotFoundException e) {
+            return null;
+        }
+
+        if (!user.getName().equals(name))
+            return null;
+        return user;
     }
 }

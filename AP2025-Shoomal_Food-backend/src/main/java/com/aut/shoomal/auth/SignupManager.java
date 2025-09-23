@@ -36,9 +36,9 @@ public class SignupManager
         }
 
         if (password == null || password.trim().isEmpty())
-            errors.append(" 'password' is required.");
+            throw new InvalidInputException(" 'password' is required.");
         if (types == null)
-            errors.append(" 'role' is required.");
+            throw new InvalidInputException(" 'role' is required.");
         if (address == null || address.trim().isEmpty())
             errors.append(" 'address' is required.");
 

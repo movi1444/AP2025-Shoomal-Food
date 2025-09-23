@@ -99,53 +99,51 @@ public class UpdateProfileController extends AbstractBaseController
 
 
         profileService.getProfile(token)
-                .thenAccept(userResponse -> {
-                    Platform.runLater(() -> {
-                        if (userResponse != null)
+                .thenAccept(userResponse -> Platform.runLater(() -> {
+                    if (userResponse != null)
+                    {
+                        this.userType = userResponse.getRole();
+                        if (nameField != null) nameField.setText(userResponse.getName());
+                        if (phoneField != null)
                         {
-                            this.userType = userResponse.getRole();
-                            if (nameField != null) nameField.setText(userResponse.getName());
-                            if (phoneField != null)
-                            {
-                                firstPhoneNumber = userResponse.getPhoneNumber();
-                                phoneField.setText(userResponse.getPhoneNumber());
-                            }
-                            if (emailField != null) emailField.setText(userResponse.getEmail());
-                            if (addressField != null) addressField.setText(userResponse.getAddress());
+                            firstPhoneNumber = userResponse.getPhoneNumber();
+                            phoneField.setText(userResponse.getPhoneNumber());
+                        }
+                        if (emailField != null) emailField.setText(userResponse.getEmail());
+                        if (addressField != null) addressField.setText(userResponse.getAddress());
 
-                            super.setProfileImage(profileImageView, userResponse.getProfileImageBase64());
-                            this.profileImageBase64String = userResponse.getProfileImageBase64();
+                        super.setProfileImage(profileImageView, userResponse.getProfileImageBase64());
+                        this.profileImageBase64String = userResponse.getProfileImageBase64();
 
-                            if (userResponse.getBank() != null)
-                            {
-                                if (bankInfoSection != null) {
-                                    bankInfoSection.setVisible(true);
-                                    bankInfoSection.setManaged(true);
-                                }
-                                if (userResponse.getBank().getBankName() != null && bankNameField != null)
-                                    bankNameField.setText(userResponse.getBank().getBankName());
-                                if (userResponse.getBank().getAccountNumber() != null && bankAccountField != null)
-                                    bankAccountField.setText(userResponse.getBank().getAccountNumber());
+                        if (userResponse.getBank() != null)
+                        {
+                            if (bankInfoSection != null) {
+                                bankInfoSection.setVisible(true);
+                                bankInfoSection.setManaged(true);
                             }
-                            else
-                            if (bankInfoSection != null)
-                            {
-                                bankNameField.setText("N/A");
-                                bankAccountField.setText("N/A");
+                            if (userResponse.getBank().getBankName() != null && bankNameField != null)
+                                bankNameField.setText(userResponse.getBank().getBankName());
+                            if (userResponse.getBank().getAccountNumber() != null && bankAccountField != null)
+                                bankAccountField.setText(userResponse.getBank().getAccountNumber());
+                        }
+                        else
+                        if (bankInfoSection != null)
+                        {
+                            bankNameField.setText("N/A");
+                            bankAccountField.setText("N/A");
+                        }
+                        if ("seller".equalsIgnoreCase(this.userType)) {
+                            if (brandNameField != null) {
+                                brandNameField.setVisible(true);
+                                brandNameField.setManaged(true);
                             }
-                            if ("seller".equalsIgnoreCase(this.userType)) {
-                                if (brandNameField != null) {
-                                    brandNameField.setVisible(true);
-                                    brandNameField.setManaged(true);
-                                }
-                                if (descriptionArea != null) {
-                                    descriptionArea.setVisible(true);
-                                    descriptionArea.setManaged(true);
-                                }
+                            if (descriptionArea != null) {
+                                descriptionArea.setVisible(true);
+                                descriptionArea.setManaged(true);
                             }
                         }
-                    });
-                })
+                    }
+                }))
                 .exceptionally(e -> {
                     Platform.runLater(() -> {
                         if (e.getCause() instanceof FrontendServiceException exception)
@@ -171,27 +169,25 @@ public class UpdateProfileController extends AbstractBaseController
         request.setProfileImageBase64(this.profileImageBase64String);
 
         profileService.updateProfile(request, token)
-                .thenAccept(apiResponse -> {
-                    Platform.runLater(() -> {
-                        if (apiResponse.isSuccess()) {
-                            if (phoneField != null)
+                .thenAccept(apiResponse -> Platform.runLater(() -> {
+                    if (apiResponse.isSuccess()) {
+                        if (phoneField != null)
+                        {
+                            if (!phoneField.getText().equals(firstPhoneNumber))
                             {
-                                if (!phoneField.getText().equals(firstPhoneNumber))
-                                {
-                                    showAlert("Success", "Because of changing the phone number, your session has expired. Please login again.", Alert.AlertType.INFORMATION, null);
-                                    navigateToSignInView(saveButton);
-                                }
-                                else
-                                {
-                                    showAlert("Success", "Profile saved successfully.", Alert.AlertType.INFORMATION, null);
-                                    navigateToUserProfileView(actionEvent.getSource());
-                                }
+                                showAlert("Success", "Because of changing the phone number, your session has expired. Please login again.", Alert.AlertType.INFORMATION, null);
+                                navigateToSignInView(saveButton);
                             }
+                            else
+                            {
+                                showAlert("Success", "Profile saved successfully.", Alert.AlertType.INFORMATION, null);
+                                navigateToUserProfileView(actionEvent.getSource());
+                            }
+                        }
 
-                        } else
-                            showAlert("Error", "Failed to save profile: " + apiResponse.getError(), Alert.AlertType.ERROR, null);
-                    });
-                })
+                    } else
+                        showAlert("Error", "Failed to save profile: " + apiResponse.getError(), Alert.AlertType.ERROR, null);
+                }))
                 .exceptionally(e -> {
                     Platform.runLater(() -> {
                         if (e.getCause() instanceof FrontendServiceException fsException)

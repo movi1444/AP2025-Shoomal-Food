@@ -6,7 +6,6 @@ import com.aut.shoomal.exceptions.FrontendServiceException;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;

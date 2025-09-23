@@ -29,22 +29,6 @@ public class MenuManager {
         this.foodDao = foodDao;
     }
 
-    public void addMenu(Menu menu){
-        this.menuDao.create(menu);
-    }
-
-    public Menu getMenuById(Long id){
-        return this.menuDao.findById(id);
-    }
-
-    public List<Menu> getAllMenus(){
-        return this.menuDao.findAll();
-    }
-
-    public void updateMenu(Menu menu){
-        this.menuDao.update(menu);
-    }
-
     public List<Menu> findMenusByRestaurantId(Long restaurantId) {
         return menuDao.findByRestaurantId(restaurantId);
     }

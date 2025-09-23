@@ -1,6 +1,5 @@
 package com.aut.shoomal.controllers;
 
-import com.aut.shoomal.dto.response.ApiResponse;
 import com.aut.shoomal.dto.response.CouponResponse;
 import com.aut.shoomal.dto.response.UserResponse;
 import com.aut.shoomal.exceptions.FrontendServiceException;
@@ -9,18 +8,13 @@ import com.aut.shoomal.utils.PreferencesManager;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.NodeOrientation;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
 import java.util.ResourceBundle;
@@ -67,15 +61,13 @@ public class CouponListController extends AbstractBaseController {
         endDateColumn.setCellValueFactory(new PropertyValueFactory<>("endDate"));
 
         actionsColumn.setCellFactory(param -> new TableCell<>() {
-            private final Hyperlink editLink;
-            private final Hyperlink deleteLink;
             private final HBox pane;
 
             {
                 ImageView editIcon = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/com/aut/shoomal/images/edit_icon.png"))));
                 editIcon.setFitHeight(20);
                 editIcon.setFitWidth(20);
-                editLink = new Hyperlink();
+                Hyperlink editLink = new Hyperlink();
                 editLink.setGraphic(editIcon);
                 editLink.setTooltip(new Tooltip("ویرایش کوپن"));
                 editLink.setOnAction(event -> {
@@ -86,7 +78,7 @@ public class CouponListController extends AbstractBaseController {
                 ImageView deleteIcon = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/com/aut/shoomal/images/delete_icon.png"))));
                 deleteIcon.setFitHeight(20);
                 deleteIcon.setFitWidth(20);
-                deleteLink = new Hyperlink();
+                Hyperlink deleteLink = new Hyperlink();
                 deleteLink.setGraphic(deleteIcon);
                 deleteLink.setTooltip(new Tooltip("حذف کوپن"));
                 deleteLink.setOnAction(event -> {
@@ -184,9 +176,7 @@ public class CouponListController extends AbstractBaseController {
                 "/com/aut/shoomal/views/MainView.fxml",
                 "/com/aut/shoomal/styles/MainView.css",
                 TransitionType.SLIDE_LEFT,
-                (MainController controller) -> {
-                    controller.setLoggedInUser(loggedInUser);
-                }
+                (MainController controller) -> controller.setLoggedInUser(loggedInUser)
         );
     }
 
