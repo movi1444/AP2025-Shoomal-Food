@@ -15,7 +15,6 @@ import org.hibernate.Session;
 import java.util.List;
 
 public class RestaurantManager {
-
     private final RestaurantDao restaurantDao;
     private final UserDao userDao;
 
@@ -47,6 +46,11 @@ public class RestaurantManager {
                 request.getPhone() == null || request.getPhone().trim().isEmpty()) {
             throw new InvalidInputException("Name, address, and phone are required.");
         }
+
+        if (request.getTaxFee() < 0)
+            throw new InvalidInputException("Tax fee cannot be negative.");
+        if (request.getAdditionalFee() < 0)
+            throw new InvalidInputException("Additional fee cannot be negative.");
 
         Seller owner = (Seller) userDao.findById(Long.parseLong(userId));
         if (owner == null) {

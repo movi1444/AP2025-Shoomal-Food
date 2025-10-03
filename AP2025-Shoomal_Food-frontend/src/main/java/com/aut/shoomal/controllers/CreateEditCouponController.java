@@ -48,10 +48,7 @@ public class CreateEditCouponController extends AbstractBaseController {
 
         typeComboBox.setItems(FXCollections.observableArrayList("fixed", "percent"));
 
-        addTextDirectionListener(couponCodeField);
-        addTextDirectionListener(valueField);
-        addTextDirectionListener(minPriceField);
-        addTextDirectionListener(userCountField);
+        addTextDirectionListener(couponCodeField, valueField, minPriceField, userCountField);
         addComboBoxDirectionListener(typeComboBox);
     }
 

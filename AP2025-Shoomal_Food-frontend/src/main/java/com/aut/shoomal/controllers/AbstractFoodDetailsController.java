@@ -49,10 +49,7 @@ public abstract class AbstractFoodDetailsController extends AbstractBaseControll
             navigateToSignInView(saveButton);
         }
 
-        addTextDirectionListener(nameField);
-        addTextDirectionListener(descriptionField);
-        addTextDirectionListener(priceField);
-        addTextDirectionListener(supplyField);
+        addTextDirectionListener(nameField, descriptionField, priceField, supplyField);
         addTextAreaDirectionListener(keywordsField);
     }
 

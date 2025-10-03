@@ -40,11 +40,7 @@ public class UpdateRestaurantController extends AbstractBaseController
         super.initialize(url, resourceBundle);
         restaurantService = new RestaurantService();
         token = PreferencesManager.getJwtToken();
-        addTextDirectionListener(nameField);
-        addTextDirectionListener(addressField);
-        addTextDirectionListener(phoneField);
-        addTextDirectionListener(taxFeeField);
-        addTextDirectionListener(additionalFeeField);
+        addTextDirectionListener(nameField, addressField, phoneField, taxFeeField, additionalFeeField);
         loadRestaurantInfo();
     }
 
@@ -77,7 +73,7 @@ public class UpdateRestaurantController extends AbstractBaseController
                             taxFeeField.setText(String.valueOf(restaurant.getTaxFee()));
                         if (additionalFeeField != null)
                             additionalFeeField.setText(String.valueOf(restaurant.getAdditionalFee()));
-                        super.setProfileImage(restaurantLogoImageView, logoImageBase64String);
+                        super.setProfileImage(restaurantLogoImageView, restaurant.getLogoBase64());
                     }
                 }))
                 .exceptionally(e -> {

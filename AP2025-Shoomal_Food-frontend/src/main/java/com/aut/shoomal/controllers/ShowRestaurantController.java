@@ -43,23 +43,6 @@ public class ShowRestaurantController extends AbstractBaseController
         super.initialize(url, resourceBundle);
         restaurantService = new RestaurantService();
         token = PreferencesManager.getJwtToken();
-        if (restaurantLogoView != null) {
-            final double imageSize = 300.0;
-            restaurantLogoView.setFitWidth(imageSize);
-            restaurantLogoView.setFitHeight(imageSize);
-            restaurantLogoView.setPreserveRatio(true);
-
-            Circle clip = new Circle(imageSize / 2, imageSize / 2, imageSize / 2);
-            restaurantLogoView.setClip(clip);
-
-            restaurantLogoView.layoutBoundsProperty().addListener((obs, oldBounds, newBounds) -> {
-                clip.setCenterX(newBounds.getWidth() / 2.0);
-                clip.setCenterY(newBounds.getHeight() / 2.0);
-                clip.setRadius(Math.min(newBounds.getWidth(), newBounds.getHeight()) / 2.0);
-            });
-        }
-
-        super.setProfileImage(restaurantLogoView, null);
         loadInfo();
     }
 
@@ -85,6 +68,11 @@ public class ShowRestaurantController extends AbstractBaseController
                         taxFeeLabel.setText("هزینه بسته بندی: " + restaurant.getTaxFee());
                         additionalFeeLabel.setText("هزینه اضافی: " + restaurant.getAdditionalFee());
                         super.setProfileImage(restaurantLogoView, restaurant.getLogoBase64());
+                    }
+                    else
+                    {
+                        showAlert("Error", "Please create a restaurant first.", Alert.AlertType.ERROR, null);
+                        navigateToMainView(updateRestaurantLink);
                     }
                 }))
                 .exceptionally(e -> {
