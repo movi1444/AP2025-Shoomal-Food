@@ -26,7 +26,7 @@ import java.net.URL;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
-public class BuyerShowRestaurantDetailsController extends AbstractBaseController
+public class BuyerShowRestaurantDetailsController extends ShowCommentController
 {
     @FXML private ImageView restaurantLogoView;
     @FXML private Label restaurantNameLabel;

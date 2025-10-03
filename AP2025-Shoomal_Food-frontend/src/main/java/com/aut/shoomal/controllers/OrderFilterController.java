@@ -67,9 +67,7 @@ public class OrderFilterController extends AbstractBaseController
         userService = new UserService();
         token = PreferencesManager.getJwtToken();
         addTextDirectionListener(searchField);
-        addChoiceBoxDirectionListener(userChoiceBox);
-        addChoiceBoxDirectionListener(courierChoiceBox);
-        addChoiceBoxDirectionListener(statusChoiceBox);
+        addChoiceBoxDirectionListener(userChoiceBox, courierChoiceBox, statusChoiceBox);
 
         ObservableList<String> statuses = FXCollections.observableArrayList(
                 "All", "submitted", "unpaid and cancelled", "waiting vendor", "cancelled", "finding courier", "on the way", "completed"

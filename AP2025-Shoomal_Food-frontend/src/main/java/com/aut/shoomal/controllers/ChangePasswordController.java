@@ -30,8 +30,7 @@ public class ChangePasswordController extends AbstractBaseController
     {
         super.initialize(url, resourceBundle);
         authService = new AuthService();
-        addTextDirectionListener(passwordField);
-        addTextDirectionListener(confirmPasswordField);
+        addTextDirectionListener(passwordField, confirmPasswordField);
     }
 
     public void setId(Long id)

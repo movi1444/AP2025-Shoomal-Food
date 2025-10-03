@@ -29,7 +29,7 @@
 
         <VBox alignment="CENTER" spacing="10.0" styleClass="section-panel">
             <Label styleClass="section-title" text="لوگوی رستوران" textFill="WHITE" />
-            <ImageView fx:id="restaurantLogoImageView" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" styleClass="profile-image-view">
+            <ImageView fx:id="restaurantLogoImageView" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" styleClass="restaurant-logo">
                 <image>
                     <Image url="@/com/aut/shoomal/images/ShoomalFoodMahi.png" />
                 </image>

@@ -28,8 +28,7 @@ public class ConfirmDataController extends AbstractBaseController
     {
         super.initialize(url, resourceBundle);
         authService = new AuthService();
-        addTextDirectionListener(nameField);
-        addTextDirectionListener(phoneField);
+        addTextDirectionListener(nameField, phoneField);
     }
 
     @FXML

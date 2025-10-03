@@ -63,8 +63,7 @@ public class SubmitOrderController extends AbstractBaseController {
         cartService = new CartService();
         transactionService = new TransactionService();
         token = PreferencesManager.getJwtToken();
-        addTextDirectionListener(deliveryAddressField);
-        addTextDirectionListener(couponCodeField);
+        addTextDirectionListener(deliveryAddressField, couponCodeField);
 
         UserResponse loggedInUser = PreferencesManager.getUserData();
         if (loggedInUser != null && loggedInUser.getAddress() != null) {

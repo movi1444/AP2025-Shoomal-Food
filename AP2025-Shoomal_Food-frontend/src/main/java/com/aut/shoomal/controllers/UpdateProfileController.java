@@ -48,13 +48,7 @@ public class UpdateProfileController extends AbstractBaseController
     {
         this.profileService = new ProfileService();
         this.token = PreferencesManager.getJwtToken();
-        addTextDirectionListener(nameField);
-        addTextDirectionListener(phoneField);
-        addTextDirectionListener(emailField);
-        addTextDirectionListener(addressField);
-        addTextDirectionListener(bankNameField);
-        addTextDirectionListener(bankAccountField);
-        addTextDirectionListener(brandNameField);
+        addTextDirectionListener(nameField, phoneField, emailField, addressField, bankNameField, bankAccountField, brandNameField);
         addTextAreaDirectionListener(descriptionArea);
         loadUserProfile();
 

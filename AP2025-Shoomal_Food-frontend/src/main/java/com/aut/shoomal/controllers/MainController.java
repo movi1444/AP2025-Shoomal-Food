@@ -239,6 +239,12 @@ public class MainController extends AbstractBaseController {
     @FXML
     public void handleCreateRestaurant(ActionEvent actionEvent)
     {
+        if (restaurantId != null)
+        {
+            showAlert("Error", "Restaurant already exists.", Alert.AlertType.ERROR, null);
+            return;
+        }
+
         navigateTo(
                 (MenuItem) actionEvent.getSource(),
                 "/com/aut/shoomal/views/CreateRestaurantView.fxml",
