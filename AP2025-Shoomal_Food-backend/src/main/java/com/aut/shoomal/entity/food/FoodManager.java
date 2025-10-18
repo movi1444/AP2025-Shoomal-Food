@@ -70,6 +70,7 @@ public class FoodManager {
         newFood.setSupply(request.getSupply());
         newFood.setKeywords(request.getKeywords());
         newFood.setVendor(restaurant);
+        newFood.setImageBase64(request.getImageBase64());
 
         foodDao.create(newFood);
         return newFood;

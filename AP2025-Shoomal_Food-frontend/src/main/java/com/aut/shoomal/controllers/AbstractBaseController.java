@@ -17,7 +17,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.util.Duration;
@@ -62,16 +61,20 @@ public abstract class AbstractBaseController implements Initializable {
         });
     }
 
-    protected void addTextDirectionListener(TextField control) {
-        addDirectionListenerForObservableString(control.textProperty(), control);
+    protected void addTextDirectionListener(TextField... control) {
+        for (TextField i : control)
+            addDirectionListenerForObservableString(i.textProperty(), i);
     }
 
-    protected void addTextAreaDirectionListener(TextArea control) {
-        addDirectionListenerForObservableString(control.textProperty(), control);
+    protected void addTextAreaDirectionListener(TextArea... control) {
+        for (TextArea i : control)
+            addDirectionListenerForObservableString(i.textProperty(), i);
     }
 
-    protected void addChoiceBoxDirectionListener(ChoiceBox<String> choiceBox) {
-        addDirectionListenerForObservableString(choiceBox.valueProperty(), choiceBox);
+    @SafeVarargs
+    protected final void addChoiceBoxDirectionListener(ChoiceBox<String>... choiceBox) {
+        for (ChoiceBox<String> i : choiceBox)
+            addDirectionListenerForObservableString(i.valueProperty(), i);
     }
 
     protected void addComboBoxDirectionListener(ComboBox<String> comboBox) {
@@ -334,34 +337,6 @@ public abstract class AbstractBaseController implements Initializable {
             } else {
                 imageView.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/com/aut/shoomal/images/default_profile.png"))));
             }
-        }
-    }
-
-    protected void handleSeeComments(Integer foodId)
-    {
-        if (foodId == null) {
-            showAlert("Error", "Food ID is missing for comments.", Alert.AlertType.ERROR, null);
-            return;
-        }
-
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/aut/shoomal/views/FoodCommentsView.fxml"));
-            Parent root = loader.load();
-
-            FoodCommentsController foodCommentsController = loader.getController();
-            if (foodCommentsController != null)
-                foodCommentsController.setFoodId(foodId);
-
-            Stage commentsStage = new Stage();
-            commentsStage.initModality(Modality.APPLICATION_MODAL);
-            commentsStage.setTitle("نظرات غذا");
-            commentsStage.setScene(new Scene(root));
-            commentsStage.setResizable(true);
-            commentsStage.showAndWait();
-        } catch (IOException e) {
-            System.err.println("Failed to load FoodCommentsView.fxml: " + e.getMessage());
-            e.printStackTrace();
-            showAlert("Navigation Error", "Failed to load food comments page.", Alert.AlertType.ERROR, null);
         }
     }
 

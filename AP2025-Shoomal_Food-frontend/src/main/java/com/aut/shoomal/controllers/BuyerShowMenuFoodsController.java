@@ -23,7 +23,7 @@ import java.net.URL;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
-public class BuyerShowMenuFoodsController extends AbstractBaseController
+public class BuyerShowMenuFoodsController extends ShowCommentController
 {
     @FXML private FlowPane foodsContainerFlowPane;
     @FXML private Label menuTitleLabel;

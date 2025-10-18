@@ -38,11 +38,7 @@ public class CreateRestaurantController extends AbstractBaseController
         super.initialize(url, resourceBundle);
         restaurantService = new RestaurantService();
         token = PreferencesManager.getJwtToken();
-        addTextDirectionListener(nameField);
-        addTextDirectionListener(addressField);
-        addTextDirectionListener(phoneField);
-        addTextDirectionListener(taxFeeField);
-        addTextDirectionListener(additionalFeeField);
+        addTextDirectionListener(nameField, addressField, phoneField, taxFeeField, additionalFeeField);
     }
 
     @FXML
