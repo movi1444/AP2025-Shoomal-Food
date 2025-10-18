@@ -91,7 +91,7 @@
             </children>
         </GridPane>
 
-        <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="600.0"> <FlowPane fx:id="foodsContainerFlowPane" alignment="TOP_LEFT" hgap="20" vgap="20">
+        <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="600.0"> <FlowPane fx:id="foodsContainerFlowPane" alignment="TOP_LEFT" hgap="20" vgap="20" style="-fx-background-color: #f0f0f0;">
             <padding>
                 <Insets bottom="10" left="10" right="10" top="10" />
             </padding>

@@ -33,12 +33,12 @@
          <children>
             <Button fx:id="uploadImageButton" mnemonicParsing="false" styleClass="my-button2" text="آپلود تصویر" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="TOP">
                <GridPane.margin>
-                  <Insets right="60.0" top="20.0" />
+                  <Insets top="20.0" />
                </GridPane.margin>
             </Button>
             <ImageView fx:id="profileImageView" fitHeight="50.0" fitWidth="61.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM">
                <GridPane.margin>
-                  <Insets />
+                  <Insets right="-60.0" />
                </GridPane.margin>
             </ImageView>
          </children>
