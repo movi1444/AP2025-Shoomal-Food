@@ -60,7 +60,7 @@ Shoomal Food is a full-featured online food delivery and shopping application bu
 
 The project is divided into two primary modules according to the movi1444/ap2025-shoomal-food file:
 *   **Backend (`AP2025-Shoomal_Food-backend`):** Contains the server-side logic, Hibernate entities, DAO layers, JWT authentication, and HTTP request/response handlers.
-*   **Frontend (`AP2025-Shoomal_Food-frontend`):** Contains the JavaFX client application, including FXML views, CSS styles, UI controllers, and API service integrators[cite: 1].
+*   **Frontend (`AP2025-Shoomal_Food-frontend`):** Contains the JavaFX client application, including FXML views, CSS styles, UI controllers, and API service integrators.
 
 ```text
 AP2025-Shoomal-Food/
