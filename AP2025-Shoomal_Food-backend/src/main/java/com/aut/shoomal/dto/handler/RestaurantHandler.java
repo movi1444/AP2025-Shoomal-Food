@@ -16,7 +16,6 @@ import java.net.HttpURLConnection;
 import java.util.regex.Pattern;
 
 public class RestaurantHandler extends AbstractHttpHandler {
-
     private final RestaurantCoreHandler restaurantCoreHandler;
     private final FoodItemHandler foodItemHandler;
     private final MenuHandler menuHandler;

@@ -77,7 +77,7 @@ public class RestaurantCoreHandler extends AbstractHttpHandler {
 
     private void handleCreateRestaurant(HttpExchange exchange, User authenticatedUser) throws IOException {
         if (!checkHttpMethod(exchange, "POST")) return;
-        if (!isUserAllowed(authenticatedUser, "seller")) {
+        if (!isUserAllowed(authenticatedUser)) {
             sendResponse(exchange, HttpURLConnection.HTTP_FORBIDDEN, new ApiResponse(false, "Forbidden request: Only sellers can create restaurants."));
             return;
         }
@@ -100,7 +100,7 @@ public class RestaurantCoreHandler extends AbstractHttpHandler {
 
     private void handleGetMyRestaurants(HttpExchange exchange, User authenticatedUser) throws IOException {
         if (!checkHttpMethod(exchange, "GET")) return;
-        if (!isUserAllowed(authenticatedUser, "seller")) {
+        if (!isUserAllowed(authenticatedUser)) {
             sendResponse(exchange, HttpURLConnection.HTTP_FORBIDDEN, new ApiResponse(false, "Forbidden request: Only sellers can view their restaurants."));
             return;
         }
@@ -136,8 +136,8 @@ public class RestaurantCoreHandler extends AbstractHttpHandler {
         sendRawJsonResponse(exchange, HttpURLConnection.HTTP_OK, convertToRestaurantResponse(updatedRestaurant));
     }
 
-    private boolean isUserAllowed(User user, String requiredRole) {
-        return user.getRole().getName().equalsIgnoreCase(requiredRole);
+    private boolean isUserAllowed(User user) {
+        return user.getRole().getName().equalsIgnoreCase("seller");
     }
 
     private RestaurantResponse convertToRestaurantResponse(Restaurant restaurant) {

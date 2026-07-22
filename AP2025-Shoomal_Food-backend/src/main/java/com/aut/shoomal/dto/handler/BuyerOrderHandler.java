@@ -547,7 +547,7 @@ public class BuyerOrderHandler extends AbstractHttpHandler
     }
 
 
-    private OrderResponse createOrderResponse(com.aut.shoomal.payment.order.Order order)
+    private OrderResponse createOrderResponse(Order order)
     {
         return new OrderResponse(
                 order.getId(),

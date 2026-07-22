@@ -32,7 +32,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class CourierHandler extends AbstractHttpHandler {
-
     private final UserManager userManager;
     private final OrderManager orderManager;
     private final RestaurantManager restaurantManager;
@@ -149,7 +148,6 @@ public class CourierHandler extends AbstractHttpHandler {
             newOrderStatus = switch (courierStatus) {
                 case ACCEPTED, RECEIVED -> OrderStatus.ON_THE_WAY;
                 case DELIVERED -> OrderStatus.COMPLETED;
-                default -> throw new InvalidInputException("Invalid courier delivery status provided.");
             };
         } catch (IllegalArgumentException e) {
             sendResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, new ApiResponse(false, "400 Invalid status value: " + courierStatus.getValue()));

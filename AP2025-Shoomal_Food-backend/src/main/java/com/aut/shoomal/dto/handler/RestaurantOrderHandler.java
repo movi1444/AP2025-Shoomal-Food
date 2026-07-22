@@ -84,7 +84,7 @@ public class RestaurantOrderHandler extends AbstractHttpHandler {
                     sendResponse(exchange, HttpURLConnection.HTTP_FORBIDDEN, new ApiResponse(false, "Forbidden request: Not the owner of this restaurant."));
                     return;
                 }
-                if (!(authenticatedUser instanceof Seller) || !((Seller) authenticatedUser).isApproved()) {
+                if (!(authenticatedUser instanceof Seller seller) || !seller.isApproved()) {
                     sendResponse(exchange, HttpURLConnection.HTTP_FORBIDDEN, new ApiResponse(false, "Forbidden request: Seller is not yet approved to manage restaurant orders."));
                     return;
                 }

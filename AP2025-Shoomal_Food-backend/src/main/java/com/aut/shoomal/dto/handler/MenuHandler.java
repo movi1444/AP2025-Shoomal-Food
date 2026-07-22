@@ -28,7 +28,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MenuHandler extends AbstractHttpHandler {
-
     private final RestaurantManager restaurantManager;
     private final MenuManager menuManager;
     private final FoodManager foodManager;
