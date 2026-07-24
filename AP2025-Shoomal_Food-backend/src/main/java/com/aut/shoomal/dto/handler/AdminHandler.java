@@ -7,7 +7,6 @@ import com.aut.shoomal.dto.response.BankInfoResponse;
 import com.aut.shoomal.dto.response.OrderResponse;
 import com.aut.shoomal.dto.response.RestaurantResponse;
 import com.aut.shoomal.dto.response.TransactionResponse;
-import com.aut.shoomal.dto.response.UserResponse;
 import com.aut.shoomal.dto.response.AdminUserResponse;
 import com.aut.shoomal.entity.restaurant.Restaurant;
 import com.aut.shoomal.entity.restaurant.RestaurantManager;
@@ -263,21 +262,6 @@ public class AdminHandler extends AbstractHttpHandler {
                 user.getProfileImageBase64(),
                 bankInfo,
                 status
-        );
-    }
-
-    private UserResponse convertToUserResponse(User user) {
-        if (user == null) return null;
-        BankInfoResponse bankInfo = (user.getBank() != null) ? new BankInfoResponse(user.getBank().getName(), user.getBank().getAccountNumber()) : null;
-        return new UserResponse(
-                user.getId(),
-                user.getName(),
-                user.getPhoneNumber(),
-                user.getEmail(),
-                user.getRole().getName(),
-                user.getAddress(),
-                user.getProfileImageBase64(),
-                bankInfo
         );
     }
 

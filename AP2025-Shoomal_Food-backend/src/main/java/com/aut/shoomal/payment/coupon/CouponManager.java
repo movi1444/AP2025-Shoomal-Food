@@ -53,6 +53,8 @@ public class CouponManager
         LocalDateTime now = LocalDateTime.now();
         if (now.isBefore(coupon.getStartDate().atStartOfDay()) || now.isAfter(coupon.getEndDate().atTime(LocalTime.MAX)))
             throw new InvalidCouponException("Coupon has expired.");
+        if (totalPrice < coupon.getMinPrice())
+            throw new InvalidCouponException("Total price is less than minimum price.");
     }
 
     public void decrementCouponCount(Coupon coupon, Session session)

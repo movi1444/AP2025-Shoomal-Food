@@ -17,7 +17,6 @@ import com.aut.shoomal.utils.PreferencesManager;
 public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
-
         UserResponse loggedInUser = PreferencesManager.attemptAutoLogin();
 
         if (loggedInUser != null) {

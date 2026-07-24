@@ -18,18 +18,15 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import java.io.IOException;
-import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class FoodItemHandler extends AbstractHttpHandler {
-
     private final RestaurantManager restaurantManager;
     private final FoodManager foodManager;
     protected final UserManager userManager;

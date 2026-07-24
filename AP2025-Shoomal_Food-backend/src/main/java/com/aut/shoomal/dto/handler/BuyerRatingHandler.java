@@ -27,7 +27,6 @@ import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.util.*;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class BuyerRatingHandler extends AbstractHttpHandler
 {

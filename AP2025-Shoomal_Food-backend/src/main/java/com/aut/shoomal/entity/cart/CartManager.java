@@ -203,10 +203,6 @@ public class CartManager {
                 throw new NotFoundException("Cart not found for user " + userId + " and restaurant " + restaurantId);
             }
 
-            /*cart.getItems().size();
-            for (CartItem item : cart.getItems()) {
-                item.getFoodItem().getName();
-            }*/
             return cart;
         } catch (NotFoundException e) {
             throw e;

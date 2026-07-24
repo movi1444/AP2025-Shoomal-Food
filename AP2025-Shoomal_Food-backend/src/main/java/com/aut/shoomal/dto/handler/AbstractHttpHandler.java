@@ -32,7 +32,8 @@ public abstract class AbstractHttpHandler implements HttpHandler
 {
     protected final ObjectMapper mapper;
 
-    public AbstractHttpHandler() {
+    public AbstractHttpHandler()
+    {
         this.mapper = new ObjectMapper();
         this.mapper.registerModule(new JavaTimeModule());
         this.mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
@@ -49,9 +50,8 @@ public abstract class AbstractHttpHandler implements HttpHandler
         }
     }
 
-    protected void sendResponse(HttpExchange exchange, int statusCode, ApiResponse response) throws IOException
+    private void WriteResponse(HttpExchange exchange, int statusCode, String jsonResponse) throws IOException
     {
-        String jsonResponse = mapper.writeValueAsString(response);
         byte[] responseBytes = jsonResponse.getBytes(StandardCharsets.UTF_8);
         exchange.getResponseHeaders().set("Content-Type", "application/json; charset=utf-8");
         exchange.sendResponseHeaders(statusCode, responseBytes.length);
@@ -60,15 +60,14 @@ public abstract class AbstractHttpHandler implements HttpHandler
         }
     }
 
+    protected void sendResponse(HttpExchange exchange, int statusCode, ApiResponse response) throws IOException
+    {
+        WriteResponse(exchange, statusCode, mapper.writeValueAsString(response));
+    }
+
     protected void sendRawJsonResponse(HttpExchange exchange, int statusCode, Object response) throws IOException
     {
-        String jsonResponse = mapper.writeValueAsString(response);
-        byte[] responseBytes = jsonResponse.getBytes(StandardCharsets.UTF_8);
-        exchange.getResponseHeaders().set("Content-Type", "application/json; charset=utf-8");
-        exchange.sendResponseHeaders(statusCode, responseBytes.length);
-        try (exchange; OutputStream os = exchange.getResponseBody()) {
-            os.write(responseBytes);
-        }
+        WriteResponse(exchange, statusCode, mapper.writeValueAsString(response));
     }
 
     protected boolean checkHttpMethod(HttpExchange exchange, String method) throws IOException

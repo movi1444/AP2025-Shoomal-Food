@@ -18,7 +18,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 import javafx.util.Duration;
 
 import java.io.ByteArrayInputStream;
@@ -32,7 +31,8 @@ import java.util.function.Consumer;
 
 import com.aut.shoomal.utils.ImageToBase64Converter;
 
-public abstract class AbstractBaseController implements Initializable {
+public abstract class AbstractBaseController implements Initializable
+{
     public enum TransitionType {
         SLIDE_LEFT,
         SLIDE_UP,
@@ -113,78 +113,163 @@ public abstract class AbstractBaseController implements Initializable {
         alert.showAndWait();
     }
 
-    protected void navigateTo(Node currentNode, String fxmlPath, String cssPath, TransitionType transitionType) {
-        navigateTo(currentNode, fxmlPath, cssPath, transitionType, null);
-    }
+    protected <C extends AbstractBaseController> void navigateTo(Node currentNode, String fxmlPath, String cssPath, TransitionType transitionType, Consumer<C> controllerSetupCallback)
+    {
+        if (currentNode == null || currentNode.getScene() == null)
+        {
+            showAlert("Navigation Error", "Current node or scene is null.", Alert.AlertType.ERROR, null);
+            return;
+        }
 
-    protected <C extends AbstractBaseController> void navigateTo(Node currentNode, String fxmlPath, String cssPath, TransitionType transitionType, Consumer<C> controllerSetupCallback) {
         Stage stage = (Stage) currentNode.getScene().getWindow();
         Parent currentRoot = currentNode.getScene().getRoot();
+        performNavigation(stage, currentRoot, fxmlPath, cssPath, transitionType, controllerSetupCallback);
+    }
 
+    protected <C extends AbstractBaseController> void navigateTo(MenuItem menuItem, String fxmlPath, String cssPath, TransitionType transitionType, Consumer<C> controllerSetupCallback)
+    {
+        Stage stage = resolveStageFromMenuItem(menuItem);
+        if (stage == null || stage.getScene() == null)
+        {
+            showAlert("Navigation Error", "Could not determine current window for navigation.", Alert.AlertType.ERROR, null);
+            return;
+        }
+
+        Parent currentRoot = stage.getScene().getRoot();
+        performNavigation(stage, currentRoot, fxmlPath, cssPath, transitionType, controllerSetupCallback);
+    }
+
+    private <C extends AbstractBaseController> void performNavigation(Stage stage, Parent currentRoot, String fxmlPath, String cssPath, TransitionType transitionType, Consumer<C> controllerSetupCallback)
+    {
         try {
             FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource(fxmlPath)));
             Parent newRoot = loader.load();
 
             C newController = loader.getController();
-            if (newController != null && controllerSetupCallback != null) {
+            if (newController != null && controllerSetupCallback != null)
                 controllerSetupCallback.accept(newController);
-            }
 
-            StackPane transitionContainer = new StackPane();
-            transitionContainer.getChildren().addAll(currentRoot, newRoot);
+            StackPane transitionContainer = new StackPane(currentRoot, newRoot);
 
-            TranslateTransition currentRootSlideOut = new TranslateTransition(Duration.millis(500), currentRoot);
-            TranslateTransition newRootSlideIn = new TranslateTransition(Duration.millis(500), newRoot);
-
-            if (transitionType == TransitionType.SLIDE_UP) {
-                currentRootSlideOut.setFromY(0);
-                currentRootSlideOut.setToY(stage.getHeight());
-
-                newRoot.setTranslateY(stage.getHeight());
-                newRootSlideIn.setFromY(stage.getHeight());
-                newRootSlideIn.setToY(0);
-
-            } else if (transitionType == TransitionType.SLIDE_RIGHT) {
-                currentRootSlideOut.setFromX(0);
-                currentRootSlideOut.setToX(-stage.getWidth());
-
-                newRoot.setTranslateX(stage.getWidth());
-                newRootSlideIn.setFromX(stage.getWidth());
-                newRootSlideIn.setToX(0);
-
-            } else {
-                currentRootSlideOut.setFromX(0);
-                currentRootSlideOut.setToX(stage.getWidth());
-
-                newRoot.setTranslateX(-stage.getWidth());
-                newRootSlideIn.setFromX(-stage.getWidth());
-                newRootSlideIn.setToX(0);
-            }
-
-            Scene newScene = new Scene(transitionContainer, stage.getWidth() - 15, stage.getHeight() - 38);
-            newScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource(cssPath)).toExternalForm());
+            Scene newScene = new Scene(
+                    transitionContainer,
+                    Math.max(stage.getWidth() - 15, 100),
+                    Math.max(stage.getHeight() - 38, 100)
+            );
+            if (cssPath != null && !cssPath.isBlank())
+                newScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource(cssPath)).toExternalForm());
             stage.setScene(newScene);
 
-            ParallelTransition parallelTransition = new ParallelTransition();
-            parallelTransition.getChildren().addAll(currentRootSlideOut, newRootSlideIn);
+            ParallelTransition animation = createSlideTransition(stage, currentRoot, newRoot, transitionType);
 
-            parallelTransition.setOnFinished(event -> {
+            animation.setOnFinished(event -> {
                 transitionContainer.getChildren().remove(currentRoot);
                 newRoot.setTranslateX(0);
                 newRoot.setTranslateY(0);
             });
 
-            parallelTransition.play();
+            animation.play();
 
         } catch (IOException e) {
-            System.err.println("Failed to load .fxml or .css file: " + e.getMessage());
+            System.err.println("Failed to load layout/style: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
-    protected void navigateTo(MenuItem menuItem, String fxmlPath, String stylesheetPath, TransitionType transitionType)
+    private ParallelTransition createSlideTransition(Stage stage, Parent currentRoot, Parent newRoot, TransitionType transitionType) {
+        Duration duration = Duration.millis(500);
+        TranslateTransition slideOut = new TranslateTransition(duration, currentRoot);
+        TranslateTransition slideIn = new TranslateTransition(duration, newRoot);
+
+        double width = stage.getWidth();
+        double height = stage.getHeight();
+
+        if (transitionType == TransitionType.SLIDE_UP)
+        {
+            slideOut.setFromY(0);
+            slideOut.setToY(height);
+
+            newRoot.setTranslateY(height);
+            slideIn.setFromY(height);
+            slideIn.setToY(0);
+
+        }
+        else if (transitionType == TransitionType.SLIDE_RIGHT)
+        {
+            slideOut.setFromX(0);
+            slideOut.setToX(-width);
+
+            newRoot.setTranslateX(width);
+            slideIn.setFromX(width);
+            slideIn.setToX(0);
+
+        }
+        else
+        {
+            slideOut.setFromX(0);
+            slideOut.setToX(width);
+
+            newRoot.setTranslateX(-width);
+            slideIn.setFromX(-width);
+            slideIn.setToX(0);
+        }
+
+        return new ParallelTransition(slideOut, slideIn);
+    }
+
+    private Stage resolveStageFromMenuItem(MenuItem menuItem)
     {
-        navigateTo(menuItem, fxmlPath, stylesheetPath, transitionType, null);
+        if (menuItem == null)
+            return null;
+
+        Menu parentMenu = menuItem.getParentMenu();
+        if (parentMenu != null)
+        {
+            MenuBar menuBar = findMenuBar(parentMenu);
+            if (menuBar != null && menuBar.getScene() != null)
+                return (Stage) menuBar.getScene().getWindow();
+
+            if (parentMenu.getParentPopup() != null)
+            {
+                ContextMenu contextMenu = parentMenu.getParentPopup();
+                if (contextMenu.getOwnerWindow() instanceof Stage)
+                    return (Stage) contextMenu.getOwnerWindow();
+            }
+        }
+
+        if (menuItem.getParentPopup() != null && menuItem.getParentPopup().getOwnerWindow() instanceof Stage)
+            return (Stage) menuItem.getParentPopup().getOwnerWindow();
+
+        return Stage.getWindows().stream()
+                .filter(w -> w instanceof Stage && w.isShowing())
+                .map(w -> (Stage) w)
+                .findFirst()
+                .orElse(null);
+    }
+
+    private MenuBar findMenuBar(Menu menu)
+    {
+        Menu current = menu;
+        while (current.getParentMenu() != null)
+            current = current.getParentMenu();
+
+        if (current.getParentPopup() != null && current.getParentPopup().getOwnerNode() != null)
+        {
+            Node ownerNode = current.getParentPopup().getOwnerNode();
+            if (ownerNode.getScene() != null)
+                return (MenuBar) ownerNode.getScene().getRoot().lookup(".menu-bar");
+        }
+        return null;
+    }
+
+    protected void navigateTo(MenuItem menuItem, String fxmlPath, String cssPath, TransitionType transitionType)
+    {
+        navigateTo(menuItem, fxmlPath, cssPath, transitionType, null);
+    }
+
+    protected void navigateTo(Node node, String fxmlPath, String cssPath, TransitionType transitionType)
+    {
+        navigateTo(node, fxmlPath, cssPath, transitionType, null);
     }
 
     protected void navigateToMainView(Node node)
@@ -198,85 +283,18 @@ public abstract class AbstractBaseController implements Initializable {
         );
     }
 
-    protected <C extends AbstractBaseController> void navigateTo(MenuItem menuItem, String fxmlPath, String stylesheetPath, TransitionType transitionType, Consumer<C> controllerSetupCallback)
+    protected void navigateToSignInView(Node currentNode, TransitionType transitionType)
     {
-        Stage stage = null;
-        Node currentRoot = null;
-
-        Menu parentMenu = menuItem.getParentMenu();
-        if (parentMenu != null)
-        {
-            MenuBar menuBar = findMenuBar(parentMenu);
-            if (menuBar != null)
-            {
-                stage = (Stage) menuBar.getScene().getWindow();
-                currentRoot = stage.getScene().getRoot();
-            }
-            else if (parentMenu.getParentPopup() != null)
-            {
-                ContextMenu contextMenu = parentMenu.getParentPopup();
-                if (contextMenu.getOwnerWindow() instanceof Stage)
-                {
-                    stage = (Stage) contextMenu.getOwnerWindow();
-                    currentRoot = stage.getScene().getRoot();
-                }
-            }
-        }
-
-        if (stage == null || currentRoot == null)
-        {
-            System.err.println("Could not reliably determine Stage from MenuItem hierarchy. Attempting fallback to any active window.");
-            if (!Stage.getWindows().isEmpty())
-                for (Window window : Stage.getWindows())
-                    if (window instanceof Stage && window.isShowing())
-                    {
-                        stage = (Stage) window;
-                        currentRoot = stage.getScene().getRoot();
-                        break;
-                    }
-        }
-
-        if (stage == null || currentRoot == null)
-        {
-            System.err.println("Navigation Error: Could not determine current Stage or Root Node for navigation from MenuItem.");
-            showAlert("Navigation Error", "Could not determine current window for navigation.", Alert.AlertType.ERROR, null);
-            return;
-        }
-
-        navigateTo(currentRoot, fxmlPath, stylesheetPath, transitionType, controllerSetupCallback);
-    }
-
-
-    private MenuBar findMenuBar(MenuItem menuItem)
-    {
-        Menu parentMenu = menuItem.getParentMenu();
-        while (parentMenu != null)
-            parentMenu = parentMenu.getParentMenu();
-
-        if (menuItem.getParentPopup() != null)
-        {
-            ContextMenu contextMenu = menuItem.getParentPopup();
-            if (contextMenu.getOwnerNode() != null)
-            {
-                Node ownerNode = contextMenu.getOwnerNode();
-                if (ownerNode.getScene() != null)
-                    for (Node node : ownerNode.getScene().getRoot().lookupAll(".menu-bar"))
-                        if (node instanceof MenuBar)
-                            return (MenuBar) node;
-            }
-        }
-        return null;
-    }
-
-    protected void navigateToSignInView(Node currentNode, TransitionType transitionType) {
         navigateTo(currentNode, "/com/aut/shoomal/views/SignInView.fxml", "/com/aut/shoomal/styles/SignInUpStyles.css", transitionType);
     }
 
-    protected void navigateToSignInView(Node currentNode) {
+    protected void navigateToSignInView(Node currentNode)
+    {
         navigateTo(currentNode, "/com/aut/shoomal/views/SignInView.fxml", "/com/aut/shoomal/styles/SignInUpStyles.css", TransitionType.SLIDE_UP);
     }
 
-    protected void navigateToUserProfileView(Object sourceNode) {
+    protected void navigateToUserProfileView(Object sourceNode)
+    {
         navigateTo(
                 (Node) sourceNode,
                 "/com/aut/shoomal/views/UserProfileView.fxml",
